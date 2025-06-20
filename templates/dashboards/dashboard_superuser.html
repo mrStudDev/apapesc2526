@@ -1,0 +1,17 @@
+
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}SuperDash {% endblock %}
+<!--Bloco Página -->
+{% block content %}
+{% include 'components/navbar_home.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Bem-vindo ao Dashboard do Superusuário</h1>
+            <p>Este é o painel de controle para superusuários.</p>
+        </div>
+    </div>
+    <!-- Adicione mais conteúdo aqui conforme necessário -->
+{% endblock %}

@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Meu Projeto{% endblock %}</title>
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS Base Global -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <!-- Bloco para CSS extra de cada página -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Header / Navbar (se quiser adicionar futuramente) -->
+
+    <!-- Conteúdo Principal -->
+    <main>
+        {% block content %}
+        
+        {% endblock %}
+    </main>
+
+    <!-- JS Base (se tiver) -->
+    <script src="{% static 'js/base.js' %}"></script>
+
+    <!-- Bloco para JS extra de cada página -->
+    {% block extra_js %}
+    
+    {% endblock %}
+
+</body>
+</html>

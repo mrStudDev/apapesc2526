@@ -1,0 +1,1 @@
+from app_accounts.decorators import group_required

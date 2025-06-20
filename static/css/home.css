@@ -1,0 +1,51 @@
+.hero-section {
+    background-color: #f0f4f8; /* Azul muito clarinho */
+    padding: 60px 20px;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    margin: 30px auto;
+    max-width: 1000px;
+}
+
+.hero-content h1 {
+    font-size: 2.2rem;
+    color: #1e3a8a; /* Azul suave */
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: #475569; /* Cinza azulado suave */
+    margin-bottom: 24px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-button {
+    display: inline-block;
+    background-color: #3b82f6; /* Azul leve */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.hero-button:hover {
+    background-color: #2563eb; /* Azul um pouco mais forte no hover */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 1.6rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+}

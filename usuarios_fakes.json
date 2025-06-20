@@ -1,0 +1,49 @@
+[
+  {"email": "admin_associacao1@example.com", "username": "admin_associacao1", "password": "12345678Aa4", "role": "admin_associacao"},
+  {"email": "admin_associacao2@example.com", "username": "admin_associacao2", "password": "12345678Aa4", "role": "admin_associacao"},
+  {"email": "admin_associacao3@example.com", "username": "admin_associacao3", "password": "12345678Aa4", "role": "admin_associacao"},
+  {"email": "admin_associacao4@example.com", "username": "admin_associacao4", "password": "12345678Aa4", "role": "admin_associacao"},
+
+  {"email": "diretor1@example.com", "username": "diretor1", "password": "12345678Aa4", "role": "diretor"},
+  {"email": "diretor2@example.com", "username": "diretor2", "password": "12345678Aa4", "role": "diretor"},
+  {"email": "diretor3@example.com", "username": "diretor3", "password": "12345678Aa4", "role": "diretor"},
+  {"email": "diretor4@example.com", "username": "diretor4", "password": "12345678Aa4", "role": "diretor"},
+
+  {"email": "presidente1@example.com", "username": "presidente1", "password": "12345678Aa4", "role": "presidente"},
+  {"email": "presidente2@example.com", "username": "presidente2", "password": "12345678Aa4", "role": "presidente"},
+  {"email": "presidente3@example.com", "username": "presidente3", "password": "12345678Aa4", "role": "presidente"},
+  {"email": "presidente4@example.com", "username": "presidente4", "password": "12345678Aa4", "role": "presidente"},
+
+  {"email": "delagado1@example.com", "username": "delagado1", "password": "12345678Aa4", "role": "delagado"},
+  {"email": "delagado2@example.com", "username": "delagado2", "password": "12345678Aa4", "role": "delagado"},
+  {"email": "delagado3@example.com", "username": "delagado3", "password": "12345678Aa4", "role": "delagado"},
+  {"email": "delagado4@example.com", "username": "delagado4", "password": "12345678Aa4", "role": "delagado"},
+  {"email": "delagado5@example.com", "username": "delagado5", "password": "12345678Aa4", "role": "delagado"},
+  {"email": "delagado6@example.com", "username": "delagado6", "password": "12345678Aa4", "role": "delagado"},
+  {"email": "delagado7@example.com", "username": "delagado7", "password": "12345678Aa4", "role": "delagado"},
+
+  {"email": "financeiro1@example.com", "username": "financeiro1", "password": "12345678Aa4", "role": "financeiro"},
+
+  {"email": "recursos_humanos1@example.com", "username": "recursos_humanos1", "password": "12345678Aa4", "role": "recursos_humanos"},
+
+  {"email": "auxiliar_associacao1@example.com", "username": "auxiliar_associacao1", "password": "12345678Aa4", "role": "auxiliar_associacao"},
+  {"email": "auxiliar_associacao2@example.com", "username": "auxiliar_associacao2", "password": "12345678Aa4", "role": "auxiliar_associacao"},
+  {"email": "auxiliar_associacao3@example.com", "username": "auxiliar_associacao3", "password": "12345678Aa4", "role": "auxiliar_associacao"},
+  {"email": "auxiliar_associacao4@example.com", "username": "auxiliar_associacao4", "password": "12345678Aa4", "role": "auxiliar_associacao"},
+
+  {"email": "auxiliar_reparticao1@example.com", "username": "auxiliar_reparticao1", "password": "12345678Aa4", "role": "auxiliar_reparticao"},
+  {"email": "auxiliar_reparticao2@example.com", "username": "auxiliar_reparticao2", "password": "12345678Aa4", "role": "auxiliar_reparticao"},
+  {"email": "auxiliar_reparticao3@example.com", "username": "auxiliar_reparticao3", "password": "12345678Aa4", "role": "auxiliar_reparticao"},
+  {"email": "auxiliar_reparticao4@example.com", "username": "auxiliar_reparticao4", "password": "12345678Aa4", "role": "auxiliar_reparticao"},
+  {"email": "auxiliar_reparticao5@example.com", "username": "auxiliar_reparticao5", "password": "12345678Aa4", "role": "auxiliar_reparticao"},
+  {"email": "auxiliar_reparticao6@example.com", "username": "auxiliar_reparticao6", "password": "12345678Aa4", "role": "auxiliar_reparticao"},
+  {"email": "auxiliar_reparticao7@example.com", "username": "auxiliar_reparticao7", "password": "12345678Aa4", "role": "auxiliar_reparticao"},
+
+  {"email": "auxiliar_extra1@example.com", "username": "auxiliar_extra1", "password": "12345678Aa4", "role": "auxiliar_extra"},
+  {"email": "auxiliar_extra2@example.com", "username": "auxiliar_extra2", "password": "12345678Aa4", "role": "auxiliar_extra"},
+  {"email": "auxiliar_extra3@example.com", "username": "auxiliar_extra3", "password": "12345678Aa4", "role": "auxiliar_extra"},
+  {"email": "auxiliar_extra4@example.com", "username": "auxiliar_extra4", "password": "12345678Aa4", "role": "auxiliar_extra"},
+
+  {"email": "cliente_vip1@example.com", "username": "cliente_vip1", "password": "12345678Aa4", "role": "cliente_vip"},
+  {"email": "cliente_vip2@example.com", "username": "cliente_vip2", "password": "12345678Aa4", "role": "cliente_vip"}
+]
