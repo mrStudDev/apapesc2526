@@ -1,0 +1,129 @@
+.detail-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 28px 36px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.detail-container h1 {
+    font-size: 1.8rem;
+    color: #1f2937;
+    margin-bottom: 24px;
+}
+
+.detail-container section {
+    margin-bottom: 26px;
+}
+
+.detail-container section h2 {
+    font-size: 1.2rem;
+    color: #374151;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4px;
+}
+
+.detail-container p {
+    margin: 4px 0;
+    font-size: 0.92rem;
+    color: #4b5563;
+}
+
+.detail-container p strong {
+    color: #1f2937;
+    font-weight: 600;
+}
+.material-icons {
+    font-size: 19px;
+    vertical-align: middle;
+    color: #6b7280; /* Cinza suave inicial */
+    margin-right: 6px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* Sections */
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.section-title h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #374151;
+    letter-spacing: 0.02em;
+}
+
+.section-actions a {
+    margin-left: 10px;
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.section-actions a .material-icons {
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+.section-actions a:hover {
+    color: #1e40af;
+}
+/* Icones */
+.material-icons:hover {
+    color: #1e40af;
+    opacity: 0.85;
+}
+.material-icons.icon-view {
+    color: #10b981; /* Verde para "Ver" */
+}
+
+.material-icons.icon-edit {
+    color: #3b82f6; /* Azul para "Editar" */
+}
+
+.material-icons.icon-delete {
+    color: #ef4444; /* Vermelho para "Excluir" */
+}
+.material-icons.icon-list {
+    color: #000000; /* Vermelho para "Excluir" */
+}
+.material-icons.icon-view:hover,
+.material-icons.icon-edit:hover,
+.material-icons.icon-delete:hover {
+    opacity: 0.8;
+}
+/* Foto do Integrante */
+.name-photo-container img {
+    width: 80px; /* Tamanho da imagem */
+    height: 80px;
+    object-fit: cover; /* Corta a imagem se necessário */
+    border-radius: 50%; /* Faz a imagem ficar redonda */
+    border: 2px solid #ddd; /* Borda sutil para a foto */
+}
+
+/* Estilo do nome */
+.name-photo-container h1 {
+    font-size: 2rem;
+    color: #26425a;
+    margin: 0;
+}
+
+/* Ajustes responsivos para telas menores */
+@media (max-width: 768px) {
+    .name-photo-container {
+        flex-direction: column;  /* Empilha a foto e o nome em telas menores */
+        align-items: center;
+    }
+
+    .name-photo-container img {
+        width: 60px;
+        height: 60px;
+    }
+}

@@ -25,6 +25,7 @@ def dashboard(request):
     template = user_type_template_map.get(user.user_type, 'dashboard_cliente.html')
     return render(request, f'dashboards/{template}')
 
-
+class AcessoNegadoView(TemplateView):
+    template_name = 'accounts/acesso_negado.html'
 
 

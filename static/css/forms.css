@@ -1,0 +1,224 @@
+.form-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 28px 36px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.form-container-small {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 28px 36px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.form-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+    color: #26425a;
+    letter-spacing: 0.02em;
+}
+
+.form-grid {
+    display: grid;
+    gap: 12px 16px;  /* Menor espaçamento vertical, mas boa separação horizontal */
+    margin-bottom: 20px;
+}
+.grid-2-cols {
+    grid-template-columns: repeat(2, 1fr);
+}
+.grid-3-cols {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4-cols {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px 12px;
+}
+
+.grid-5-cols {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px 12px;
+}
+
+.form-row-cep-logradouro {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: nowrap; /* Mantém na mesma linha sempre que possível */
+    align-items: flex-start;
+    
+}
+
+.form-row-cep-logradouro .form-group {
+    margin-bottom: 0; /* Zera margem vertical entre os dois na horizontal */
+
+}
+
+.form-row-cep-logradouro .cep-field {
+    flex: 0 0 20%;
+    min-width: 140px;
+    
+}
+
+.form-row-cep-logradouro .logradouro-field {
+    flex: 1 1 80%;
+    min-width: 250px;
+}
+/* Tablet: Reduz para 2 colunas */
+@media (max-width: 1024px) {
+    .grid-3-cols,
+    .grid-4-cols,
+    .grid-5-cols {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile: Empilha em 1 coluna */
+@media (max-width: 640px) {
+    .grid-2-cols,
+    .grid-3-cols,
+    .grid-4-cols,
+    .grid-5-cols {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile: Empilhar */
+@media (max-width: 640px) {
+    .form-row-cep-logradouro {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-row-cep-logradouro .cep-field,
+    .form-row-cep-logradouro .logradouro-field {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+}
+
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px; /* Menor espaçamento entre os campos */
+}
+
+.form-group label {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #4a5568; /* Cinza médio mais delicado */
+    margin-bottom: 4px;
+    letter-spacing: 0.01em;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 7px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    background: #f9fafb;
+    color: #374151;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #60a5fa;
+    background-color: #edf6fd;
+    outline: none;
+}
+
+.form-container button[type="submit"] {
+    padding: 12px 24px;
+    background: #2bbe57;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(43, 190, 87, 0.07);
+    margin-top: 16px;
+    letter-spacing: 0.02em;
+}
+
+.form-container button[type="submit"]:hover {
+    background: #209b45;
+    box-shadow: 0 3px 10px rgba(43, 190, 87, 0.12);
+}
+
+/* Input para datas */
+.form-group input[type="date"] {
+    color: #374151;
+}
+
+/* Ajuste para selects */
+.form-group select {
+    background-color: #f9fafb;
+}
+
+/* CheckBox */
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas iguais */
+    gap: 10px 20px; /* Espaço entre as colunas e linhas */
+    margin-top: 8px;
+}
+
+.checkbox-grid label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* <<< Mantém tudo à esquerda da célula */
+    font-size: 0.85rem;
+    color: #374151;
+    cursor: pointer;
+    white-space: nowrap; /* Evita quebra de linha dentro da célula */
+}
+
+.checkbox-grid input[type="checkbox"] {
+    margin-right: 6px;  /* Pequeno espaço entre o checkbox e o texto */
+    accent-color: #2563eb;
+    vertical-align: middle;
+}
+
+.checkbox-grid input[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.checkbox-group {
+    margin-top: 12px;
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    background-color: #f9fafb;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb; /* Cinza claro para dar leve destaque */
+}
+
+.checkbox-group > label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+    display: block;
+    margin-bottom: 8px;
+}
+ /* UPLOAD FOTO Ativa o Flexbox */
+.upload-photo {
+    display: flex;            
+    flex-direction: column;  
+    justify-content: center; 
+    align-items: center;    
+    height: 100%;              
+}

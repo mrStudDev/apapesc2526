@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Integrante{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/detail_view.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+
+    <div class="detail-container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}        
+
+        <!-- Nome e Foto do Integrante -->
+        <div class="name-photo-container">
+            <!-- Foto do Integrante -->
+            {% if integrante.foto %}
+                <img src="{{ integrante.foto.url }}" alt="Foto de {{ integrante.user.get_full_name }}" />
+            {% else %}
+                <!-- Se não houver foto, exibe uma mensagem -->
+                <div class="no-photo-message">
+                    <p>Foto não adcionada</p>
+                </div>
+            {% endif %}
+            <!-- Nome Completo do Integrante -->
+            <h1>{{ integrante.user.get_full_name }}</h1>
+        </div>
+
+        <!-- Dados do Integrante -->
+        <section>
+            <div class="section-title">
+                <h2>Dados do Integrante</h2>
+                <div class="section-actions">
+                    <a href="{% url 'app_associacao:edit_integrante' pk=integrante.pk %}" title="Editar">
+                        <span class="material-icons icon-edit">edit</span>
+                    </a>
+                    <a href="{% url 'app_associacao:list_integrantes' %}" title="Lista de Integrantes">
+                        <span class="material-icons icon-list">list</span>
+                    </a>
+                </div>
+            </div>
+            <p><strong>CPF:</strong> {{ integrante.cpf }}</p>
+            <p><strong>Email:</strong> {{ integrante.email }}</p>
+            <p><strong>Profissão:</strong> {{ integrante.profissao }}</p>
+            <p><strong>Naturalidade:</strong> {{ integrante.naturalidade }}</p>
+            <p><strong>Estado Civil:</strong> {{ integrante.estado_civil }}</p>
+            <p><strong>Data de Nascimento:</strong> {{ integrante.data_nascimento|date:"d/m/Y" }}</p>
+        </section>
+
+        <!-- Contatos -->
+        <section>
+            <h2>Contatos</h2>
+            <p><strong>Celular:</strong> {{ integrante.celular }}</p>
+        </section>
+
+        <!-- Responsáveis -->
+        <section>
+            <h2>Associação e Repartição</h2>
+            <p><strong>Associação:</strong> {{ integrante.associacao.nome_fantasia }}</p>
+            <p><strong>Repartição:</strong> {{ integrante.reparticao.nome_reparticao }}</p>
+            <p><strong>Cargo:</strong> {{ integrante.cargo }}</p>
+            <p><strong>Grupo:</strong>
+                {% if integrante.user.groups.all %}
+                    {% for group in integrante.user.groups.all %}
+                        {{ group.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    Nenhum grupo atribuído
+                {% endif %}
+            </p>
+        </section>
+
+        <!-- Endereço -->
+        <section>
+            <h2>Endereço</h2>
+            <p><strong>Logradouro:</strong> {{ integrante.logradouro }}</p>
+            <p><strong>Número:</strong> {{ integrante.numero }}</p>
+            <p><strong>Bairro:</strong> {{ integrante.bairro }}</p>
+            <p><strong>CEP:</strong> {{ integrante.cep }}</p>
+            <p><strong>Município:</strong> {{ integrante.municipio }}</p>
+            <p><strong>UF:</strong> {{ integrante.uf }}</p>
+        </section>
+
+        <!-- Datas -->
+        <section>
+            <h2>Datas</h2>
+            <p><strong>Data de Entrada:</strong> {{ integrante.data_entrada|date:"d/m/Y" }}</p>
+            <p><strong>Data de Saída:</strong> {{ integrante.data_saida|date:"d/m/Y" }}</p>
+        </section>
+    </div>
+
+{% endblock %}

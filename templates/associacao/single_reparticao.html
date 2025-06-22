@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Repartição - {{ reparticao.nome_reparticao }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/detail_view.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="detail-container">
+    <h1>{{ reparticao.nome_reparticao }}</h1>
+
+    <!-- Dados Institucionais -->
+    <section class="section-header-actions">
+        <div class="section-title">
+            <h2>Dados Institucionais</h2>
+            <div class="section-actions">
+                <a href="{% url 'app_associacao:edit_reparticao' pk=reparticao.pk %}" title="Editar">
+                    <span class="material-icons icon-edit">edit</span>
+                </a>
+                <a href="{% url 'app_associacao:list_reparticoes' %}" title="Lista de Repartições">
+                    <span class="material-icons icon-list">list</span>
+                </a>
+            </div>
+        </div>
+        <p><strong>Associação:</strong> {{ reparticao.associacao }}</p>
+        <p><strong>Delegado:</strong> {{ reparticao.delegado }}</p>
+        <p><strong>Município Sede:</strong> {{ reparticao.municipio_sede }}</p>
+    </section>
+
+    <!-- Contatos -->
+    <section>
+        <h2>Contatos</h2>
+        <p><strong>Telefone:</strong> {{ reparticao.telefone }}</p>
+        <p><strong>Celular:</strong> {{ reparticao.celular }}</p>
+        <p><strong>Email:</strong> {{ reparticao.email }}</p>
+    </section>
+
+    <!-- Endereço -->
+    <section>
+        <h2>Endereço</h2>
+        <p><strong>Logradouro:</strong> {{ reparticao.logradouro }}</p>
+        <p><strong>Número:</strong> {{ reparticao.numero }}</p>
+        <p><strong>Complemento:</strong> {{ reparticao.complemento }}</p>
+        <p><strong>Bairro:</strong> {{ reparticao.bairro }}</p>
+        <p><strong>Município:</strong> {{ reparticao.municipio }}</p>
+        <p><strong>UF:</strong> {{ reparticao.uf }}</p>
+        <p><strong>CEP:</strong> {{ reparticao.cep }}</p>
+    </section>
+
+    <!-- Circunscrição -->
+    <section>
+        <h2>Municípios de Circunscrição</h2>
+        {% if reparticao.municipios_circunscricao.all %}
+            <ul>
+                {% for municipio in reparticao.municipios_circunscricao.all %}
+                    <li>{{ municipio }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum município vinculado.</p>
+        {% endif %}
+    </section>
+
+    <!-- Datas -->
+    <section>
+        <h2>Datas</h2>
+        <p><strong>Abertura:</strong> {{ reparticao.data_abertura|date:"d/m/Y" }}</p>
+        <p><strong>Encerramento:</strong> {{ reparticao.data_encerramento|date:"d/m/Y" }}</p>
+    </section>
+
+</div>
+
+{% endblock %}

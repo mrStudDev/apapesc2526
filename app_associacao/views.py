@@ -1,0 +1,528 @@
+# Views - App Associacao
+from core.views.base_imports import *
+from core.views.app_associacao_imports import *
+
+
+# LISTA E EDIÇÂO DE USUÀRIOS ========================================
+class UserListView(LoginRequiredMixin, ListView):
+    model = CustomUser
+    template_name = 'associacao/list_users.html'
+    context_object_name = 'users'
+    ordering = ['username']
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        queryset = super().get_queryset().select_related(
+            'integrante__reparticao',
+            'integrante__cargo' 
+        )
+        return queryset
+        
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+    model = CustomUser
+    form_class = CustomUserForm
+    template_name = 'associacao/edit_user.html'
+    success_url = reverse_lazy('app_associacao:list_users')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão editar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        action = self.request.POST.get('action')  # Verifica qual botão foi clicado
+        response = super().form_valid(form)
+
+        if action == 'save_and_integrante':
+            return redirect(reverse('app_associacao:create_integrante') + f'?user_id={self.object.id}')
+        
+        messages.success(self.request, 'Usuário atualizado com sucesso!')
+        return response
+# ----------------------------------------------------------    
+
+
+# CREATES ==========================================
+class AssociacaoCreateView(LoginRequiredMixin, CreateView):
+    model = AssociacaoModel
+    form_class = AssociacaoForm
+    template_name = 'associacao/create_associacao.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Verifica se o usuário está logado e tem as permissões necessárias
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            # Se o usuário não for superuser ou admin_associacao, redireciona
+            messages.error(self.request, "Você não tem permissão para criar uma associação.")
+            return redirect('app_accounts:unauthorized')  # Redireciona para uma página de acesso negado (personalize o URL conforme necessário)
+        return super().dispatch(request, *args, **kwargs)
+    
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Associação criada com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar a Associação. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('app_associacao:single_associacao', kwargs={'pk': self.object.pk})
+
+        
+class ReparticaoCreateView(LoginRequiredMixin, CreateView):
+    model = ReparticoesModel
+    form_class = ReparticoesForm
+    template_name = 'associacao/create_reparticao.html'
+    success_url = reverse_lazy('app_associacao:list_reparticoes')
+    extra_context = {'titulo_pagina': 'Nova Repartição'}
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para criar uma Repartição.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Repartição criada com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar a Repartição. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('app_associacao:single_reparticao', kwargs={'pk': self.object.pk})
+
+class IntegranteCreateView(LoginRequiredMixin, CreateView):
+    model = IntegrantesModel
+    form_class = IntegrantesForm
+    template_name = 'associacao/create_integrante.html'
+    success_url = reverse_lazy('app_associacao:list_integrantes')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para criar um integrante.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        user_id = self.request.GET.get('user_id') or None
+        associacao_id = self.request.GET.get('associacao_id') or None
+
+        if user_id:
+            user = get_object_or_404(CustomUser, pk=user_id)
+            kwargs['user_initial'] = user
+
+        if associacao_id:
+            kwargs['associacao_id'] = associacao_id
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        associacao_id = self.request.GET.get('associacao_id')
+        user_id = self.request.GET.get('user_id')
+
+        if associacao_id:
+            from app_associacao.models import AssociacaoModel
+            context['associacao_obj'] = get_object_or_404(AssociacaoModel, pk=associacao_id)
+
+        if user_id:
+            context['user_obj'] = get_object_or_404(CustomUser, pk=user_id)
+
+        return context
+
+
+    def form_valid(self, form):
+        user_id = self.request.GET.get('user_id')
+        if user_id:
+            form.instance.user = get_object_or_404(CustomUser, pk=user_id)
+
+        # Verifica se o campo de 'reparticao' está vazio ou None, e trata a atribuição
+        if 'reparticao' in form.cleaned_data and form.cleaned_data['reparticao'] is None:
+            form.instance.reparticao = None  # Ou pode definir um valor padrão, se necessário
+
+        messages.success(self.request, 'Integrante criado com sucesso!')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar a Integrante. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('app_associacao:single_integrante', kwargs={'pk': self.object.pk})   
+    
+    
+class MunicipioCreateView(LoginRequiredMixin, CreateView):
+    model = MunicipiosModel
+    form_class = MunicipiosForm
+    template_name = 'associacao/create_municipio.html'
+    success_url = reverse_lazy('app_associacao:list_municipios') 
+    extra_context = {'titulo_pagina': 'Novo Município'} 
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão criar Município.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)   
+        
+    def form_valid(self, form):
+        messages.success(self.request, 'Município criado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar a município. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)
+    
+
+class ProfissaoCreateView(LoginRequiredMixin, CreateView):
+    model = ProfissoesModel
+    form_class = ProfissoesForm
+    template_name = 'associacao/create_profissao.html'
+    success_url = reverse_lazy('app_associacao:list_profissoes') 
+    extra_context = {'titulo_pagina': 'Nova Profissão'}
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão criar Profissão.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs) 
+        
+class CargosCreateView(LoginRequiredMixin, CreateView):
+    model = CargosModel
+    form_class = CargosForm
+    template_name = 'associacao/create_cargo.html'
+    success_url = reverse_lazy('app_associacao:list_cargos') 
+    extra_context = {'titulo_pagina': 'Novo Cargo'} 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão criar Cargo.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)     
+# ----------------------------------------------------
+
+
+# LISTS ==========================================    
+class AssociacaoListView(LoginRequiredMixin, ListView):
+    model = AssociacaoModel
+    template_name = 'associacao/list_associacoes.html'
+    context_object_name = 'associacoes'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)     
+
+
+class ReparticoesListView(ListView):
+    model = ReparticoesModel
+    template_name = 'associacao/list_reparticoes.html'
+    context_object_name = 'reparticoes'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    
+class IntegrantesListView(ListView):
+    model = IntegrantesModel
+    template_name = 'associacao/list_integrantes.html'
+    context_object_name = 'integrantes'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+        
+class MunicipiosListView(ListView):
+    model = MunicipiosModel
+    template_name = 'associacao/list_municipios.html'
+    context_object_name = 'municipios'
+    ordering = ['municipio']
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    
+class ProfissoesListView(ListView):
+    model = ProfissoesModel
+    template_name = 'associacao/list_profissoes.html'
+    context_object_name = 'profissoes'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    
+class CargosListView(ListView):
+    model = CargosModel
+    template_name = 'associacao/list_cargos.html'
+    context_object_name = 'cargos'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)      
+# ----------------------------------------------------
+
+
+# EDITS ==========================================                    
+class AssociacaoUpdateView(LoginRequiredMixin, UpdateView):
+    model = AssociacaoModel
+    form_class = AssociacaoForm
+    template_name = 'associacao/edit_associacao.html'
+    success_url = reverse_lazy('app_associacao:list_associacoes')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Associação atualizada com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao atualizar a associação. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)    
+
+    def get_success_url(self):
+        return reverse_lazy('app_associacao:single_associacao', kwargs={'pk': self.object.pk})
+
+
+class ReparticaoUpdateView(LoginRequiredMixin, UpdateView):
+    model = ReparticoesModel
+    form_class = ReparticoesForm
+    template_name = 'associacao/edit_reparticao.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    def get_success_url(self):
+        return reverse_lazy('app_associacao:single_reparticao', kwargs={'pk': self.object.pk})
+
+    
+class MunicipioUpdateView(LoginRequiredMixin, UpdateView):
+    model = MunicipiosModel
+    form_class = MunicipiosForm
+    template_name = 'associacao/edit_municipio.html'
+    success_url = reverse_lazy('app_associacao:list_municipios') 
+    extra_context = {'titulo_pagina': 'Editar Município'}    
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Município atualizado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao altualizar a município. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)    
+
+
+class CargoUpdateView(LoginRequiredMixin, UpdateView):
+    model = CargosModel
+    form_class = CargosForm
+    template_name = 'associacao/edit_cargo.html'
+    success_url = reverse_lazy('app_associacao:list_cargos') 
+    extra_context = {'titulo_pagina': 'Editar Cargo'} 
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Cargo atualizado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao atualizar o cargo. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)   
+    
+    
+class ProfissaoUpdateView(LoginRequiredMixin, UpdateView):
+    model = ProfissoesModel
+    form_class = ProfissoesForm
+    template_name = 'associacao/edit_profissao.html'
+    success_url = reverse_lazy('app_associacao:list_profissoes') 
+    extra_context = {'titulo_pagina': 'Editar Profissão'} 
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Profissão atualizada com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao atualizar a profissão. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)     
+    
+    
+class IntegranteUpdateView(LoginRequiredMixin, UpdateView):
+    model = IntegrantesModel
+    form_class = IntegrantesForm
+    template_name = 'associacao/edit_integrante.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        user_id = self.request.GET.get('user_id') or None
+        associacao_id = self.request.GET.get('associacao_id') or None
+
+        if user_id:
+            user = get_object_or_404(CustomUser, pk=user_id)
+            kwargs['user_initial'] = user
+
+        if associacao_id:
+            kwargs['associacao_id'] = associacao_id
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        associacao_id = self.request.GET.get('associacao_id')
+        user_id = self.request.GET.get('user_id')
+
+        if associacao_id:
+            from app_associacao.models import AssociacaoModel
+            context['associacao_obj'] = get_object_or_404(AssociacaoModel, pk=associacao_id)
+
+        if user_id:
+            context['user_obj'] = get_object_or_404(CustomUser, pk=user_id)
+
+        return context
+
+    def form_valid(self, form):
+        user_id = self.request.GET.get('user_id')
+        if user_id:
+            form.instance.user = get_object_or_404(CustomUser, pk=user_id)
+
+
+        user_type = form.cleaned_data['user_type']
+        form.instance.user.user_type = user_type
+        form.instance.user.save()  # Salva as alterações no usuário
+
+        # Salva a relação Many-to-Many (se houver algum grupo selecionado)
+        group = form.cleaned_data['group']
+        form.instance.user.groups.set([group])  # Atualiza a relação Many-to-Many
+
+        # Verifica se o campo de 'reparticao' está vazio ou None, e trata a atribuição
+        if 'reparticao' in form.cleaned_data and form.cleaned_data['reparticao'] is None:
+            form.instance.reparticao = None  # Ou pode definir um valor padrão, se necessário
+
+        messages.success(self.request, 'Integrante atualizado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar o Integrante. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('app_associacao:single_integrante', kwargs={'pk': self.object.pk})    
+# ----------------------------------------------------
+
+
+# SINGLES ==========================================  
+class AssociacaoDetailView(LoginRequiredMixin, DetailView):
+    model = AssociacaoModel
+    template_name = 'associacao/single_associacao.html'
+    context_object_name = 'associacao'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo_pagina'] = 'Detalhes da Associação'
+        return context    
+    
+class ReparticaoDetailView(LoginRequiredMixin, DetailView):
+    model = ReparticoesModel
+    template_name = 'associacao/single_reparticao.html'
+    context_object_name = 'reparticao'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo_pagina'] = 'Detalhes da Repartição'
+        return context
+
+class IntegranteDetailView(LoginRequiredMixin, DetailView):
+    model = IntegrantesModel
+    template_name = 'associacao/single_integrante.html'
+    context_object_name = 'integrante'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo_pagina'] = 'Detalhes do Integrante'
+        return context    
+# ----------------------------------------------------    
+
+# FUNCÇÕES
+def reparticoes_por_associacao(request):
+    associacao_id = request.GET.get('associacao_id')
+    data = []
+
+    if associacao_id:
+        # Filtra as repartições pela associação selecionada
+        reparticoes = ReparticoesModel.objects.filter(associacao_id=associacao_id)
+
+        # Garante que as repartições não serão duplicadas
+        data = [{'id': rep.id, 'nome': rep.nome_reparticao} for rep in reparticoes]
+
+    return JsonResponse({'reparticoes': data})
+

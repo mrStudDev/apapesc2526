@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nova Associação{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container">
+    <h1>Cadastro de Associação</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% if form.errors %}
+            <div class="errorlist">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+        <!-- Dados Institucionais -->
+
+        <div class="form-group">
+            {{ form.nome_fantasia.label_tag }}
+            {{ form.nome_fantasia }}
+            {% if form.nome_fantasia.errors %}
+                <div class="field-error">
+                    {% for error in form.nome_fantasia.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}            
+        </div>
+        <div class="form-group">
+            {{ form.razao_social.label_tag }}
+            {{ form.razao_social }}
+        </div>
+
+        <!-- Contatos -->
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">
+                {{ form.cnpj.label_tag }}
+                {{ form.cnpj }}
+                {% if form.cnpj.errors %}
+                    <div class="field-error">
+                        {% for error in form.cnpj.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.telefone.label_tag }}
+                {{ form.telefone }}                 
+            </div>
+            <div class="form-group">
+                {{ form.celular.label_tag }}
+                {{ form.celular }}
+                {% if form.celular.errors %}
+                    <div class="field-error">
+                        {% for error in form.celular.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+        </div>
+
+        <!-- Administrador -->
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">
+                {{ form.administrador.label_tag }}
+                {{ form.administrador }}
+                {% if form.administrador.errors %}
+                    <div class="field-error">
+                        {% for error in form.administrador.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.presidente.label_tag }}
+                {{ form.presidente }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="field-error">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+        </div>
+
+        <div class="checkbox-group">
+            <label>Diretores</label>
+            <div class="checkbox-grid">
+                {% for value, label in form.diretores.field.choices %}
+                    <label>
+                        <input type="checkbox" name="diretores" value="{{ value }}"
+                            {% if value in form.selected_diretores %}checked{% endif %}
+                            {% if value in form.disabled_diretores %}disabled{% endif %}
+                        >
+                        {{ label }}
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Fundadores -->
+        <div class="form-group">
+            {{ form.fundadores.label_tag }}
+            {{ form.fundadores }}
+            {% if form.fundadores.errors %}
+                <div class="field-error">
+                    {% for error in form.fundadores.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}             
+        </div>
+
+        <!-- Endereço -->
+        <div class="form-row-cep-logradouro">
+            <div class="form-group cep-field">
+                {{ form.cep.label_tag }}
+                {{ form.cep }}
+                {% if form.cep.errors %}
+                    <div class="field-error">
+                        {% for error in form.cep.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group logradouro-field">
+                {{ form.logradouro.label_tag }}
+                {{ form.logradouro }}                
+            </div>
+        </div>
+
+        <div class="form-grid grid-5-cols">
+            <div class="form-group">
+                {{ form.numero.label_tag }}
+                {{ form.numero }}             
+            </div>
+            <div class="form-group">
+                {{ form.complemento.label_tag }}
+                {{ form.complemento }}               
+            </div>
+            <div class="form-group">
+                {{ form.bairro.label_tag }}
+                {{ form.bairro }}
+                {% if form.bairro.errors %}
+                    <div class="field-error">
+                        {% for error in form.bairro.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.municipio.label_tag }}
+                {{ form.municipio }}
+                {% if form.municipio.errors %}
+                    <div class="field-error">
+                        {% for error in form.municipio.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.uf.label_tag }}
+                {{ form.uf }}
+            </div>
+        </div>
+
+        <!-- Datas -->
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                {{ form.data_abertura.label_tag }}
+                {{ form.data_abertura }}
+                {% if form.data_abertura.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_abertura.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.data_encerramento.label_tag }}
+                {{ form.data_encerramento }}
+                {% if form.data_encerramento.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_encerramento.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+        </div>
+
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+    <script src="{% static 'js/cep_autocomplete.js' %}"></script>
+    <script src="{% static 'js/mascaras.js' %}"></script>
+    
+{% endblock %}
+{% endblock %}

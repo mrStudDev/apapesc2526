@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista Repartições{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">    
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+
+<div class="lista-container">
+    <h1>Lista de Reparticões</h1>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <table class="table-list">
+        <thead>
+            <tr>
+                <th>Nome Repartição</th>
+                <th>Associação</th>
+                <th>Minicípio sede</th>
+                <th>Delegado</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reparticao in reparticoes %}
+            <tr>
+                <td>{{ reparticao.nome_reparticao }}</td>
+                <td>{{ reparticao.associacao.nome_fantasia }}</td>
+                <td>{{ reparticao.municipio_sede }}</td>
+                <td>{{ reparticao.delegado }}</td>
+                <td>{{ reparticao.email }}</td>
+                <td>
+                    <a href="{% url 'app_associacao:single_reparticao' reparticao.pk %}" title="Ver"><span class="material-icons icon-view">visibility</span></a>
+                    <a href="{% url 'app_associacao:edit_reparticao' reparticao.pk %}" title="Editar"><span class="material-icons icon-edit">edit</span></a>
+                    <a href="#" title="Excluir"><span class="material-icons icon-delete">delete</span></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Nenhuma repartição encontrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}    

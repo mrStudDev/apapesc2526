@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Profissões{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container-small">
+    <h1>Lista de Profissões</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <table class="table-list-small">
+        <thead>
+            <tr>
+                <th>Profissão ID</th>
+                <th>Profissão Nome</th>
+                <th>Ações</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for profissao in profissoes %}
+            <tr>
+                <td>{{ profissao.id }}</td>
+                <td>{{ profissao.nome }}</td>
+
+                <td>
+                    <a href="{% url 'app_associacao:edit_profissao' profissao.pk %}" title="Editar"><span class="material-icons icon-edit">edit</span></a>
+                    <a href="#" title="Excluir"><span class="material-icons icon-delete">delete</span></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhum profissão encontrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

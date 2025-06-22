@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista Usuários{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container">
+    <h1>Lista de Usuários</h1>
+
+    <table class="table-list">
+        <thead>
+            <tr>
+                <th>Nome Completo</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Data Cadastro</th>
+                <th>Vínculo Rep.</th>
+                <th>Cargo</th>
+                <th>Editar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.get_full_name }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                <td>
+                    {% if user.integrante.reparticao %}
+                        {{ user.integrante.reparticao.nome_reparticao }}
+                    {% else %}
+                        Nenhuma
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.integrante.cargo %}
+                        {{ user.integrante.cargo.nome }}
+                    {% else %}
+                        Nenhum
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn-action" href="{% url 'app_associacao:edit_user' user.id %}">Editar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Nenhum usuário encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

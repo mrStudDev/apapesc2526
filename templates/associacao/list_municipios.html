@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista Municipios{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+
+<div class="lista-container-small">
+    <h1>Lista de Municípios</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <table class="table-list-small">
+        <thead>
+            <tr>
+                <th>Município</th>
+                <th>Vinculado?</th>
+                <th>Estado</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for municipio in municipios %}
+            <tr>
+                <td>{{ municipio.municipio }}</td>
+                <td>{{ municipio.vinculo_status }}</td>
+                <td>{{ municipio.uf }}</td>
+                <td>
+                    <a href="{% url 'app_associacao:edit_municipio' municipio.pk %}" title="Editar"><span class="material-icons icon-edit">edit</span></a>
+                    <a href="#" title="Excluir"><span class="material-icons icon-delete">delete</span></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhum município encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

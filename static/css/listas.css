@@ -1,0 +1,183 @@
+.lista-container {
+    max-width: 1400px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    padding: 24px 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.lista-container h1 {
+    font-size: 1.6rem;
+    color: #1f2937;
+    margin-bottom: 20px;
+    letter-spacing: 0.02em;
+}
+
+.lista-container .table-list {
+    margin-top: 0;
+}
+
+.table-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+    color: #374151;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-list thead {
+    background-color: #f1f5f9;
+    text-align: left;
+}
+
+.table-list thead th {
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #1f2937;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+}
+
+.table-list tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s;
+}
+
+.table-list tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.table-list tbody td {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+}
+
+.table-list tbody td a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.table-list tbody td a:hover {
+    text-decoration: underline;
+}
+
+.table-list tbody td:last-child a {
+    margin-right: 6px;
+}
+
+/* Responsividade simples: Scroll horizontal em telas muito pequenas */
+@media (max-width: 768px) {
+    .table-list {
+        display: block;
+        overflow-x: auto;
+    }
+}
+/* LISTAS SMALL*/
+.lista-container-small {
+    max-width: 900px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 24px 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.table-list-small {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.82rem;
+    color: #374151;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-list-small thead {
+    background-color: #f9fafb;
+    text-align: left;
+}
+
+.table-list-small thead th {
+    padding: 8px 12px;
+    font-weight: 600;
+    color: #1f2937;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.78rem;
+    letter-spacing: 0.015em;
+}
+
+.table-list-small tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s;
+}
+
+.table-list-small tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.table-list-small tbody td {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+}
+
+.table-list-small tbody td a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.table-list-small tbody td a:hover {
+    text-decoration: underline;
+}
+
+/* Scroll horizontal no mobile se precisar */
+@media (max-width: 768px) {
+    .table-list-small {
+        display: block;
+        overflow-x: auto;
+    }
+}
+.material-icons {
+    font-size: 19px;
+    vertical-align: middle;
+    color: #6b7280; /* Cinza suave inicial */
+    margin-right: 6px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.material-icons:hover {
+    color: #1e40af;
+    opacity: 0.85;
+}
+.material-icons.icon-view {
+    color: #10b981; /* Verde para "Ver" */
+}
+
+.material-icons.icon-edit {
+    color: #3b82f6; /* Azul para "Editar" */
+}
+
+.material-icons.icon-delete {
+    color: #ef4444; /* Vermelho para "Excluir" */
+}
+
+.material-icons.icon-view:hover,
+.material-icons.icon-edit:hover,
+.material-icons.icon-delete:hover {
+    opacity: 0.8;
+}

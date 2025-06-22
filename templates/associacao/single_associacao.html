@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Associação{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/detail_view.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+
+<div class="detail-container">
+    <h1>{{ associacao.nome_fantasia }}</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Dados Institucionais -->
+    <section>
+        <div class="section-title">
+            <h2>Dados Institucionais</h2>
+            <div class="section-actions">
+                <a href="{% url 'app_associacao:edit_associacao' pk=associacao.pk %}" title="Editar">
+                    <span class="material-icons icon-edit">edit</span>
+                </a>
+                <a href="{% url 'app_associacao:list_associacoes' %}" title="Lista de Associações">
+                    <span class="material-icons icon-list">list</span>
+                </a>
+            </div>
+        </div>
+        <p><strong>Razão Social:</strong> {{ associacao.razao_social }}</p>
+        <p><strong>CNPJ:</strong> {{ associacao.cnpj }}</p>
+    </section>
+
+    <!-- Contatos -->
+    <section>
+        <h2>Contatos</h2>
+        <p><strong>Telefone:</strong> {{ associacao.telefone }}</p>
+        <p><strong>Celular:</strong> {{ associacao.celular }}</p>
+        <p><strong>Email:</strong> {{ associacao.email }}</p>
+    </section>
+
+    <!-- Responsáveis -->
+    <section>
+        <h2>Responsáveis</h2>
+        <p><strong>Administrador:</strong> {{ associacao.administrador }}</p>
+        <p><strong>Presidente:</strong> {{ associacao.presidente }}</p>
+        <p><strong>Diretores:</strong> {{ associacao.diretores.all|join:", " }}</p>
+    </section>
+
+    <!-- Adicionando Repartições e Integrantes -->
+    <section>
+        <h2>Repartições e Integrantes</h2>
+        {% for reparticao in associacao.reparticoes.all %}
+            <div>
+                <h4>{{ reparticao.nome_reparticao }}</h4>
+                <p><strong>Integrantes:</strong> 
+                    {% for integrante in reparticao.integrantes.all %}
+                        {{ integrante.user.first_name }} {{ integrante.user.last_name }} ({{ integrante.cargo }}){% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        {% empty %}
+            <p>Não há repartições vinculadas a essa associação.</p>
+        {% endfor %}
+    </section>
+
+
+    <!-- Endereço -->
+    <section>
+        <h2>Endereço</h2>
+        <p><strong>Logradouro:</strong> {{ associacao.logradouro }}</p>
+        <p><strong>Número:</strong> {{ associacao.numero }}</p>
+        <p><strong>Bairro:</strong> {{ associacao.bairro }}</p>
+        <p><strong>Município:</strong> {{ associacao.municipio }}</p>
+        <p><strong>UF:</strong> {{ associacao.uf }}</p>
+        <p><strong>CEP:</strong> {{ associacao.cep }}</p>
+    </section>
+
+    <!-- Datas -->
+    <section>
+        <h2>Datas</h2>
+        <p><strong>Data de Abertura:</strong> {{ associacao.data_abertura|date:"d/m/Y" }}</p>
+        <p><strong>Data de Encerramento:</strong> {{ associacao.data_encerramento|date:"d/m/Y" }}</p>
+    </section>
+
+</div>
+{% endblock %}

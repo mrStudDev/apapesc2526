@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Novo Integrante{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">    
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container">
+    <h1>Cadastro de Integrante</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div>
+    {% if user_obj %}
+        <div>
+            <p>Você está cadastrando <strong>{{ user_obj.get_full_name|default:user_obj.username }}</strong> como um(a) integrante</p>
+        </div>
+    {% endif %}
+
+    </div>
+
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!--Foto-->
+        <div class="form-group">
+            {{ form.foto.label_tag }}
+            {{ form.foto }}
+            {% if form.foto.errors %}
+                <div class="error">{{ form.foto.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Vínculos -->
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">
+                {{ form.user.label_tag }}
+                {% if user_obj %}
+                <div class="form-group">
+                    <input type="text" value="{{ user_obj.username }}" readonly class="readonly-field">
+                    <input type="hidden" name="user" value="{{ user_obj.id }}">
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.associacao.label_tag }}
+                {{ form.associacao }}
+            </div>
+
+            <div class="form-group">
+                {{ form.reparticao.label_tag }}
+                {{ form.reparticao }}
+                {% if form.reparticao.errors %}
+                    <div class="field-error">
+                        {% for error in form.reparticao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+        </div> 
+        <!-- Dados Pessoais - Nacionalidade Pais-->
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">
+                {{ form.nacionalidade.label_tag }}
+                {{ form.nacionalidade }}
+            </div>            
+            <div class="form-group">
+                {{ form.estado_civil.label_tag }}
+                {{ form.estado_civil }}
+            </div>
+
+            <div class="form-group">
+                {{ form.profissao.label_tag }}
+                {{ form.profissao }}
+            </div>
+        </div> 
+        <!-- Dados Pessoais -->
+        <div class="form-grid grid-4-cols">
+            <div class="form-group">
+                {{ form.cpf.label_tag }}
+                {{ form.cpf }}
+                {% if form.cpf.errors %}
+                    <div class="field-error">
+                        {% for error in form.cpf.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.celular.label_tag }}
+                {{ form.celular }}
+                {% if form.celular.errors %}
+                    <div class="field-error">
+                        {% for error in form.celular.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="field-error">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>
+            <div class="form-group">
+                {{ form.oab.label_tag }}
+                {{ form.oab }}
+            </div>            
+        </div>
+        <!--Identidade-->
+        <div class="form-grid grid-5-cols">
+            <div class="form-group">
+                {{ form.rg_numero.label_tag }}
+                {{ form.rg_numero }}
+            </div>
+            <div class="form-group">
+                {{ form.rg_orgao.label_tag }}
+                {{ form.rg_orgao }}
+            </div>
+            <div class="form-group">
+                {{ form.rg_data_emissao.label_tag }}
+                {{ form.rg_data_emissao }}
+                {% if form.rg_data_emissao.errors %}
+                    <div class="field-error">
+                        {% for error in form.rg_data_emissao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>
+            <div class="form-group">
+                {{ form.data_nascimento.label_tag }}
+                {{ form.data_nascimento }}
+                {% if form.data_nascimento.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_nascimento.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                     
+            </div>
+            <div class="form-group">
+                {{ form.naturalidade.label_tag }}
+                {{ form.naturalidade }}
+            </div>
+        </div>
+
+        <!-- Endereço -->
+        <div class="form-row-cep-logradouro">
+            <div class="form-group cep-field">
+                {{ form.cep.label_tag }}
+                {{ form.cep }}
+            </div>             
+            <div class="form-group logradouro-field">
+                {{ form.logradouro.label_tag }}
+                {{ form.logradouro }}
+            </div>
+        </div>
+
+        <div class="form-grid grid-5-cols">
+            <div class="form-group">
+                {{ form.numero.label_tag }}
+                {{ form.numero }}
+            </div>
+            <div class="form-group">
+                {{ form.complemento.label_tag }}
+                {{ form.complemento }}
+            </div>            
+            <div class="form-group">
+                {{ form.bairro.label_tag }}
+                {{ form.bairro }}
+            </div>
+
+            <div class="form-group">
+                {{ form.municipio.label_tag }}
+                {{ form.municipio }}
+            </div>
+            <div class="form-group">
+                {{ form.uf.label_tag }}
+                {{ form.uf }}
+            </div>
+        </div>
+        <!-- Dados De Acesso = GRUPOS TIPO DE USUÀRIO = Entreda e Saída-->
+        <div class="form-grid grid-5-cols">
+            <div class="form-group">
+                {{ form.group.label_tag }}
+                {{ form.group }}
+                {% if form.group.errors %}
+                    <div class="field-error">
+                        {% for error in form.group.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>   
+                     
+            <div class="form-group">
+                {{ form.cargo.label_tag }}
+                {{ form.cargo }}
+                {% if form.cargo.errors %}
+                    <div class="field-error">
+                        {% for error in form.cargo.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>
+            <div class="form-group">
+                {{ form.user_type.label_tag }}
+                {{ form.user_type }}
+                {% if form.user_type.errors %}
+                    <div class="field-error">
+                        {% for error in form.user_type.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>             
+            <div class="form-group">
+                {{ form.data_entrada.label_tag }}
+                {{ form.data_entrada }}
+                {% if form.data_entrada.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_entrada.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>
+            <div class="form-group">
+                {{ form.data_saida.label_tag }}
+                {{ form.data_saida }}
+                {% if form.data_saida.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_saida.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>           
+        </div>
+
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+    <script src="{% static 'js/cep_autocomplete.js' %}"></script>
+    <script src="{% static 'js/mascaras.js' %}"></script>
+    <script src="{% static 'js/filtrar_reparticoes.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

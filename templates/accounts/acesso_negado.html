@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Acesso Negado{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/detail_view.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_home.html' %}
+
+<div class="detail-container">
+    <h1>Acesso Negado!</h1>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <p>Você não tem permissão para acessar esta página.</p>
+
+</div>
+
+
+{% endblock %}

@@ -6,5 +6,15 @@ recursos humanos
 <!--Bloco Página -->
 {% block content %}
 {% include 'components/navbar_home.html' %}
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    
 recursos humanos
 {% endblock %}
