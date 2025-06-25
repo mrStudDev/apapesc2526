@@ -14,21 +14,27 @@
 <div class="form-container">
     <h1>Cadastro de Integrante</h1>
 
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="message {{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
 
     <div>
-    {% if user_obj %}
-        <div>
-            <p>Você está cadastrando <strong>{{ user_obj.get_full_name|default:user_obj.username }}</strong> como um(a) integrante</p>
-        </div>
-    {% endif %}
-
+        {% if user_obj %}
+            <div>
+                <p>Você está cadastrando <strong>{{ user_obj.get_full_name|default:user_obj.username }}</strong> como um(a) integrante</p>
+            </div>
+        {% endif %}
     </div>
 
 

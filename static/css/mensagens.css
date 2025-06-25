@@ -69,3 +69,67 @@ ul.errorlist li {
     padding: 4px 8px;
     border-radius: 4px;
 }
+/* TOAST FLUTUANTE */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast {
+    position: relative;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    font-size: 0.9rem;
+    min-width: 260px;
+    max-width: 320px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideInRight 0.3s ease-out;
+}
+
+/* Ícone de fechar */
+.toast-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: inherit;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Cores por tipo */
+.toast-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border-left: 6px solid #10b981;
+}
+
+.toast-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-left: 6px solid #ef4444;
+}
+
+.toast-info {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border-left: 6px solid #3b82f6;
+}
+
+/* Animação */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

@@ -50,7 +50,21 @@
 <div class="form-container-small">
     <h1>Edição de Usuário</h1>
 
-
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+    
     <form method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
@@ -72,11 +86,23 @@
         <!-- Botão para salvar normalmente -->
         <button type="submit" name="action" value="save" class="btn-action">Salvar Alterações</button>
 
-        <!-- Botão para salvar e redirecionar para criar integrante -->
-        <button type="submit" name="action" value="save_and_integrante" class="btn-action btn-left">Salvar e Tornar Integrante</button>
-        
-        <!-- Botão para salvar e redirecionar para criar associado -->
-        <button type="submit" name="action" value="save_and_associado" class="btn-action btn-right">Salvar e Tornar Associado</button>
+        <!-- Verificações condicionais -->
+        {% if not is_integrante %}
+            <button type="submit" name="action" value="save_and_integrante" class="btn-action btn-left">
+                Salvar e Tornar Integrante
+            </button>
+        {% else %}
+            <p class="info-message">✔️ Este usuário já é um integrante.</p>
+        {% endif %}
+
+        {% if not is_associado %}
+            <button type="submit" name="action" value="save_and_associado" class="btn-action btn-right">
+                Salvar e Tornar Associado
+            </button>
+        {% else %}
+            <p class="info-message">✔️ Este usuário já é um associado.</p>
+        {% endif %}
+
     </form>
 
 

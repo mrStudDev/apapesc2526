@@ -19,9 +19,10 @@ class UserListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset().select_related(
             'integrante__reparticao',
-            'integrante__cargo' 
-        )
+            'integrante__cargo'
+        ).prefetch_related('associado')
         return queryset
+
         
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = CustomUser
@@ -54,6 +55,16 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         
         messages.success(self.request, 'Usuário atualizado com sucesso!')
         return response
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.object
+
+        context['is_associado'] = hasattr(user, 'associado')
+        context['is_integrante'] = hasattr(user, 'integrante')
+
+        return context
+    
 # ----------------------------------------------------------    
 
 

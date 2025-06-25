@@ -10,33 +10,40 @@
 {% block content %}
 {% include 'components/navbar_superuser.html' %}
 
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="message {{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
     
-<div class="form-container">
-    <h1>Cadastro de Cargo</h1>
-    <p>Cargos são aplicados aos integrantes da <strong>equipe</strong> Apapesc:</p>
+    <div class="form-container">
+        <h1>Cadastro de Cargo</h1>
+        <p>Cargos são aplicados aos integrantes da <strong>equipe</strong> Apapesc:</p>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
 
-        <!-- Dados Cargos -->
+            <!-- Dados Cargos -->
 
-        <div class="form-group">
-            {{ form.nome.label_tag }}
-            {{ form.nome }}
-        </div>
-   
+            <div class="form-group">
+                {{ form.nome.label_tag }}
+                {{ form.nome }}
+            </div>
+    
 
-        <button type="submit">Salvar</button>
-    </form>
-</div>
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
 
 {% block extra_js %}
     <!-- Seu JS com as máscaras -->

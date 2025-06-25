@@ -14,6 +14,21 @@
 <div class="lista-container">
     <h1>Lista de Usuários</h1>
 
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+        
     <table class="table-list">
         <thead>
             <tr>
@@ -23,6 +38,7 @@
                 <th>Data Cadastro</th>
                 <th>Vínculo Rep.</th>
                 <th>Cargo</th>
+                <th>Vínculo</th> 
                 <th>Editar</th>
             </tr>
         </thead>
@@ -47,6 +63,17 @@
                         Nenhum
                     {% endif %}
                 </td>
+                <td>
+                    {% if user.associado and user.integrante %}
+                        Integ & Associado
+                    {% elif user.associado %}
+                        Associado
+                    {% elif user.integrante %}
+                        Integrante
+                    {% else %}
+                        ---
+                    {% endif %}
+                </td>                
                 <td>
                     <a class="btn-action" href="{% url 'app_associacao:edit_user' user.id %}">Editar</a>
                 </td>
