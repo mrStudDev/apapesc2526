@@ -3,12 +3,13 @@ from core.views.base_imports import *
 from core.views.app_associacao_imports import *
 
 
+
 # LISTA E EDIÇÂO DE USUÀRIOS ========================================
 class UserListView(LoginRequiredMixin, ListView):
     model = CustomUser
     template_name = 'associacao/list_users.html'
     context_object_name = 'users'
-    ordering = ['username']
+    ordering = ['username', '-date_joined']
 
     def dispatch(self, request, *args, **kwargs):
         if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
@@ -64,7 +65,8 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         context['is_integrante'] = hasattr(user, 'integrante')
 
         return context
-    
+
+   
 # ----------------------------------------------------------    
 
 
@@ -215,6 +217,7 @@ class ProfissaoCreateView(LoginRequiredMixin, CreateView):
             return redirect('app_accounts:unauthorized')
         return super().dispatch(request, *args, **kwargs) 
         
+        
 class CargosCreateView(LoginRequiredMixin, CreateView):
     model = CargosModel
     form_class = CargosForm
@@ -340,7 +343,15 @@ class ReparticaoUpdateView(LoginRequiredMixin, UpdateView):
             messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
             return redirect('app_accounts:unauthorized')
         return super().dispatch(request, *args, **kwargs)  
-    
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Associação atualizada com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao atualizar a associação. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)  
+        
     def get_success_url(self):
         return reverse_lazy('app_associacao:single_reparticao', kwargs={'pk': self.object.pk})
 

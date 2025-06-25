@@ -13,4 +13,7 @@ urlpatterns = [
     path('accounts/logout/', LogoutView.as_view(), name='account_logout'),
     
     path('acesso-negado/', views.AcessoNegadoView.as_view(), name='unauthorized'),
+    
+    #Criar Usser Fake
+    path('criar-fake/', views.criar_usuario_fake, name='criar_usuario_fake'),
 ]

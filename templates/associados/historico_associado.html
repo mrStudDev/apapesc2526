@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>📜 Histórico de Alterações: {{ associado.nome }}</h2>
+
+<table class="table-list">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Usuário</th>
+            <th>Tipo</th>
+            <th>Alterações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in diffs %}
+        <tr>
+            <td>{{ item.entry.history_date|date:"d/m/Y H:i" }}</td>
+            <td>{{ item.entry.history_user|default:"-" }}</td>
+            <td>
+                {% if item.entry.history_type == '+' %}Criado
+                {% elif item.entry.history_type == '~' %}Atualizado
+                {% elif item.entry.history_type == '-' %}Removido
+                {% endif %}
+            </td>
+            <td>
+                {% if item.changes %}
+                    <ul>
+                        {% for change in item.changes %}
+                            <li><strong>{{ change.field }}:</strong> "{{ change.old }}" → "{{ change.new }}"</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+

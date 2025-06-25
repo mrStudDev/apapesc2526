@@ -14,6 +14,7 @@ from decimal import Decimal
 from .utils import format_celular_for_whatsapp
 import re
 from django.core.exceptions import ValidationError
+from simple_history.models import HistoricalRecords
 
 from app_associacao.models import(
     AssociacaoModel,
@@ -575,6 +576,7 @@ class AssociadoModel(models.Model):
         null=True, 
         verbose_name="Anotações"
     )
+    history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
         # Criação da pasta no Drive, se necessário

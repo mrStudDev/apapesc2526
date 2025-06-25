@@ -1,15 +1,12 @@
 
+
 {% extends 'base.html' %}
 
 {% load static %}
-{% block title %}SuperDash {% endblock %}
-{% block extra_css %}
-
-    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
-{% endblock %}
+{% block title %}Associado -Dash {% endblock %}
 <!--Bloco Página -->
 {% block content %}
-{% include 'components/navbar_superuser.html' %}
+{% include 'components/navbar_home.html' %}
 
     <div id="toast-container">
         {% for message in messages %}
@@ -25,14 +22,6 @@
             {% endwith %}
         {% endfor %}
     </div>
-
     
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Bem-vindo ao Dashboard do Superusuário</h1>
-            <p>Este é o painel de controle para superusuários.</p>
-        </div>
-    </div>
-    <!-- Adicione mais conteúdo aqui conforme necessário -->
+Associado da Associação - Pescador
 {% endblock %}

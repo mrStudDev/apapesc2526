@@ -39,5 +39,8 @@ class Command(BaseCommand):
 
         # Grupo de Clientes
         cliente_group, created = Group.objects.get_or_create(name='cliente')
+        
+        # Grupo de Clientes
+        associado_group, created = Group.objects.get_or_create(name='associado')
                 
         self.stdout.write(self.style.SUCCESS('Grupos criados com sucesso!'))

@@ -163,3 +163,33 @@ class AssociadoListView(LoginRequiredMixin, ListView):
 
 
 
+class AssociadoHistoricoView(DetailView):
+    model = AssociadoModel
+    template_name = 'associados/historico_associado.html'
+    context_object_name = 'associado'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        associado = self.get_object()
+        historico = list(associado.history.all().order_by('-history_date'))
+
+        diffs = []
+
+        for i in range(len(historico) - 1):
+            current = historico[i]
+            previous = historico[i + 1]
+            delta = current.diff_against(previous)
+            diffs.append({
+                'entry': current,
+                'changes': delta.changes,
+            })
+
+        # Add final entry (sem comparação possível)
+        if historico:
+            diffs.append({
+                'entry': historico[-1],
+                'changes': [],
+            })
+
+        context['diffs'] = diffs
+        return context

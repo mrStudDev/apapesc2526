@@ -17,8 +17,6 @@ urlpatterns = [
     # Singles
     path('associado/<int:pk>/', views.AssociadoSingleView.as_view(), name='single_associado'),
     
-    # AJAX
-    #path('ajax/reparticoes-por-associacao/', views.reparticoes_por_associacao, name='ajax_reparticoes_por_associacao'),
-    #path('ajax/municipios-por-reparticao/', views.municipios_por_reparticao, name='municipios_por_reparticao'),
-
+    # HISTÓRICO
+    path('associado/<int:pk>/historico/', views.AssociadoHistoricoView.as_view(), name='historico_associado'),
 ]

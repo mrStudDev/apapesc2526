@@ -17,6 +17,7 @@ class CustomUser(AbstractUser):
         ('auxiliar_extra', 'Auxiliar Extra'),
         ('cliente_vip', 'Cliente VIP'),
         ('cliente', 'Cliente'),
+        ('Associado', "Associado"),
     )
     email = models.EmailField(_('email address'), unique=True)
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='cliente')
