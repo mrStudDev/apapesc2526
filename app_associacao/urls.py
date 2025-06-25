@@ -41,5 +41,5 @@ urlpatterns = [
     
     # AJAX
     path('ajax/reparticoes-por-associacao/', views.reparticoes_por_associacao, name='ajax_reparticoes_por_associacao'),
-
+    path('ajax/municipios-por-reparticao/', views.municipios_por_reparticao, name='municipios_por_reparticao'),
 ]

@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Novo Associado{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container">
+    <h1>Cadastro de Associado</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% if form.errors %}
+            <div class="errorlist">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+
+        <!-- Vínculos -->
+        <div class="form-grid grid-4-cols">
+            <div class="form-group">
+                {{ form.user.label_tag }}
+                {% if user_obj %}
+                <div class="form-group">
+                    <input type="text" value="{{ user_obj.username }}" readonly class="readonly-field">
+                    <input type="hidden" name="user" value="{{ user_obj.id }}">
+                </div>
+                {% else %}
+                {{ form.user }}  <!-- Exibe o campo de seleção de usuário caso user_obj não esteja disponível -->
+                {% endif %}
+            </div>
+
+
+            <div class="form-group">
+                {{ form.associacao.label_tag }}
+                {{ form.associacao }}
+            </div>
+
+            <div class="form-group">
+                {{ form.reparticao.label_tag }}
+                {{ form.reparticao }}
+                {% if form.reparticao.errors %}
+                    <div class="field-error">
+                        {% for error in form.reparticao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.municipio_circunscricao.label_tag }}
+                {{ form.municipio_circunscricao.as_widget }}
+                {% if form.municipio_circunscricao.errors %}
+                    <div class="field-error">
+                        {% for error in form.municipio_circunscricao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+
+              
+        </div> 
+
+        <!-- Contatos -->
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">
+                {{ form.celular.label_tag }}
+                {{ form.celular }}
+                {% if form.celular.errors %}
+                    <div class="field-error">
+                        {% for error in form.celular.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.celular_correspondencia.label_tag }}
+                {{ form.celular_correspondencia }}
+                {% if form.celular_correspondencia.errors %}
+                    <div class="field-error">
+                        {% for error in form.celular_correspondencia.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="field-error">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+        </div>
+
+        <!-- Dados Pessoais -->
+        <div class="form-grid grid-4-cols">
+            <div class="form-group">
+                {{ form.cpf.label_tag }}
+                {{ form.cpf }}
+                {% if form.cpf.errors %}
+                    <div class="field-error">
+                        {% for error in form.cpf.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.senha_gov.label_tag }}
+                {{ form.senha_gov }}
+                {% if form.senha_gov.errors %}
+                    <div class="field-error">
+                        {% for error in form.senha_gov.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.data_filiacao.label_tag }}
+                {{ form.data_filiacao }}
+                {% if form.data_filiacao.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_filiacao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>            
+        </div>            
+
+        <button type="submit" name="action" value="save_and_continue" class="btn-action">Salvar e Continuar</button>
+        <button type="submit" name="action" value="save_and_view" class="btn-action btn-left">Salvar e Visualizar</button>
+    </form>
+</div>
+
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+    <script src="{% static 'js/cep_autocomplete.js' %}"></script>
+    <script src="{% static 'js/mascaras.js' %}"></script>
+    <script src="{% static 'js/filtros_reparticao_municipios.js' %}"></script>
+{% endblock %}
+{% endblock %}

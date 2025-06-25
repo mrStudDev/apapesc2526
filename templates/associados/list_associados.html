@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}LG Associados{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container">
+    <h1>Lista de Associados</h1>
+    
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <table class="table-list">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Apelido</th>
+                <th>CPF</th>
+                <th>Gov</th>
+                <th>Cel</th>
+                <th>Email</th>                
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for associado in associados %}
+            <tr>
+                <td>{{associado.user.get_full_name}}</td>
+                <td>{{associado.apelido}}</td>
+                <td>{{associado.cpf}}</td>
+                <td>{{associado.semha_gov}}</td>
+                <td>{{associado.celular}}</td>
+                <td>{{associado.email}}</td>
+                <td>
+                    <a href="{% url 'app_associados:single_associado' associado.pk %}" title="Ver"><span class="material-icons icon-view">visibility</span></a>
+                    <a href="{% url 'app_associados:edit_associado' associado.pk %}" title="Editar"><span class="material-icons icon-edit">edit</span></a>
+                    <a href="#" title="Excluir"><span class="material-icons icon-delete">delete</span></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Nenhuma associado encontrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}    

@@ -16,3 +16,7 @@ from app_associacao.forms import (
 
 )
 from app_accounts.forms import CustomUserForm
+
+from app_associados.models import (
+    AssociadoModel,
+)

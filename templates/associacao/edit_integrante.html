@@ -170,9 +170,7 @@
 
             <div class="form-group">
                 {{ form.rg_data_emissao.label_tag }}
-                <input type="date" 
-                    name="rg_data_emissao" 
-                    value="{{ form.rg_data_emissao.value|default:form.rg_data_emissao.initial|date:'Y-m-d' }}">
+                {{ form.rg_data_emissao }}
                 {% if form.rg_data_emissao.errors %}
                     <div class="field-error">
                         {% for error in form.rg_data_emissao.errors %}
@@ -180,12 +178,10 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-            </div>
+            </div>              
             <div class="form-group">
                 {{ form.data_nascimento.label_tag }}
-                <input type="date" 
-                    name="data_nascimento" 
-                    value="{{ form.data_nascimento.value|default:form.data_nascimento.initial|date:'Y-m-d' }}">
+                {{ form.data_nascimento }}
                 {% if form.data_nascimento.errors %}
                     <div class="field-error">
                         {% for error in form.data_nascimento.errors %}
@@ -193,7 +189,7 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-            </div>
+            </div>              
 
             <div class="form-group">
                 {{ form.naturalidade.label_tag }}
@@ -236,7 +232,7 @@
                 {{ form.uf }}
             </div>
         </div>
-        <!-- Dados De Acesso = GRUPOS TIPO DE USUÀRIO = Entreda e Saída-->
+        <!-- Dados De Acesso = GRUPOS TIPO DE USUÀRIO = Entrada e Saída-->
         <div class="form-grid grid-5-cols">
             <div class="form-group">
                 {{ form.group.label_tag }}
@@ -274,9 +270,7 @@
             </div>             
             <div class="form-group">
                 {{ form.data_entrada.label_tag }}
-                <input type="date" 
-                    name="data_entrada" 
-                    value="{{ form.data_entrada.value|default:form.data_entrada.initial|date:'Y-m-d' }}">
+                {{ form.data_entrada }}
                 {% if form.data_entrada.errors %}
                     <div class="field-error">
                         {% for error in form.data_entrada.errors %}
@@ -284,12 +278,10 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-            </div>
+            </div>               
             <div class="form-group">
                 {{ form.data_saida.label_tag }}
-                <input type="date" 
-                    name="data_saida" 
-                    value="{{ form.data_saida.value|default:form.data_saida.initial|date:'Y-m-d' }}">
+                {{ form.data_saida }}
                 {% if form.data_saida.errors %}
                     <div class="field-error">
                         {% for error in form.data_saida.errors %}
@@ -297,7 +289,7 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-            </div>                      
+            </div>                               
         </div>
 
         <button type="submit">Salvar</button>

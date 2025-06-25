@@ -7,6 +7,7 @@
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 .form-container-small {
     max-width: 600px;
     margin: 40px auto;
@@ -16,6 +17,16 @@
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+.form-container-edit-associado {
+    max-width: 1200px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 28px 36px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .form-container h1 {
     font-size: 1.8rem;
     margin-bottom: 24px;

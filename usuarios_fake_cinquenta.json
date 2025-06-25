@@ -1,0 +1,73 @@
+[
+  {
+    "email": "emailFAKE0001@email.com",
+    "username": "AaaFAKE_0001",
+    "password": "associado1234@",
+    "role": "associado"
+
+  },
+  {
+    "email": "emailFAKE0002@email.com",
+    "username": "AaaFAKE_0001=2",
+    "password": "associado1234@",
+    "role": "associado"
+
+  },
+  {
+    "email": "emailFAKE0003@email.com",
+    "username": "AaaFAKE_0003",
+    "password": "associado1234@",
+    "role": "associado"
+
+  },
+  {
+    "email": "emailFAKE0004@email.com",
+    "username": "AaaFAKE_0004",
+    "password": "associado1234@",
+    "role": "associado"
+
+  },
+  {
+    "email": "emailFAKE0005@email.com",
+    "username": "AaaFAKE_0005",
+    "password": "associado1234@",
+    "role": "associado"
+
+  },
+  {
+    "email": "emailFAKE0006@email.com",
+    "username": "AaaFAKE_0006",
+    "password": "associado1234@",
+    "role": "associado"
+
+  },
+  {
+    "email": "emailFAKE0007@email.com",
+    "username": "AaaFAKE_0007",
+    "password": "associado1234@",
+    "role": "associado"
+
+  },
+  {
+    "email": "emailFAKE0008@email.com",
+    "username": "AaaFAKE_0008",
+    "password": "associado1234@",
+    "role": "associado"
+
+  },    
+  {
+    "email": "emailFAKE0009@email.com",
+    "username": "AaaFAKE_0009",
+    "password": "associado1234@",
+    "role": "associado"
+
+  },   
+  {
+    "email": "emailFAKE00010@email.com",
+    "username": "AaaFAKE_00010",
+    "password": "associado1234@",
+    "role": "associado"
+
+  }                 
+
+]

@@ -132,9 +132,7 @@
         <div class="form-grid grid-2-cols">
             <div class="form-group">
                 {{ form.data_abertura.label_tag }}
-                <input type="date" 
-                    name="data_abertura" 
-                    value="{{ form.data_abertura.value|default:form.data_abertura.initial|date:'Y-m-d' }}">
+                {{ form.data_abertura }}
                 {% if form.data_abertura.errors %}
                     <div class="field-error">
                         {% for error in form.data_abertura.errors %}
@@ -142,12 +140,10 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-            </div>
+            </div> 
             <div class="form-group">
                 {{ form.data_encerramento.label_tag }}
-                <input type="date" 
-                    name="data_encerramento" 
-                    value="{{ form.data_encerramento.value|default:form.data_encerramento.initial|date:'Y-m-d' }}">
+                {{ form.data_encerramento }}
                 {% if form.data_encerramento.errors %}
                     <div class="field-error">
                         {% for error in form.data_encerramento.errors %}
@@ -155,7 +151,7 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-            </div>
+            </div>                         
         </div>
 
         <button type="submit">Salvar</button>

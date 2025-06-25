@@ -30,26 +30,28 @@
                 </div>
             </div>
             <div class="dropdown">
-                <a href="#">Cadastros ▾</a>
+                <a href="#">Associação ▾</a>
                 <div class="dropdown-menu">
                     <a href="{% url 'app_associacao:create_associacao' %}">Nova Associação</a>
                     <a href="{% url 'app_associacao:create_reparticao' %}">Nova Repartição</a>
-                    <a href="{% url 'app_associacao:create_integrante' %}">Novo Integrante</a>
+                    <a href="{% url 'app_associacao:list_users' %}">Novo Integrante</a>
                     <a href="{% url 'app_associacao:create_municipio' %}">Novo Município</a>                    
                     <a href="{% url 'app_associacao:create_profissao' %}">Nova Profissão</a>                    
-                    <a href="{% url 'app_associacao:create_cargo' %}">Novo Cargo(equipe)</a>                    
+                    <a href="{% url 'app_associacao:create_cargo' %}">Novo Cargo (Int)</a>  
+                    <a href="{% url 'app_associacao:list_associacoes' %}">Lista Associações</a>
+                    <a href="{% url 'app_associacao:list_reparticoes' %}">Lista Repartições</a>
+                    <a href="{% url 'app_associacao:list_integrantes' %}">Lista Integrantes</a>
+                    <a href="{% url 'app_associacao:list_municipios' %}">Lista Municipios</a>
+                    <a href="{% url 'app_associacao:list_profissoes' %}">Lista Profissões</a>
+                    <a href="{% url 'app_associacao:list_cargos' %}">Lista Cargos</a>
+                    <a href="{% url 'app_associacao:list_users' %}">Lista Usuários</a>                                        
                 </div>
             </div>
             <div class="dropdown">
-                <a href="#">Listas ▾</a>
+                <a href="#">Associados ▾</a>
                 <div class="dropdown-menu">
-                    <a href="{% url 'app_associacao:list_associacoes' %}">Associações</a>
-                    <a href="{% url 'app_associacao:list_reparticoes' %}">Repartições</a>
-                    <a href="{% url 'app_associacao:list_integrantes' %}">Integrantes</a>
-                    <a href="{% url 'app_associacao:list_municipios' %}">Municipios</a>
-                    <a href="{% url 'app_associacao:list_profissoes' %}">Profissões</a>
-                    <a href="{% url 'app_associacao:list_cargos' %}">Cargos</a>
-                    <a href="{% url 'app_associacao:list_users' %}">Usuários</a>                     
+                    <a href="{% url 'app_associados:list_associados' %}">LG Associados</a>
+                    <a href="{% url 'app_associacao:list_users' %}">Novo Associado</a> 
                 </div>
             </div>
             <div class="dropdown">

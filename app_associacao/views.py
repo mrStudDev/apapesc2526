@@ -40,7 +40,17 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
 
         if action == 'save_and_integrante':
+            # Redireciona para a criação do integrante
             return redirect(reverse('app_associacao:create_integrante') + f'?user_id={self.object.id}')
+        
+        if action == 'save_and_associado':
+            # Verifica se o usuário já é um associado
+            if AssociadoModel.objects.filter(user=self.object).exists():
+                messages.error(self.request, "Este usuário já é um associado!")
+                return redirect(self.success_url)  # Redireciona para a lista de usuários
+
+            # Redireciona para a criação de associado
+            return redirect(reverse('app_associados:create_associado') + f'?user_id={self.object.id}')
         
         messages.success(self.request, 'Usuário atualizado com sucesso!')
         return response
@@ -526,3 +536,16 @@ def reparticoes_por_associacao(request):
 
     return JsonResponse({'reparticoes': data})
 
+def municipios_por_reparticao(request):
+    reparticao_id = request.GET.get('reparticao_id')
+    municipios = []
+
+    if reparticao_id:
+        try:
+            reparticao = ReparticoesModel.objects.get(pk=reparticao_id)
+            municipios_qs = reparticao.municipios_circunscricao.all()
+            municipios = [{'id': m.id, 'nome': m.municipio} for m in municipios_qs]
+        except ReparticoesModel.DoesNotExist:
+            pass
+
+    return JsonResponse({'municipios': municipios})

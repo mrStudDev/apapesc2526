@@ -27,20 +27,13 @@ class AssociacaoForm(forms.ModelForm):
         model = AssociacaoModel
         fields = '__all__'
         widgets = {
-            'data_abertura': forms.DateInput(attrs={'type': 'date'}),
-            'data_encerramento': forms.DateInput(attrs={'type': 'date'}),
+            'data_abertura': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+            'data_encerramento': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Explicitamente definindo o valor dos campos de data se a instância já estiver definida
-        if self.instance and self.instance.pk:
-            if self.instance.data_abertura:
-                self.fields['data_abertura'].widget.attrs['value'] = self.instance.data_abertura.strftime('%Y-%m-%d')
-            if self.instance.data_encerramento:
-                self.fields['data_encerramento'].widget.attrs['value'] = self.instance.data_encerramento.strftime('%Y-%m-%d')
-            
         # Verifica quais diretores estão vinculados a outra associação e desabilita-os
         diretores_ocupados = IntegrantesModel.objects.filter(
             diretores_associacao__isnull=False
@@ -82,19 +75,12 @@ class ReparticoesForm(forms.ModelForm):
         model = ReparticoesModel
         fields = '__all__'
         widgets = {
-            'data_abertura': forms.DateInput(attrs={'type': 'date'}),
-            'data_encerramento': forms.DateInput(attrs={'type': 'date'}),
+            'data_abertura': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+            'data_encerramento': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Explicitamente definindo o valor dos campos de data se a instância já estiver definida
-        if self.instance and self.instance.pk:
-            if self.instance.data_abertura:
-                self.fields['data_abertura'].widget.attrs['value'] = self.instance.data_abertura.strftime('%Y-%m-%d')
-            if self.instance.data_encerramento:
-                self.fields['data_encerramento'].widget.attrs['value'] = self.instance.data_encerramento.strftime('%Y-%m-%d')
-            
         municipios_ocupados = MunicipiosModel.objects.filter(
             municipios_circunscricao__isnull=False
         ).distinct()
@@ -150,38 +136,29 @@ class IntegrantesForm(forms.ModelForm):
         model = IntegrantesModel
         fields = '__all__'
         widgets = {
-            'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
-            'data_entrada': forms.DateInput(attrs={'type': 'date'}),
-            'data_saida': forms.DateInput(attrs={'type': 'date'}),
-            'rg_data_emissao': forms.DateInput(attrs={'type': 'date'}),
+            'data_nascimento': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+            'data_entrada': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+            'data_saida': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+            'rg_data_emissao': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
         }
     def __init__(self, *args, **kwargs):
         user_initial = kwargs.pop('user_initial', None)
         associacao_id = kwargs.pop('associacao_id', None)
         super().__init__(*args, **kwargs)
-
-        # Explicitamente definindo o valor dos campos de data se a instância já estiver definida
-        if self.instance and self.instance.pk:
-            if self.instance.rg_data_emissao:
-                self.fields['rg_data_emissao'].widget.attrs['value'] = self.instance.data_nascimento.strftime('%Y-%m-%d')
-                
-            if self.instance.rg_data_emissao:
-                self.fields['rg_data_emissao'].widget.attrs['value'] = self.instance.rg_data_emissao.strftime('%Y-%m-%d')
-                
-            if self.instance.data_entrada:
-                self.fields['data_entrada'].widget.attrs['value'] = self.instance.data_entrada.strftime('%Y-%m-%d')
-                
-            if self.instance.data_saida:
-                self.fields['data_saida'].widget.attrs['value'] = self.instance.data_saida.strftime('%Y-%m-%d')
-                        
             
-        # Atualiza o queryset de repartições com base na associação
-        if self.instance and self.instance.associacao:
+        # Atualiza o queryset de repartições com base na associação enviada no POST
+        if self.data.get('associacao'):
+            try:
+                associacao = AssociacaoModel.objects.get(pk=self.data.get('associacao'))
+                self.fields['reparticao'].queryset = ReparticoesModel.objects.filter(associacao=associacao).distinct()
+            except (ValueError, AssociacaoModel.DoesNotExist):
+                self.fields['reparticao'].queryset = ReparticoesModel.objects.none()
+        # Caso edição (instance associada)
+        elif self.instance and self.instance.associacao:
             self.fields['reparticao'].queryset = ReparticoesModel.objects.filter(associacao=self.instance.associacao).distinct()
+        else:
+            self.fields['reparticao'].queryset = ReparticoesModel.objects.none()
 
-        # Atualiza os IDs dos campos para o JS funcionar
-        self.fields['associacao'].widget.attrs.update({'id': 'id_associacao'})
-        self.fields['reparticao'].widget.attrs.update({'id': 'id_reparticao'})
 
         # Se a instância já existe (edição), carrega o grupo associado ao usuário
         if self.instance and self.instance.pk:
@@ -195,12 +172,7 @@ class IntegrantesForm(forms.ModelForm):
             self.fields['user'].initial = user_initial
             self.fields['user'].disabled = True
 
-        # Durante a edição (se já existe um objeto), configura a repartição corretamente
-        if self.instance.pk and self.instance.associacao:
-            self.fields['reparticao'].queryset = ReparticoesModel.objects.filter(associacao=self.instance.associacao)
-            # Preenche a repartição com a que já foi salva, se existir
-            self.fields['reparticao'].initial = self.instance.reparticao
-          
+
 
     def clean_cpf(self):
         return validate_and_format_cpf(self.cleaned_data['cpf'])

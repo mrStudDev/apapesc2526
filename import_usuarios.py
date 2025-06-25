@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 # 🔹 Carrega o arquivo JSON
-with open("usuarios_fakes.json", "r", encoding="utf-8") as f:
+with open("usuarios_fake_cinquenta.json", "r", encoding="utf-8") as f:
     usuarios = json.load(f)
 
 # 🔹 Contadores

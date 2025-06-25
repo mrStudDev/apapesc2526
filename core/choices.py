@@ -204,3 +204,35 @@ CASA_ONDE_MORA = [
     ('Mora em casa de terceiros', 'Mora em casa de terceiros'),
     ('Undefined ', 'Undefined'),
 ]
+
+STATUS_CHOICES = [
+    ('associado_lista_ativo', 'Associado Lista Ativos(a)'),
+    ('associado_lista_aposentado', 'Associado Lista Aposentados(a)'),
+    ('candidato', 'Candidato(a)'),
+    ('cliente_especials', 'Cliente Especial'),
+    ('desassociado', 'Desassociado(a)'),
+]
+ESPECIES_MARITIMAS = [
+    ('Abrótea', 'Abrótea (Phycis phycis)'),
+    ('Anchova', 'Anchova (Pomatomus saltatrix)'),
+    ('Atum', 'Atum (Thunnus spp.)'),
+    ('Bagre', 'Bagre (Siluriformes)'),
+    ('Baiacu', 'Baiacu (Tetraodontidae)'),
+    ('Camarão Branco', 'Camarão Branco (Litopenaeus schmitti)'),
+    ('Camarão Rosa', 'Camarão Rosa (Farfantepenaeus paulensis)'),    
+    ('Cação', 'Cação (Ginglymostomatidae)'),
+    ('Cavala', 'Cavala (Scomberomorus cavalla)'),
+    ('Corvina', 'Corvina (Micropogonias furnieri)'),
+    ('Garoupa', 'Garoupa (Epinephelus marginatus)'),
+    ('Linguado', 'Linguado (Paralichthys orbignyanus)'),
+    ('Marisco', 'Marisco (Bivalvia)'),
+    ('Pampo', 'Pampo (Trachinotus carolinus)'),
+    ('Parati', 'Parati (Mugil curema)'),         
+    ('Pescada Olhuda', 'Pescada Olhuda (Cynoscion guatucupa)'),
+    ('Pescada Branca', 'Pescada Branca (Cynoscion leiarchus)'),    
+    ('Robalo', 'Robalo (Centropomus undecimalis)'),
+    ('Sardinha', 'Sardinha (Sardinella brasiliensis)'),
+    ('Tainha', 'Tainha (Mugil liza)'),
+    ('Xerelete', 'Xerelete (Caranx hippos)'),
+    ('Não declarado', 'Não declarado'),
+]

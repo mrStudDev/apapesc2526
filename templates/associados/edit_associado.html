@@ -1,0 +1,942 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Associado{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container-edit-associado">
+    <h1>Editar de Associado</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% if form.errors %}
+            <div class="errorlist">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+
+        <!--Foto-->
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                <!-- Coluna 1: Foto Atual -->
+                <div class="current-photo">
+                    {{ form.foto.label_tag }}
+                    {% if form.foto.value %}
+                        <br><img src="{{ form.foto.value.url }}" alt="Foto atual" style="max-width: 100px; max-height: 100px;" class="photo-thumbnail"><br>
+                        <small style="color:gray;">Foto atual</small>
+                    {% else %}
+                        <span>Sem foto</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <!-- Coluna 2: Campo para envio de nova foto -->
+                <div class="upload-photo">
+                    <input type="file" name="foto" id="id_foto" accept="image/*">
+
+                    <div class="error-container">
+                        {% if form.foto.errors %}
+                            <div class="error">
+                                {% for error in form.foto.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+        <!--Nme Associado--> 
+        <div class="form-grid grid-3-cols"> 
+            <div class="form-group">
+                <label>Nome Completo:</label>
+                <div class="readonly-field" style="color:#3161ff; font-weight:bold;">
+                    {% if form.instance.user %}
+                        {{ form.instance.get_full_name }}
+                    {% else %}
+                        <span>Usuário não associado</span>
+                    {% endif %}
+                    {{ form.instance.user.get_full_name }}
+                </div>
+            </div>
+           
+            <div class="form-group">
+                {{ form.data_filiacao.label_tag }}
+                {{ form.data_filiacao }}
+                {% if form.data_filiacao.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_filiacao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+ 
+            <!--DRIVE-->   
+            <div class="form-group">
+                {{ form.drive_folder_id.label_tag }}
+                {{ form.drive_folder_id }}
+            </div>
+        </div>
+
+        <!-- Vínculos -->
+        <div class="form-grid grid-4-cols">
+            <div class="form-group">
+                {{ form.user.label_tag }}
+                {% if user_obj %}
+                <div class="form-group">
+                    <input type="text" value="{{ user_obj.username }}" readonly class="readonly-field">
+                    <input type="hidden" name="user" value="{{ user_obj.id }}">
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.associacao.label_tag }}
+                {{ form.associacao }}
+            </div>
+
+            <div class="form-group">
+                {{ form.reparticao.label_tag }}
+                {{ form.reparticao }}
+                {% if form.reparticao.errors %}
+                    <div class="field-error">
+                        {% for error in form.reparticao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.municipio_circunscricao.label_tag }}
+                {{ form.municipio_circunscricao }}
+                {% if form.municipio_circunscricao.errors %}
+                    <div class="field-error">
+                        {% for error in form.municipio_circunscricao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>            
+        </div> 
+
+        <!-- Contatos -->
+        <div class="form-grid grid-4-cols">
+            <div class="form-group">
+                {{ form.apelido.label_tag }}
+                {{ form.apelido }}
+                {% if form.apelido.errors %}
+                    <div class="field-error">
+                        {% for error in form.apelido.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>            
+            <div class="form-group">
+                {{ form.celular.label_tag }}
+                {{ form.celular }}
+                {% if form.celular.errors %}
+                    <div class="field-error">
+                        {% for error in form.celular.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.celular_correspondencia.label_tag }}
+                {{ form.celular_correspondencia }}
+                {% if form.celular_correspondencia.errors %}
+                    <div class="field-error">
+                        {% for error in form.celular_correspondencia.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="field-error">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+        </div>
+
+        <!-- Dados Pessoais -->
+        <div class="form-grid grid-4-cols">
+            <div class="form-group">
+                {{ form.cpf.label_tag }}
+                {{ form.cpf }}
+                {% if form.cpf.errors %}
+                    <div class="field-error">
+                        {% for error in form.cpf.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.senha_gov.label_tag }}
+                {{ form.senha_gov }}
+                {% if form.senha_gov.errors %}
+                    <div class="field-error">
+                        {% for error in form.senha_gov.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>     
+            <div class="form-group">
+                {{ form.senha_site.label_tag }}
+                {{ form.senha_site }}
+                {% if form.senha_site.errors %}
+                    <div class="field-error">
+                        {% for error in form.senha_site.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>    
+            <div class="form-group">
+                {{ form.senha_google.label_tag }}
+                {{ form.senha_google }}
+                {% if form.senha_google.errors %}
+                    <div class="field-error">
+                        {% for error in form.senha_google.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                              
+        </div>           
+
+        <!--Selects-->
+        <div class="form-grid grid-5-cols">
+            <div class="form-group" style="background-color:#faf8f8; border-radius:6px;">
+                {{ form.sexo_biologico.label_tag }}
+                {{ form.sexo_biologico }}
+                {% if form.sexo_biologico.errors %}
+                    <div class="field-error">
+                        {% for error in form.sexo_biologico.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+            <div class="form-group" style="background-color:#faf8f8; border-radius:6px;">
+                {{ form.etnia.label_tag }}
+                {{ form.etnia }}
+                {% if form.etnia.errors %}
+                    <div class="field-error">
+                        {% for error in form.etnia.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+            <div class="form-group" style="background-color:#faf8f8; border-radius:6px;">
+                {{ form.escolaridade.label_tag }}
+                {{ form.escolaridade }}
+                {% if form.escolaridade.errors %}
+                    <div class="field-error">
+                        {% for error in form.escolaridade.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+            <div class="form-group" style="background-color:#faf8f8; border-radius:6px;">
+                {{ form.estado_civil.label_tag }}
+                {{ form.estado_civil }}
+                {% if form.estado_civil.errors %}
+                    <div class="field-error">
+                        {% for error in form.estado_civil.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+            <div class="form-group" style="background-color:#faf8f8; border-radius:6px;">
+                {{ form.profissao.label_tag }}
+                {{ form.profissao }}
+                {% if form.profissao.errors %}
+                    <div class="field-error">
+                        {% for error in form.profissao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                                                              
+        </div>
+
+        <div class="form-grid grid-3-cols">
+            <div class="form-group" style="background-color:#e2f6ff; border-radius:6px;">
+                {{ form.status.label_tag }}
+                {{ form.status }}
+                {% if form.status.errors %}
+                    <div class="field-error">
+                        {% for error in form.status.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>              
+            <div class="form-group" style="background-color:#e2f6ff; border-radius:6px;">
+                {{ form.recolhe_inss.label_tag }}
+                {{ form.recolhe_inss }}
+                {% if form.recolhe_inss.errors %}
+                    <div class="field-error">
+                        {% for error in form.recolhe_inss.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+            <div class="form-group" style="background-color:#e2f6ff; border-radius:6px;">
+                <label style="color:black;">{{ form.recebe_seguro.label_tag }}<small> (Atualmente)</small></label>
+                {{ form.recebe_seguro }}
+                {% if form.recebe_seguro.errors %}
+                    <div class="field-error">
+                        {% for error in form.recebe_seguro.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                                        
+        </div>
+        <div class="form-grid grid-3-cols">
+            <div class="form-group" style="background-color:#fffdea; border-radius:6px;">
+                <label>{{ form.ja_recebeu_defeso_algumavez.label_tag}}</label>
+                {{ form.ja_recebeu_defeso_algumavez }}
+                {% if form.ja_recebeu_defeso_algumavez.errors %}
+                    <div class="field-error">
+                        {% for error in form.ja_recebeu_defeso_algumavez.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group" style="background-color:#fffdea; border-radius:6px;">
+                <label>{{ form.bolsa_familia.label_tag}}</label>
+                {{ form.bolsa_familia }}
+                {% if form.bolsa_familia.errors %}
+                    <div class="field-error">
+                        {% for error in form.bolsa_familia.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+            <div class="form-group" style="background-color:#fffdea; border-radius:6px;">
+                <label>{{ form.outra_fonte_renda.label_tag}}</label>
+                {{ form.outra_fonte_renda }}
+                {% if form.outra_fonte_renda.errors %}
+                    <div class="field-error">
+                        {% for error in form.outra_fonte_renda.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                   
+        </div>
+        
+        <!--Atividade Pesqueira-->
+        <div class="form-grid grid-3-cols">
+            <div class="form-group" style="background-color:#fffdea; border-radius:6px;">
+                <label style="color:black;">{{ form.relacao_trabalho.label_tag }}</label>
+                {{ form.relacao_trabalho }}
+                {% if form.relacao_trabalho.errors %}
+                    <div class="field-error">
+                        {% for error in form.relacao_trabalho.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group" style="background-color:#fffdea; border-radius:6px;">
+                <label style="color:black;">{{ form.comercializa_produtos.label_tag }}</label>
+                {{ form.comercializa_produtos }}
+                {% if form.comercializa_produtos.errors %}
+                    <div class="field-error">
+                        {% for error in form.comercializa_produtos.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group" style="background-color:#fffdea; border-radius:6px;">
+                <label style="color:black;">{{ form.casa_onde_mora.label_tag }}</label>
+                {{ form.casa_onde_mora }}
+                {% if form.casa_onde_mora.errors %}
+                    <div class="field-error">
+                        {% for error in form.casa_onde_mora.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                                         
+        </div>
+
+        <!-- Petrechos de Pesca -->
+        <div class="checkbox-group">
+            <label>Petrechos da Pesca</label>
+            <div class="checkbox-grid">
+                {% for petrecho in form.fields.petrechos_pesca.queryset %}
+                    <label>
+                        <input type="checkbox" name="petrechos_pesca"
+                            value="{{ petrecho.id }}"
+                            {% if petrecho in form.instance.petrechos_pesca.all %}checked{% endif %}>
+                        {{ petrecho.nome }}
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+      
+        <!--Identidade-->
+        <br><label>RG - CNH - CTPS - RGP</label>
+        <div class="form-grid grid-5-cols">  
+            <div class="form-group">
+                {{ form.rg_numero.label_tag }}
+                {{ form.rg_numero }}
+                {% if form.rg_numero.errors %}
+                    <div class="field-error">
+                        {% for error in form.rg_numero.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>              
+ 
+            <div class="form-group">
+                {{ form.rg_data_emissao.label_tag }}
+                {{ form.rg_data_emissao }}
+                {% if form.rg_data_emissao.errors %}
+                    <div class="field-error">
+                        {% for error in form.rg_data_emissao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.rg_orgao.label_tag }}
+                {{ form.rg_orgao }}
+                {% if form.rg_orgao.errors %}
+                    <div class="field-error">
+                        {% for error in form.rg_orgao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>             
+            <div class="form-group">
+                {{ form.data_nascimento.label_tag }}
+                {{ form.data_nascimento }}
+                {% if form.data_nascimento.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_nascimento.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>             
+            <div class="form-group">
+                {{ form.naturalidade.label_tag }}
+                {{ form.naturalidade }}
+                {% if form.naturalidade.errors %}
+                    <div class="field-error">
+                        {% for error in form.naturalidade.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                                      
+        </div>
+        <div class="form-grid grid-2-cols">  
+            <div class="form-group">
+                {{ form.nome_mae.label_tag }}
+                {{ form.nome_mae }}
+                {% if form.nome_mae.errors %}
+                    <div class="field-error">
+                        {% for error in form.nome_mae.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.nome_pai.label_tag }}
+                {{ form.nome_pai }}
+                {% if form.nome_pai.errors %}
+                    <div class="field-error">
+                        {% for error in form.nome_pai.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+        </div>            
+        <!--Documento CNH-->
+        <div class="form-grid grid-4-cols">  
+            <div class="form-group">
+                {{ form.cnh.label_tag }}
+                {{ form.cnh }}
+                {% if form.cnh.errors %}
+                    <div class="field-error">
+                        {% for error in form.cnh.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>              
+
+            <div class="form-group">
+                {{ form.cnh_data_emissao.label_tag }}
+                {{ form.cnh_data_emissao }}
+                {% if form.cnh_data_emissao.errors %}
+                    <div class="field-error">
+                        {% for error in form.cnh_data_emissao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>               
+            <div class="form-group">
+                {{ form.cnh_uf.label_tag }}
+                {{ form.cnh_uf }}
+                {% if form.cnh_uf.errors %}
+                    <div class="field-error">
+                        {% for error in form.cnh_uf.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>             
+   
+            <div class="form-group">
+                {{ form.cnh_data_validade.label_tag }}
+                {{ form.cnh_data_validade }}
+                {% if form.cnh_data_validade.errors %}
+                    <div class="field-error">
+                        {% for error in form.cnh_data_validade.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>                                                  
+        </div>
+
+        <!--Documento CTPS-->
+        <div class="form-grid grid-4-cols">  
+            <div class="form-group">
+                {{ form.ctps.label_tag }}
+                {{ form.ctps }}
+                {% if form.ctps.errors %}
+                    <div class="field-error">
+                        {% for error in form.ctps.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>              
+            <div class="form-group">
+                {{ form.cnh_data_validade.label_tag }}
+                {{ form.cnh_data_validade }}
+                {% if form.cnh_data_validade.errors %}
+                    <div class="field-error">
+                        {% for error in form.ctps_data_emissao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>               
+            <div class="form-group">
+                {{ form.ctps_uf.label_tag }}
+                {{ form.ctps_uf }}
+                {% if form.ctps_uf.errors %}
+                    <div class="field-error">
+                        {% for error in form.ctps_uf.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                 
+            <div class="form-group">
+                {{ form.ctps_serie.label_tag }}
+                {{ form.ctps_serie }}
+                {% if form.ctps_serie.errors %}
+                    <div class="field-error">
+                        {% for error in form.ctps_serie.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                                                         
+        </div>        
+        
+
+        <!--Documento RGP-->
+        <div class="form-grid grid-4-cols">  
+            <div class="form-group">
+                {{ form.rgp.label_tag }}
+                {{ form.rgp }}
+                {% if form.rgp.errors %}
+                    <div class="field-error">
+                        {% for error in form.rgp.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>              
+            <div class="form-group">
+                {{ form.rgp_data_emissao.label_tag }}
+                {{ form.rgp_data_emissao }}
+                {% if form.rgp_data_emissao.errors %}
+                    <div class="field-error">
+                        {% for error in form.rgp_data_emissao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>             
+            <div class="form-group">
+                {{ form.rgp_mpa.label_tag }}
+                {{ form.rgp_mpa }}
+                {% if form.rgp_mpa.errors %}
+                    <div class="field-error">
+                        {% for error in form.rgp_mpa.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>     
+    
+            <div class="form-group">
+                {{ form.primeiro_registro.label_tag }}
+                {{ form.primeiro_registro }}
+                {% if form.primeiro_registro.errors %}
+                    <div class="field-error">
+                        {% for error in form.primeiro_registro.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>                                                               
+        </div> 
+
+        <!--Documento do Cidadão-->
+        <label>DOCUMENTOS DE CIDADANIA</label>
+        <div class="form-grid grid-5-cols">  
+            <div class="form-group">
+                {{ form.nit.label_tag }}
+                {{ form.nit }}
+                {% if form.nit.errors %}
+                    <div class="field-error">
+                        {% for error in form.nit.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+            <div class="form-group">
+                {{ form.pis.label_tag }}
+                {{ form.pis }}
+                {% if form.pis.errors %}
+                    <div class="field-error">
+                        {% for error in form.pis.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.caepef.label_tag }}
+                {{ form.caepef }}
+                {% if form.caepef.errors %}
+                    <div class="field-error">
+                        {% for error in form.caepef.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.cei.label_tag }}
+                {{ form.cei }}
+                {% if form.cei.errors %}
+                    <div class="field-error">
+                        {% for error in form.cei.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.titulo_eleitor.label_tag }}
+                {{ form.titulo_eleitor }}
+                {% if form.titulo_eleitor.errors %}
+                    <div class="field-error">
+                        {% for error in form.titulo_eleitor.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                                                 
+        </div>
+
+        <!-- Endereço -->
+        <label>ENDEREÇO</label>
+        <div class="form-row-cep-logradouro">
+            <div class="form-group cep-field">
+                {{ form.cep.label_tag }}
+                {{ form.cep }}
+            </div>             
+            <div class="form-group logradouro-field">
+                {{ form.logradouro.label_tag }}
+                {{ form.logradouro }}
+            </div>
+        </div>
+
+        <div class="form-grid grid-5-cols">
+            <div class="form-group">
+                {{ form.numero.label_tag }}
+                {{ form.numero }}
+            </div>
+            <div class="form-group">
+                {{ form.complemento.label_tag }}
+                {{ form.complemento }}
+            </div>            
+            <div class="form-group">
+                {{ form.bairro.label_tag }}
+                {{ form.bairro }}
+            </div>
+
+            <div class="form-group">
+                {{ form.municipio.label_tag }}
+                {{ form.municipio }}
+            </div>
+            <div class="form-group">
+                {{ form.uf.label_tag }}
+                {{ form.uf }}
+            </div>
+        </div>         
+        <!--Documento do Cidadão-->
+        <label>PRODUÇÃO ANUAL</label>
+        <div class="form-grid grid-3-cols">  
+            <div class="form-group">
+                {{ form.especie1.label_tag }}
+                {{ form.especie1 }}
+                {% if form.especie1.errors %}
+                    <div class="field-error">
+                        {% for error in form.especie1.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.quantidade1.label_tag }}
+                {{ form.quantidade1 }}
+                {% if form.quantidade1.errors %}
+                    <div class="field-error">
+                        {% for error in form.quantidade1.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.preco1.label_tag }}
+                {{ form.preco1 }}
+                {% if form.preco1.errors %}
+                    <div class="field-error">
+                        {% for error in form.preco1.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+            <!--2--> 
+            <div class="form-group">
+                {{ form.especie2.label_tag }}
+                {{ form.especie2 }}
+                {% if form.especie2.errors %}
+                    <div class="field-error">
+                        {% for error in form.especie2.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.quantidade2.label_tag }}
+                {{ form.quantidade2 }}
+                {% if form.quantidade2.errors %}
+                    <div class="field-error">
+                        {% for error in form.quantidade2.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.preco2.label_tag }}
+                {{ form.preco2 }}
+                {% if form.preco2.errors %}
+                    <div class="field-error">
+                        {% for error in form.preco2.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>   
+            <!--3--> 
+            <div class="form-group">
+                {{ form.especie3.label_tag }}
+                {{ form.especie3 }}
+                {% if form.especie3.errors %}
+                    <div class="field-error">
+                        {% for error in form.especie3.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.quantidade3.label_tag }}
+                {{ form.quantidade3 }}
+                {% if form.quantidade3.errors %}
+                    <div class="field-error">
+                        {% for error in form.quantidade3.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.preco3.label_tag }}
+                {{ form.preco3 }}
+                {% if form.preco3.errors %}
+                    <div class="field-error">
+                        {% for error in form.preco3.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                      
+            <!--4--> 
+            <div class="form-group">
+                {{ form.especie4.label_tag }}
+                {{ form.especie4 }}
+                {% if form.especie4.errors %}
+                    <div class="field-error">
+                        {% for error in form.especie4.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.quantidade4.label_tag }}
+                {{ form.quantidade4 }}
+                {% if form.quantidade4.errors %}
+                    <div class="field-error">
+                        {% for error in form.quantidade4.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.preco4.label_tag }}
+                {{ form.preco4 }}
+                {% if form.preco4.errors %}
+                    <div class="field-error">
+                        {% for error in form.preco4.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>         
+            <!--5--> 
+            <div class="form-group">
+                {{ form.especie5.label_tag }}
+                {{ form.especie5 }}
+                {% if form.especie5.errors %}
+                    <div class="field-error">
+                        {% for error in form.especie5.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.quantidade5.label_tag }}
+                {{ form.quantidade5 }}
+                {% if form.quantidade5.errors %}
+                    <div class="field-error">
+                        {% for error in form.quantidade5.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+            <div class="form-group">
+                {{ form.preco5.label_tag }}
+                {{ form.preco5 }}
+                {% if form.preco5.errors %}
+                    <div class="field-error">
+                        {% for error in form.preco5.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>                     
+        </div>
+        <!--Anotações--> 
+        <div class="form-group">
+            {{ form.content.label_tag }}
+            {{ form.content }}
+            {% if form.content.errors %}
+                <div class="field-error">
+                    {% for error in form.content.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}                 
+        </div>      
+          
+        <button type="submit" class="btn-action btn-left">Salvar e Visualizar</button>
+    </form>
+</div>
+
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+    <script src="{% static 'js/cep_autocomplete.js' %}"></script>
+    <script src="{% static 'js/mascaras.js' %}"></script>
+    <script src="{% static 'js/filtros_reparticao_municipios.js' %}"></script>
+{% endblock %}
+{% endblock %}
