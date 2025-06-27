@@ -1,0 +1,217 @@
+.detail-page {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.photo-name {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.assoc-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.header-actions a {
+  margin-left: 12px;
+  color: #374151;
+  font-size: 1.4rem;
+}
+
+.header-actions a:hover {
+  color: #1e40af;
+}
+
+.detail-section {
+  margin-bottom: 24px;
+}
+
+.detail-section h2 {
+  font-size: 1.2rem;
+  color: #26425a;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+}
+
+.detail-section p {
+  font-size: 0.95rem;
+  color: #374151;
+  margin: 4px 0;
+}
+.detail-section.two-cols > div,
+.detail-section.three-cols > div,
+.detail-section.four-cols > div,
+.detail-section.five-cols > div {
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.full-width {
+  display: block;
+}
+
+.three-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.four-cols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.five-cols {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+}
+
+/* Contêiner geral da sessão */
+.multi-cols {
+  margin-bottom: 24px;
+}
+.multi-cols h2 {
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+  color: #26425a;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+}
+
+/* Grid de campos */
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Caixa de cada campo */
+.field-card {
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.field-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #374151;
+}
+.tabela-producao {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.95rem;
+}
+
+.tabela-producao th,
+.tabela-producao td {
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.tabela-producao th {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.tabela-producao tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+/* Drive*/
+.drive-link {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.drive-link a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #1d4ed8;
+  font-weight: 500;
+}
+
+.drive-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.drive-link.no-folder {
+  color: #991b1b;
+
+}
+
+
+
+/* Ajustes responsivos */
+@media (max-width: 1024px) {
+  .field-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .two-cols {
+    grid-template-columns: 1fr;
+  }
+}
+/* Responsivo: empilha para 2 colunas no tablet */
+@media (max-width: 1024px) {
+  .three-cols,
+  .four-cols,
+  .five-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Responsivo: empilha tudo em 1 coluna no mobile */
+@media (max-width: 640px) {
+  .two-cols,
+  .three-cols,
+  .four-cols,
+  .five-cols {
+    grid-template-columns: 1fr;
+  }
+}
