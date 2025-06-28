@@ -138,7 +138,12 @@ venv.bak/
 settings.py
 
 # PASTAS
-media/
+# Ignora todos os arquivos em media/ e subpastas
+media/**
+
+# Não ignora as pastas propriamente ditas
+!media/
+!media/**/
 
 
 # Spyder project settings
