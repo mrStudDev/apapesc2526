@@ -19,4 +19,8 @@ urlpatterns = [
     
     # HISTÓRICO
     path('associado/<int:pk>/historico/', views.AssociadoHistoricoView.as_view(), name='historico_associado'),
+    
+    # Enviar Drive
+    path('enviar-para-drive/<uuid:pk>/', views.EnviarParaDriveView.as_view(), name='enviar_para_drive'),
+
 ]

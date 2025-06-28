@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Upload{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+    <link rel="stylesheet" href="{% static 'css/associado_uploads.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container-small">
+    <h2>Enviar Documento</h2>
+
+    <select id="id_tipo_base" style="display:none">
+        <option value="">---------</option>
+        {% for t in form.fields.tipo.queryset %}
+            <option value="{{ t.pk }}">{{ t }}</option>
+        {% endfor %}
+    </select>
+
+
+    <form method="post" enctype="multipart/form-data" class="multi-upload-form">
+        {% csrf_token %}
+        <div id="form-container">
+            <div class="upload-block">
+                <div class="form-group">
+                    <label>Tipo de Documento:</label>
+                    <select name="tipo">
+                        <option value="">---------</option>
+                        {% for t in form.fields.tipo.queryset %}
+                            <option value="{{ t.pk }}">{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ou/Nomear Doc:</label>
+                    <input type="text" name="tipo_custom">
+                </div>
+                <div class="form-group file-group">
+                    <label>Arquivo:</label>
+                    <input type="file" name="arquivo" required>
+                </div>
+                <button type="button" class="remove-btn" onclick="removeBlock(this)">🗑️ Remover</button>
+            </div>
+        </div>
+
+        <div class="actions-row">
+            <button type="button" class="btn-action add-btn" onclick="addForm()">➕ Adicionar</button>
+            <button type="submit" class="btn-action submit-btn">📤 Enviar todos</button>
+        </div>
+    </form>
+</div>
+
+
+
+
+{% block extra_js %}
+<script src="{% static 'js/multiples_uploads.js' %}"></script>
+{% endblock %}
+
+
+{% endblock %}

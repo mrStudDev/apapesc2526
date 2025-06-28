@@ -1,11 +1,26 @@
 # core/base_imports.py
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 
-from django.http import JsonResponse
-
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseRedirect,
+    FileResponse,
+    Http404,
+)
 from django.contrib.auth.decorators import login_required
 
 from django.urls import reverse_lazy
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+import io
+import os
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from PIL import Image
+
+from django.apps import apps
 
 from django.contrib import messages
 
@@ -14,7 +29,12 @@ from app_accounts.models import CustomUser
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.utils.text import slugify
+
 from django.contrib.auth.decorators import login_required, user_passes_test
+
+from django.contrib.contenttypes.models import ContentType
+
+from googleapiclient.http import MediaFileUpload
 
 from django.contrib.auth import get_user_model
 
@@ -24,5 +44,6 @@ from django.views.generic import(
     CreateView,
     UpdateView,
     DeleteView,
-    TemplateView
+    TemplateView,
+    View
     )

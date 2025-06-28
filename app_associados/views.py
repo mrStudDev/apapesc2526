@@ -82,6 +82,24 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
     template_name = 'associados/single_associado.html'
     context_object_name = 'associado'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # 📦 Importante: filtramos pelo ContentType genérico
+        from django.contrib.contenttypes.models import ContentType
+        from app_uploads.models import UploadsDocs
+
+        associado = self.object
+        content_type = ContentType.objects.get_for_model(AssociadoModel)
+
+        # Lista todos os uploads ligados a este associado
+        uploads = UploadsDocs.objects.filter(
+            proprietario_content_type=content_type,
+            proprietario_object_id=associado.pk
+        )
+
+        context['uploads_docs'] = uploads
+        return context
 
 # -----------------------------------------------------------------------------------------
 
@@ -193,3 +211,45 @@ class AssociadoHistoricoView(DetailView):
 
         context['diffs'] = diffs
         return context
+    
+
+# app_associados
+class EnviarParaDriveView(View):
+    def post(self, request, pk):
+        doc = get_object_or_404(UploadsDocs, pk=pk)
+
+        # Verifica se tem pasta associada
+        prop = doc.proprietario_object
+        folder_id = getattr(prop, 'drive_folder_id', None)
+
+        if not folder_id:
+            messages.error(request, "Este associado não possui pasta no Drive.")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
+
+        try:
+            upload_file_to_drive(doc.arquivo.path, doc.arquivo.name, folder_id)
+            messages.success(request, "Arquivo enviado para o Google Drive com sucesso!")
+        except Exception as e:
+            messages.error(request, f"Erro ao enviar para o Drive: {e}")
+
+        return redirect(request.META.get('HTTP_REFERER', '/'))    
+    
+
+
+def upload_file_to_drive(filepath, filename, parent_folder_id):
+    service = get_drive_service()
+
+    file_metadata = {
+        'name': filename,
+        'parents': [parent_folder_id]
+    }
+
+    media = MediaFileUpload(filepath, resumable=True)
+    uploaded_file = service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id'
+    ).execute()
+
+    return uploaded_file.get('id')
+

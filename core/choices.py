@@ -236,3 +236,9 @@ ESPECIES_MARITIMAS = [
     ('Xerelete', 'Xerelete (Caranx hippos)'),
     ('Não declarado', 'Não declarado'),
 ]
+
+TIPO_MODELOS_MAP = {
+    'associado': ('app_associados', 'associadomodel'),
+    'associacao': ('app_associacao', 'associacaomodel'),
+    'reparticao': ('app_associacao', 'reparticoesmodel'),
+}

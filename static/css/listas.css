@@ -154,7 +154,7 @@
 .material-icons {
     font-size: 19px;
     vertical-align: middle;
-    color: #6b7280; /* Cinza suave inicial */
+    color: #787d85; /* Cinza suave inicial */
     margin-right: 6px;
     cursor: pointer;
     transition: color 0.2s;
@@ -171,9 +171,11 @@
 .material-icons.icon-edit {
     color: #3b82f6; /* Azul para "Editar" */
 }
-
+.material-icons.icon-convert {
+    color: #fba293; 
+}
 .material-icons.icon-delete {
-    color: #ef4444; /* Vermelho para "Excluir" */
+    color: #f99696; /* Vermelho para "Excluir" */
 }
 
 .material-icons.icon-view:hover,

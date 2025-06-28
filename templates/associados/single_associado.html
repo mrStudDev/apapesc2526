@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}{{ associado.user.get_full_name }}{% endblock %}
 
@@ -7,6 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/associado.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
     <link rel="stylesheet" href="{% static 'css/associado_tabs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/associado_uploads.css' %}">
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -243,16 +246,76 @@
     </div>
     <!--Uploads-->
     <div class="tab-content" id="tab-uploads">
-        <div class="detail-section two-cols">
-        <div>
+        <a href="{% url 'app_uploads:create_upload' %}?type=associado&id={{ associado.id }}" class="btn-action">
+            📤 Enviar Documento
+        </a><br><br>
+
+        <div class="detail-section full-width">
             <h2>Uploads</h2>
-            <p><strong>Documento:</strong> Up - 20/06/2005</p>
-        </div>
+
+            {% if uploads_docs %}
+                <div class="lista-container">
+                    <table class="table-list-small">
+                        <thead>
+                        <tr>
+                            <th>Tipo de Documento</th>
+                            <th>Extensão</th>
+                            <th>Data de Envio</th>
+                            <th>Enviado Por</th>
+                            <th>Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for doc in uploads_docs %}
+                            <tr>
+                            <td>{{ doc.tipo.nome|default:doc.tipo_custom }}</td>
+                            <!--Extensão-->
+                            <td>{{ doc.arquivo.name|slice:"-4:"|upper }}</td>
+                            <td>{{ doc.data_envio|date:"d/m/Y H:i" }}</td>
+                            <td>{{ doc.enviado_por.get_full_name|default:doc.enviado_por.username }}</td>
+
+                            <td>
+                                <a href="{{ doc.arquivo.url }}" download title="Download">
+                                    <span class="material-icons icon-download">download</span>
+                                </a>
+
+                                {% with doc.ext|lower as ext %}
+
+
+                                    {% if ext|is_in:"jpg jpeg png" %}
+                                        <a href="{% url 'converter_para_pdf' doc.pk %}" title="Converter imagem em PDF">
+                                            <span class="material-icons icon-convert">picture_as_pdf</span>
+                                        </a>
+                                    {% endif %}
+
+                                    {% if ext != "pdf" %}
+                                        <a href="{% url 'app_uploads:converter_para_pdf' doc.pk %}" title="Converter para PDF">
+                                            <span class="material-icons icon-convert">picture_as_pdf</span>
+                                        </a>
+                                    {% endif %}
+                                {% endwith %}
+
+                                <a href="{{ doc.arquivo.url }}" target="_blank" title="Visualizar">
+                                    <span class="material-icons icon-view">visibility</span>
+                                </a>
+                                {% if doc.proprietario_object.drive_folder_id %}
+                                    <form method="post" action="{% url 'app_associados:enviar_para_drive' doc.pk %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" title="Enviar para o Google Drive" style="background:none; border:none; padding:0; margin:0;">
+                                            <span class="material-icons" style="color:rgb(128, 125, 250);">upload_file</span>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                </div>
+            {% else %}
+                <p>Nenhum documento enviado ainda.</p>
+            {% endif %}
+            </div>
         <div>
-            <h2>Painel</h2>
-            <p><strong>Número:</strong> A9R8765</p>
-        </div>
-        </div>
     </div>    
     <!--Serviços-->
     <div class="tab-content" id="tab-servicos">
@@ -304,5 +367,6 @@
 
 {% block extra_js %}
 <script src="{% static 'js/tabs.js' %}"></script>
+<script src="{% static 'js/multiples_uploads.js' %}"></script>
 {% endblock %}
 {% endblock %}

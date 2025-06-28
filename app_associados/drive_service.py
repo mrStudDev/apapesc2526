@@ -1,7 +1,7 @@
 import os
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
-
+from googleapiclient.http import MediaFileUpload
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
 # Caminho do arquivo JSON da conta de serviço
@@ -36,3 +36,21 @@ def create_associado_folder(nome_associado, parent_folder_id):
     except Exception as e:
         print(f"Erro ao criar pasta no Drive: {e}")
         return None
+    
+    
+def upload_file_to_drive(filepath, filename, parent_folder_id):
+    service = get_drive_service()
+
+    file_metadata = {
+        'name': filename,
+        'parents': [parent_folder_id]
+    }
+
+    media = MediaFileUpload(filepath, resumable=True)
+    uploaded_file = service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id'
+    ).execute()
+
+    return uploaded_file.get('id')    
