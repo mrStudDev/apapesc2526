@@ -217,7 +217,15 @@ class ProfissaoCreateView(LoginRequiredMixin, CreateView):
             return redirect('app_accounts:unauthorized')
         return super().dispatch(request, *args, **kwargs) 
         
+    def form_valid(self, form):
+        messages.success(self.request, 'Profissão criado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar a Profissão. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)
         
+                
 class CargosCreateView(LoginRequiredMixin, CreateView):
     model = CargosModel
     form_class = CargosForm
@@ -230,6 +238,15 @@ class CargosCreateView(LoginRequiredMixin, CreateView):
             messages.error(self.request, "Você não tem permissão criar Cargo.")
             return redirect('app_accounts:unauthorized')
         return super().dispatch(request, *args, **kwargs)     
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Cargo criado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar a Cargo. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)
+        
 # ----------------------------------------------------
 
 

@@ -43,6 +43,13 @@
                 <div class="form-group">
                     {{ form.municipio.label_tag }}
                     {{ form.municipio }}
+                    {% if form.municipio.errors %}
+                        <div class="field-error">
+                            {% for error in form.municipio.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %} 
                 </div>
             </div>
 
