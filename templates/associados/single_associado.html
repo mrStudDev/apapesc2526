@@ -72,8 +72,19 @@
             </div>
             <div>
                 <h2>Acesso</h2>
-                <p><strong>CPF:</strong> {{associado.cpf}}</p>
-                <p><strong>Senha Gov: </strong> {{associado.senha_gov}}</p>
+                <div class="copy-wrapper">
+                    <p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ associado.cpf }}</p>
+                    <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
+                    <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
                 <br><hr>
                 {% if associado.drive_folder_id %}
                     <div class="drive-link">
@@ -198,52 +209,175 @@
     </div>
     <!--Documentos-->
     <div class="tab-content" id="tab-documentos">
+        <div class="card-identidade">
+            <div class="identidade-grid">
+                <h2>Identidade - CIN</h2>
+                
+                <div class="copy-wrapper">
+                    <p id="rg_numero-{{ associado.pk }}"><strong>RG:</strong> {{ associado.rg_numero }}</p>
+                    <button onclick="copyToClipboard('rg_numero-{{ associado.pk }}', this)" class="copy-btn" title="Copiar RG">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <p><strong>Órgão Emissor:</strong> {{ associado.rg_orgao }}</p>
+
+                <div class="copy-wrapper">
+                    <p id="rg_data_emissao-{{ associado.pk }}"><strong>Data Emissão:</strong> {{ associado.rg_data_emissao|date:"d/m/Y" }}</p>
+                    <button onclick="copyToClipboard('rg_data_emissao-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Emissão RG">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="data_nascimento-{{ associado.pk }}"><strong>Data Nascimento:</strong> {{ associado.data_nascimento|date:"d/m/Y"  }}</p>
+                    <button onclick="copyToClipboard('data_nascimento-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Nescimento">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="naturalidade-{{ associado.pk }}"><strong>Naturalidade:</strong> {{ associado.naturalidade }}</p>
+                    <button onclick="copyToClipboard('naturalidade-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Naturalidade">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="nome_pai-{{ associado.pk }}"><strong>Nome Pai:</strong> {{ associado.nome_pai }}</p>
+                    <button onclick="copyToClipboard('nome_pai-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Nome Pai">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="nome_mae-{{ associado.pk }}"><strong>Nome Mãe:</strong> {{ associado.nome_mae }}</p>
+                    <button onclick="copyToClipboard('nome_mae-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Nome Mãe">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ associado.cpf }}</p>
+                    <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>              
+                <div class="copy-wrapper">
+                    <p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
+                    <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="detail-section three-cols">
             <div>
-                <h2>Identidade</h2>
-                <p><strong>RG:</strong> {{ associado.rg_numero }}</p>
-                <p><strong>Órgão Emissor:</strong> {{ associado.rg_orgao }}</p>
-                <p><strong>Data Emissão:</strong> {{ associado.rg_data_emissao|date:"d/m/Y" }}</p>
-                <p><strong>Data Nascimento:</strong> {{ associado.data_nascimento|date:"d/m/Y" }}</p>
-                <p><strong>Naturalidade:</strong> {{ associado.naturalidade }}</p>
+                <h2>Carteira Motorista</h2>
+                <div class="copy-wrapper">
+                    <p id="cnh-{{ associado.pk }}"><strong>No Registro:</strong> {{ associado.cnh }}</p>
+                    <button onclick="copyToClipboard('cnh-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número Registro">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="cnh_data_emissao-{{ associado.pk }}"><strong>Data Emissão:</strong> {{ associado.cnh_data_emissao|date:"d/m/Y" }}</p>
+                    <button onclick="copyToClipboard('cnh_data_emissao-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Emissão">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="cnh_data_validade-{{ associado.pk }}"><strong>Data Validade:</strong> {{ associado.cnh_data_validade|date:"d/m/Y" }}</p>
+                    <button onclick="copyToClipboard('cnh_data_validade-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Validade">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <p><strong>UF:</strong> {{ associado.cnh_uf }}</p>
             </div>
             <div>
-                <h2>Carteira Motorista</h2>
-                <p><strong>N. Registro:</strong> {{ associado.cnh }}</p>
-                <p><strong>Data Emissão:</strong> {{ associado.cnh_data_emissao|date:"d/m/Y" }}</p>
-                <p><strong>Data Validade:</strong> {{ associado.cnh_data_validade|date:"d/m/Y" }}</p>
-                <p><strong>UF:</strong> {{ associado.cnh_uf }}</p>
+                <h2>Carteira de Pescador</h2>
+                <div class="copy-wrapper">
+                    <p id="rgp-{{ associado.pk }}"><strong>RGP:</strong> {{ associado.rgp }}</p>
+                    <button onclick="copyToClipboard('rgp-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número RGP">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="rgp_mpa-{{ associado.pk }}"><strong>Órgão Emissor:</strong> {{ associado.rgp_mpa }}</p>
+                    <button onclick="copyToClipboard('rgp_mpa-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Órgão Emissor">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>           
+                <div class="copy-wrapper">
+                    <p id="rgp_data_emissao-{{ associado.pk }}"><strong>Data Emissão:</strong> {{ associado.rgp_data_emissao|date:"d/m/Y" }}</p>
+                    <button onclick="copyToClipboard('rgp_data_emissao-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Emissão">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="primeiro_registro-{{ associado.pk }}"><strong>Primeiro Registro:</strong> {{ associado.primeiro_registro|date:"d/m/Y" }}</p>
+                    <button onclick="copyToClipboard('primeiro_registro-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Primeiro Registro">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
             </div>
 
             <div>
-                <h2>Carteira de Pescador</h2>
-                <p><strong>RGP:</strong> {{ associado.rgp }}</p>
-                <p><strong>Órgão Emissor:</strong> {{ associado.rgp_mpa }}</p>                
-                <p><strong>Data Emissão:</strong> {{ associado.rgp_data_emissao|date:"d/m/Y" }}</p>
-                <p><strong>Primeiro Registro:</strong> {{ associado.primeiro_registro|date:"d/m/Y" }}</p>
-            </div>
-            <div>
                 <h2>Carteira de Trabalho</h2>
-                <p><strong>Número:</strong> {{ associado.ctps }}</p>
-                <p><strong>Data Emissão:</strong> {{ associado.ctps_data_emissao|date:"d/m/Y" }}</p>
-                <p><strong>Série:</strong> {{ associado.ctps_serie }}</p>
+                <div class="copy-wrapper">
+                    <p id="ctps-{{ associado.pk }}"><strong>No Registro:</strong> {{ associado.ctps }}</p>
+                    <button onclick="copyToClipboard('ctps-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número CTPS">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="ctps_data_emissao-{{ associado.pk }}"><strong>Data Emissão:</strong> {{ associado.ctps_data_emissao|date:"d/m/Y" }}</p>
+                    <button onclick="copyToClipboard('ctps_data_emissao-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Emissão">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="ctps_serie-{{ associado.pk }}"><strong>No Série:</strong> {{ associado.ctps_serie }}</p>
+                    <button onclick="copyToClipboard('ctps_serie-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número Série">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                      
                 <p><strong>UF:</strong> {{ associado.ctps_uf }}</p>
             </div>
             <div>
                 <h2>Documentos Cidadania</h2>
-                <p><strong>Título:</strong> {{ associado.titulo_eleitor }}</p>
-                <p><strong>PIS:</strong> {{ associado.pis }}</p>
-                <p><strong>NIT:</strong> {{ associado.nit }}</p>
-                <p><strong>CAEPF:</strong> {{ associado.caepef }}</p>
-                <p><strong>CEI:</strong> {{ associado.cei }}</p>
-               
+                <div class="copy-wrapper">
+                    <p id="titulo_eleitor-{{ associado.pk }}"><strong>No Título:</strong> {{ associado.titulo_eleitor }}</p>
+                    <button onclick="copyToClipboard('titulo_eleitor-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número Título">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>   
+                <div class="copy-wrapper">
+                    <p id="pis-{{ associado.pk }}"><strong>No PIS:</strong> {{ associado.pis }}</p>
+                    <button onclick="copyToClipboard('pis-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número PIS">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="nit-{{ associado.pk }}"><strong>No NIT:</strong> {{ associado.nit }}</p>
+                    <button onclick="copyToClipboard('nit-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número NIT">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="caepef-{{ associado.pk }}"><strong>No CAEPF:</strong> {{ associado.caepef }}</p>
+                    <button onclick="copyToClipboard('caepef-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número CAEPF">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="cei-{{ associado.pk }}"><strong>No CEI:</strong> {{ associado.cei }}</p>
+                    <button onclick="copyToClipboard('cei-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número CEI">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>               
             </div>
             <div>
                 <h2>Aguardando</h2>
-
             </div>                                                           
         </div>
     </div>
+
     <!--Uploads-->
     <div class="tab-content" id="tab-uploads">
         <div class="upload-links-row">
@@ -396,6 +530,8 @@
 <script src="{% static 'js/tabs.js' %}"></script>
 <script src="{% static 'js/multiples_uploads.js' %}"></script>
 <script src="{% static 'js/delete_upload.js' %}"></script>
+<script src="{% static 'js/copy_to_clipboard.js' %}"></script>
+<script src="{% static 'js/copy_senhas.js' %}"></script>
 {% endblock %}
 
 {% endblock %}
