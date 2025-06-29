@@ -4,10 +4,12 @@ from core.views.base_imports import *
 from core.views.app_uploads_imports import *
 from core.choices import TIPO_MODELOS_MAP
 
+
 class UploadsDocsCreateView(CreateView):
     model = UploadsDocs
     form_class = UploadsDocsForm
     template_name = 'uploads/uploads.html'
+    
 
     def post(self, request, *args, **kwargs):
         tipos = request.POST.getlist('tipo')
@@ -70,6 +72,69 @@ class UploadsDocsCreateView(CreateView):
 
 
 
+class TipoDocumentoCreateView(CreateView):
+    model = TipoDocumentoUp
+    form_class = TipoDocumentoForm  # Ou remova esta linha e use fields = ['nome', 'descricao']
+    template_name = 'uploads/create_tipo_doc.html'
+    success_url = reverse_lazy('app_uploads:list_tipo_docs')    
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Tipo Documento criado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar a o Tipo de Documento. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)    
+
+
+class TipoDocumentoLstView(ListView):
+    model = TipoDocumentoUp
+    form_class = TipoDocumentoForm
+    template_name = 'uploads/list_tipo_docs.html'
+    ordering = ['nome']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tipos'] = context['object_list']
+        return context
+
+
+class TipoDocumentoEditView(UpdateView):
+    model = TipoDocumentoUp
+    form_class = TipoDocumentoForm
+    template_name = 'uploads/edit_tipo_doc.html'
+    success_url = reverse_lazy('app_uploads:list_tipo_docs')
+    context_object_name = 'tipo_doc'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Tipo Documento atualizado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao editar a o Tipo de Documento. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)    
+    
+    
+class TipoDocumentoDeleteView(DeleteView):
+    model = TipoDocumentoUp
+    template_name = 'uploads/delete_tipo_doc_modal.html'
+    context_object_name = 'tipo_doc'
+    success_url = reverse_lazy('app_uploads:list_tipo_docs') 
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Tipo de Documento excluído com sucesso!')
+        return super().delete(request, *args, **kwargs) 
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Tipo Documento Deletado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao deletar a o Tipo de Documento. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)    
+    
+
+# FUNÇÕES ----------------------------------------------------------------------
 @login_required
 def converter_para_pdf(request, pk):
     doc = get_object_or_404(UploadsDocs, pk=pk)
@@ -102,3 +167,17 @@ def converter_para_pdf(request, pk):
 
     messages.success(request, "Documento convertido com sucesso para PDF.")
     return redirect(f"{request.META.get('HTTP_REFERER', '/')}#tab-uploads")
+
+
+
+@csrf_exempt
+def delete_upload(request, pk):
+    if request.method == 'POST':
+        try:
+            upload = UploadsDocs.objects.get(pk=pk)
+            upload.arquivo.delete(save=False)
+            upload.delete()
+            return JsonResponse({'status': 'ok'})
+        except UploadsDocs.DoesNotExist:
+            return JsonResponse({'status': 'not_found'}, status=404)
+    return JsonResponse({'status': 'invalid'}, status=400)    

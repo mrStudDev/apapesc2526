@@ -114,7 +114,14 @@
     color: #26425a;
     margin: 0;
 }
-
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: inherit;
+}
 /* Ajustes responsivos para telas menores */
 @media (max-width: 768px) {
     .name-photo-container {

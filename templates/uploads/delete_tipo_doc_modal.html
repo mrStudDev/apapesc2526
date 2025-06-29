@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Novo Tipo Documento{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+        <div class="form-container">
+            <h1>Deletar Tipo Documento?</h1>
+            <form method="post" id="form-delete-tipo-doc">
+                {% csrf_token %}
+                <div>
+                    <h4 style="color:red;">Tem certeza que deseja excluir o tipo "{{ tipo_doc.nome }}"?</h4>
+                    <p>{{ tipo_doc.descricao }}</p>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button type="submit" style="background-color:red;">Sim, excluir</button>
+                    <a href="{% url 'app_uploads:list_tipo_docs' %}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+{% endblock %}        

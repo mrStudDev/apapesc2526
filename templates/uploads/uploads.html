@@ -28,7 +28,7 @@
         <div id="form-container">
             <div class="upload-block">
                 <div class="form-group">
-                    <label>Tipo de Documento:</label>
+                    <label>Nomear a partir de um TIPO:</label>
                     <select name="tipo">
                         <option value="">---------</option>
                         {% for t in form.fields.tipo.queryset %}
@@ -37,7 +37,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Ou/Nomear Doc:</label>
+                    <label>Nomear LIVREMENTE</label>
                     <input type="text" name="tipo_custom">
                 </div>
                 <div class="form-group file-group">

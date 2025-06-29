@@ -38,6 +38,8 @@ from googleapiclient.http import MediaFileUpload
 
 from django.contrib.auth import get_user_model
 
+from django.views.decorators.csrf import csrf_exempt
+
 from django.views.generic import(
     ListView,
     DetailView,

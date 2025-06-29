@@ -73,6 +73,7 @@ class AssociadoForm(forms.ModelForm):
             self.fields['user'].initial = user_initial
             self.fields['user'].disabled = True
             
+   
 
     def clean_cpf(self):
         return validate_and_format_cpf(self.cleaned_data['cpf'])

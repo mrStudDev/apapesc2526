@@ -96,7 +96,7 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
         uploads = UploadsDocs.objects.filter(
             proprietario_content_type=content_type,
             proprietario_object_id=associado.pk
-        )
+        ).order_by('tipo__nome')
 
         context['uploads_docs'] = uploads
         return context

@@ -246,9 +246,17 @@
     </div>
     <!--Uploads-->
     <div class="tab-content" id="tab-uploads">
-        <a href="{% url 'app_uploads:create_upload' %}?type=associado&id={{ associado.id }}" class="btn-action">
-            📤 Enviar Documento
-        </a><br><br>
+        <div class="upload-links-row">
+            <a href="{% url 'app_uploads:create_upload' %}?type=associado&id={{ associado.id }}" class="upload-link">
+                📤 Enviar Documento
+            </a> 
+             -- <a href="{% url 'app_uploads:create_tipo_doc' %}" class="upload-link">
+                📝 Cadastrar Tipo de Documento
+            </a>
+             -- <a href="{% url 'app_uploads:list_tipo_docs' %}" class="upload-link">
+                Lista Tipos de Documentos
+            </a>            
+        </div>
 
         <div class="detail-section full-width">
             <h2>Uploads</h2>
@@ -306,10 +314,17 @@
                                         </button>
                                     </form>
                                 {% endif %}
+
+                                <a href="#" class="btn-icon" title="Excluir Documento"
+                                    onclick="openDeleteModal('{{ doc.pk }}')">
+                                    <span class="material-icons icon-delete">delete</span>
+                                </a>
+
                             </td>
                             </tr>
                         {% endfor %}
                         </tbody>
+                    </table>
                 </div>
             {% else %}
                 <p>Nenhum documento enviado ainda.</p>
@@ -365,8 +380,22 @@
     </div>
     </div>
 
+    <div id="deleteModal" class="modal-overlay" style="display:none;">
+        <div class="modal">
+            <h3>Excluir Documento?</h3>
+            <p>Tem certeza que deseja remover este documento?</p>
+            <div class="modal-actions">
+            <button id="confirmDeleteBtn" class="btn btn-danger">Sim, excluir</button>
+            <button onclick="closeDeleteModal()" class="btn btn-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+
 {% block extra_js %}
 <script src="{% static 'js/tabs.js' %}"></script>
 <script src="{% static 'js/multiples_uploads.js' %}"></script>
+<script src="{% static 'js/delete_upload.js' %}"></script>
 {% endblock %}
+
 {% endblock %}
