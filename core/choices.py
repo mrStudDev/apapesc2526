@@ -209,7 +209,8 @@ STATUS_CHOICES = [
     ('associado_lista_ativo', 'Associado Lista Ativos(a)'),
     ('associado_lista_aposentado', 'Associado Lista Aposentados(a)'),
     ('candidato', 'Candidato(a)'),
-    ('cliente_especials', 'Cliente Especial'),
+    ('cliente_especial', 'Cliente Especial'),
+    ('extra_associado', 'Extra Associado(a)'),
     ('desassociado', 'Desassociado(a)'),
 ]
 ESPECIES_MARITIMAS = [

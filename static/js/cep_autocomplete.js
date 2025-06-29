@@ -26,13 +26,18 @@ function buscarCep(cepInput) {
                     if (municipio) municipio.value = data.localidade;
                     if (uf) uf.value = data.uf;
                 } else {
-                    alert('CEP não encontrado.');
-                    cepInput.value = '';
-                    cepInput.focus();
+                    // Verifica se o CEP tem formato válido (00000-000 ou 00000000)
+                    const cepFormatado = cep.replace(/^(\d{5})(\d{3})$/, '$1-$2');
+                    const confirmar = confirm(`O CEP ${cepFormatado} não foi encontrado. Deseja manter esse número mesmo assim?`);
+
+                    if (!confirmar) {
+                        cepInput.value = '';
+                        cepInput.focus();
+                    }
                 }
             })
             .catch(() => {
-                alert('Erro ao consultar o CEP.');
+                alert('Erro ao consultar o CEP. Verifique sua conexão.');
             });
     } else if (cep.length > 0) {
         alert('CEP inválido! Deve conter exatamente 8 números.');
