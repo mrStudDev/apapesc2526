@@ -35,7 +35,53 @@
 .table-list td {
     color: #374151;
 }
+.associado-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 20px 28px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
 
+.link-associado {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #2563eb;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.link-associado:hover {
+    text-decoration: underline;
+}
+
+.dados-associado span {
+    display: block;
+    font-size: 0.85rem;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.anuidades-totais {
+    background: #f3f4f6;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    color: #1f2937;
+    min-width: 280px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.04);
+}
+
+.anuidades-totais span {
+    display: block;
+    margin-bottom: 4px;
+}
 .anuidade-detalhes {
     display: flex;
     gap: 40px;

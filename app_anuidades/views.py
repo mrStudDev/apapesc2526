@@ -53,18 +53,26 @@ class AnuidadeAssociadoSingleView(DetailView):
         associado = self.object
         anuidades = AnuidadeAssociado.objects.filter(associado=associado).select_related('anuidade').order_by('-anuidade__ano')
 
-        # Calcula totais para cada anuidade aplicada
+        # TOTAIS GLOBAIS
+        total_pago_geral = Decimal('0.00')
+        total_descontos_geral = Decimal('0.00')
+        saldo_devedor_geral = Decimal('0.00')
+        
         anuidade_infos = []
         for aa in anuidades:
             pagamentos = aa.pagamentos.order_by('-data_pagamento')
             descontos = aa.descontos.order_by('-data_concessao')
 
             total_pago = pagamentos.aggregate(total=Sum('valor'))['total'] or Decimal('0.00')
-
             total_descontos = descontos.aggregate(total=Sum('valor_desconto'))['total'] or Decimal('0.00')
             valor_anuidade = aa.anuidade.valor_anuidade
             saldo_devedor = max(valor_anuidade - total_descontos - total_pago, Decimal('0.00'))
             status = "PAGA" if saldo_devedor <= 0 else "EM ABERTO"
+
+            # Somando nos totais GERAIS
+            total_pago_geral += total_pago
+            total_descontos_geral += total_descontos
+            saldo_devedor_geral += saldo_devedor
 
             anuidade_infos.append({
                 'aa': aa,
@@ -80,6 +88,9 @@ class AnuidadeAssociadoSingleView(DetailView):
             })
 
         context['anuidade_infos'] = anuidade_infos
+        context['total_pago_geral'] = total_pago_geral
+        context['total_descontos_geral'] = total_descontos_geral
+        context['saldo_devedor_geral'] = saldo_devedor_geral
         return context
 
     def post(self, request, *args, **kwargs):

@@ -1,8 +1,7 @@
 from app_accounts.forms import CustomUserForm
 
 from app_associados.models import (
-    AssociadoModel,
-    
+    AssociadoModel,   
 )
 
 from app_associados.forms import (
@@ -17,3 +16,9 @@ from app_associacao.models import (
 
 from app_uploads.models import UploadsDocs
 from app_associados.drive_service import upload_file_to_drive, get_drive_service
+
+from app_anuidades.models import (
+    AnuidadeAssociado
+)
+
+

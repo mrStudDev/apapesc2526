@@ -85,20 +85,39 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # 📦 Importante: filtramos pelo ContentType genérico
+        associado = self.object  # 👈 MOVA ESTA LINHA PARA CIMA
+
+        ultimas_anuidades_qs = AnuidadeAssociado.objects.filter(
+            associado=associado
+        ).select_related('anuidade').order_by('-anuidade__ano')[:3]
+
+        ultimas_anuidades = []
+        for aa in ultimas_anuidades_qs:
+            total_pago = aa.pagamentos.aggregate(total=Sum('valor'))['total'] or Decimal('0.00')
+            total_descontos = aa.descontos.aggregate(total=Sum('valor_desconto'))['total'] or Decimal('0.00')
+            valor_anuidade = aa.anuidade.valor_anuidade
+            status_anuidade = "Paga" if (total_pago + total_descontos) >= valor_anuidade else "Em aberto"
+            ultimas_anuidades.append({
+                'ano': aa.anuidade.ano,
+                'total_pago': total_pago,
+                'total_descontos': total_descontos,
+                'valor_anuidade': valor_anuidade,
+                'status_pagamento': "Paga" if (total_pago + total_descontos) >= valor_anuidade else "Em aberto",
+            })
+
+
         from django.contrib.contenttypes.models import ContentType
         from app_uploads.models import UploadsDocs
 
-        associado = self.object
         content_type = ContentType.objects.get_for_model(AssociadoModel)
 
-        # Lista todos os uploads ligados a este associado
         uploads = UploadsDocs.objects.filter(
             proprietario_content_type=content_type,
             proprietario_object_id=associado.pk
         ).order_by('tipo__nome')
 
         context['uploads_docs'] = uploads
+        context['ultimas_anuidades'] = ultimas_anuidades
         return context
 
 # -----------------------------------------------------------------------------------------

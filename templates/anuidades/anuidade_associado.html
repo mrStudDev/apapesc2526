@@ -17,6 +17,23 @@
 
 <div class="anuidades-container">
     <h1>Anuidades do Associado: {{ associado.user.get_full_name }}</h1>
+<div class="associado-header">
+    <div class="associado-info">
+        <a href="{% url 'app_associados:single_associado' associado.pk %}" class="link-associado">📌 Single Associado</a>
+        <div class="dados-associado">
+            <span><strong>Associação:</strong> {{ associado.associacao.nome_fantasia }}</span>
+            <span><strong>Repartição:</strong> {{ associado.reparticao.nome_reparticao }}</span>
+            <span><strong>Celular:</strong> {{ associado.celular }}</span>
+            <span><strong>Filiação:</strong> {{ associado.data_filiacao }}</span>
+        </div>
+    </div>
+
+    <div class="anuidades-totais">
+        <span><strong>Total Pago:</strong> R$ {{ total_pago_geral|floatformat:2 }}</span>
+        <span><strong>Total Descontado:</strong> R$ {{ total_descontos_geral|floatformat:2 }}</span>
+        <span><strong>Saldo Devedor:</strong> R$ {{ saldo_devedor_geral|floatformat:2 }}</span>
+    </div>
+</div>
 
     {% for info in anuidade_infos %}
         <div class="anuidade-detalhes">        
