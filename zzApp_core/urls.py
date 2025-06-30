@@ -28,6 +28,8 @@ urlpatterns = [
     path('associacao/', include('app_associacao.urls', namespace="app_associacao")),
     path('associados/', include('app_associados.urls', namespace="app_associados")),
     path('uploads/', include('app_uploads.urls', namespace='app_uploads')),
+    path('anuidades/', include('app_anuidades.urls', namespace='app_anuidades')),
+    path('dashboards/', include('app_dashboards.urls', namespace='app_dashboards')),
 ]
 
 if settings.DEBUG:

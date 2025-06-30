@@ -1,0 +1,120 @@
+.anuidades-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 24px 32px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.anuidades-container h1 {
+    font-size: 1.6rem;
+    color: #1f2937;
+    margin-bottom: 32px;
+}
+
+.table-list {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.table-list thead {
+    background-color: #f1f5f9;
+}
+
+.table-list th,
+.table-list td {
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-list td {
+    color: #374151;
+}
+
+.anuidade-detalhes {
+    display: flex;
+    gap: 40px;
+    padding: 16px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.anuidade-detalhes h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #1f2937;
+}
+
+.anuidade-detalhes ul {
+    margin: 0 0 12px;
+    padding-left: 20px;
+}
+
+.anuidade-detalhes form {
+    margin-top: 6px;
+}
+
+.anuidade-detalhes button[type="submit"] {
+    padding: 8px 16px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.anuidade-detalhes button[type="submit"]:hover {
+    background: #1e40af;
+}
+.pagamento-item {
+    margin-bottom: 12px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.pagamento-info {
+    margin-bottom: 4px;
+}
+
+.pagamento-meta {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #4b5563;
+}
+
+.registrado-por {
+    font-style: italic;
+    color: #6b7280;
+}
+
+.btn-recibo {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    padding: 5px 5px;
+    cursor: pointer;
+    color: #1f2937;
+    transition: background 0.2s;
+    margin-left: auto;  /* Alinha à direita */
+}
+
+.btn-recibo:hover {
+    background: #e2e8f0;
+}
+

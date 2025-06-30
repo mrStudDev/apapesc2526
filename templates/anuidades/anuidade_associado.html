@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Anuidades Associado{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/anuidades_associado.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+
+<div class="anuidades-container">
+    <h1>Anuidades do Associado: {{ associado.user.get_full_name }}</h1>
+
+    {% for info in anuidade_infos %}
+        <div class="anuidade-detalhes">        
+            <table class="table-list">
+                <thead>
+                    <tr>
+                        <th>Ano</th>
+                        <th>Valor</th>
+                        <th>Descontos</th>
+                        <th>Total Pago</th>
+                        <th>Saldo Devedor</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ info.aa.anuidade.ano }}</td>
+                        <td>R$ {{ info.valor_anuidade|floatformat:2 }}</td>
+                        <td>R$ {{ info.total_descontos|floatformat:2 }}</td>
+                        <td>R$ {{ info.total_pago|floatformat:2 }}</td>
+                        <td>R$ {{ info.saldo_devedor|floatformat:2 }}</td>
+                        <td>{{ info.status_anuidade }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <div style="flex: 1 1 45%;">
+                <h3>Pagamentos: {{ info.aa.anuidade.ano }}</h3>
+                <ul>
+                    {% for p in info.pagamentos %}
+                    <li class="pagamento-item">
+                        <div class="pagamento-info">
+                            {{ p.data_pagamento }}: R$ {{ p.valor|floatformat:2 }}
+                            {% if p.comprovante_up %}
+                                (<a href="{{ p.comprovante_up.url }}" target="_blank">Comprovante</a>)
+                            {% endif %}
+                        </div>
+                        <div class="pagamento-meta">
+                            <span class="registrado-por">Registrado por: {{ p.registrado_por }}</span>
+                            <button type="button" class="btn-recibo" onclick="alert('Aqui você vai gerar o recibo para este pagamento!')">
+                                🧾 Gerar Recibo
+                            </button>
+                        </div>
+                    </li>
+                    <hr>
+
+                    {% empty %}
+                        <li>Nenhum pagamento registrado.</li>
+                    {% endfor %}
+                </ul>
+                {% if info.status_anuidade == "PAGA" %}
+                    <div style="margin-top:20px; text-align:center;">
+                        <button type="button" class="btn-quitacao" onclick="alert('Aqui você gera o recibo de quitação de toda a anuidade!')">
+                            ✅ Gerar Recibo de Quitação Anuidade
+                        </button>
+                        <br>
+                        <span style="font-size: 0.95em; color: #008000;">Anuidade quitada!</span>
+                    </div>
+                {% endif %}                  
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="anuidade_id" value="{{ info.aa.pk }}">
+                    <div class="form-container">
+                        <div class="form-group">
+                            {{ info.pagamento_form.as_p }}
+                        </div>
+                    </div>
+                    <button type="submit" name="pagar">Lançar Pagamento</button>
+                </form>
+            </div>
+
+            <!-- BLOCO DE DESCONTOS -->
+            <div style="flex: 1 1 45%;">
+                <h3>Descontos: {{ info.aa.anuidade.ano }}</h3>
+                <ul>
+                    {% for d in info.descontos %}
+                        <li>{{ d.data_concessao }}: R$ {{ d.valor_desconto|floatformat:2 }} ({{ d.motivo }})</li>
+                    {% empty %}
+                        <li>Nenhum desconto registrado.</li>
+                    {% endfor %}
+                </ul>              
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="anuidade_id" value="{{ info.aa.pk }}">
+                    <div class="form-container">
+                        <div class="form-group">
+                            {{ info.desconto_form.as_p }}
+                        </div>
+                    </div>
+                    <button type="submit" name="descontar">Lançar Desconto</button>
+                </form>                
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

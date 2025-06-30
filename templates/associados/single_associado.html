@@ -7,7 +7,7 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/associado.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
-    <link rel="stylesheet" href="{% static 'css/associado_tabs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tabs.css' %}">
     <link rel="stylesheet" href="{% static 'css/associado_uploads.css' %}">
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
 {% endblock %}
@@ -53,9 +53,9 @@
         <button class="tab-link" data-tab="pessoais">Pessoais</button>
         <button class="tab-link" data-tab="documentos">Documentos</button>
         <button class="tab-link" data-tab="uploads">Uploads</button>
+        <button class="tab-link" data-tab="financeiro_associado">Financeiro</button>       
         <button class="tab-link" data-tab="servicos">Serviços</button>
         <button class="tab-link" data-tab="declaracoes">Declarações</button>
-        <button class="tab-link" data-tab="financeiro">Financeiro</button>
         <button class="tab-link" data-tab="producao">Produção</button>
         <button class="tab-link" data-tab="anotacoes">Anotações</button>        
     </div>
@@ -197,16 +197,15 @@
         </div><br><hr>
         <!-- Petrechos de Pesca -->
         <div class="detail-section four-cols">
-        <h2 style="grid-column: 1 / -1;">Petrechos de Pesca</h2>
-        {% for petrecho in associado.petrechos_pesca.all %}
-            <div class="petrecho-box">{{ petrecho.nome }}</div>
-        {% empty %}
-            <p style="grid-column: 1 / -1;">Nenhum petrecho informado.</p>
-        {% endfor %}
+            <h2 style="grid-column: 1 / -1;">Petrechos de Pesca</h2>
+            {% for petrecho in associado.petrechos_pesca.all %}
+                <div class="petrecho-box">{{ petrecho.nome }}</div>
+            {% empty %}
+                <p style="grid-column: 1 / -1;">Nenhum petrecho informado.</p>
+            {% endfor %}
         </div>
-
-
     </div>
+
     <!--Documentos-->
     <div class="tab-content" id="tab-documentos">
         <div class="card-identidade">
@@ -388,7 +387,7 @@
                 📝 Cadastrar Tipo de Documento
             </a>
              -- <a href="{% url 'app_uploads:list_tipo_docs' %}" class="upload-link">
-                Lista Tipos de Documentos
+                📊 Lista Tipos de Documentos
             </a>            
         </div>
 
@@ -461,11 +460,32 @@
                     </table>
                 </div>
             {% else %}
-                <p>Nenhum documento enviado ainda.</p>
+            <p>Nenhum documento enviado ainda.</p>
             {% endif %}
+        </div> 
+    </div>
+    <!--App Associados - Financeiro Associado -->
+    <div class="tab-content" id="tab-financeiro_associado">
+        <div class="upload-links-row">
+
+            <a href="{% url 'app_anuidades:anuidade_associado_singular' associado.pk %}" class="upload-link">
+                📅 Ver anuidades e baixar/descontar
+            </a>
+
+        </div>
+
+        <div class="detail-section two-cols">
+            <div>
+                <h2>Financeiro</h2>
+                <p><strong>Dados:</strong> Up - 20/06/2005</p>
             </div>
-        <div>
-    </div>    
+            <div>
+                <h2>Painel</h2>
+                <p><strong>Números:</strong> A9R8765</p>
+            </div>
+        </div>
+    </div>     
+
     <!--Serviços-->
     <div class="tab-content" id="tab-servicos">
         <div class="detail-section full-width">
@@ -484,19 +504,9 @@
         <p>Dec: 40 horas</p>
         </div>
     </div>    
-    <!--Financeiro-->
-    <div class="tab-content" id="tab-financeiro">
-        <div class="detail-section two-cols">
-        <div>
-            <h2>Financeiro</h2>
-            <p><strong>Dados:</strong> Up - 20/06/2005</p>
-        </div>
-        <div>
-            <h2>Painel</h2>
-            <p><strong>Números:</strong> A9R8765</p>
-        </div>
-        </div>
-    </div>     
+
+  
+
     <!--Produção Anual-->
     <div class="tab-content" id="tab-producao">
         <div class="detail-section full-width">
@@ -508,11 +518,11 @@
     </div>
     <div class="tab-content" id="tab-anotacoes">
         <div class="detail-section full-width">
-        <h2>Anotações</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque in arcu vitae arcu tincidunt venenatis.</p>
+            <h2>Anotações</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque in arcu vitae arcu tincidunt venenatis.</p>
         </div>
     </div>
-    </div>
+
 
     <div id="deleteModal" class="modal-overlay" style="display:none;">
         <div class="modal">
@@ -527,11 +537,11 @@
     
 
 {% block extra_js %}
-<script src="{% static 'js/tabs.js' %}"></script>
-<script src="{% static 'js/multiples_uploads.js' %}"></script>
-<script src="{% static 'js/delete_upload.js' %}"></script>
-<script src="{% static 'js/copy_to_clipboard.js' %}"></script>
-<script src="{% static 'js/copy_senhas.js' %}"></script>
+    <script src="{% static 'js/tabs.js' %}"></script>
+    <script src="{% static 'js/multiples_uploads.js' %}"></script>
+    <script src="{% static 'js/delete_upload.js' %}"></script>
+    <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
+    <script src="{% static 'js/copy_senhas.js' %}"></script>
 {% endblock %}
 
 {% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nova Anuidade{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container-small">
+    <h1>Cadastro e distribuição de anuidades entre os Associados.</h1>
+    <p>Ao lançar uma anuidade, o valor será computado na "conta" de cada associado que estiver com o Status de Atividade:
+        <strong>Lista Ativos(a)</strong> ou <strong>Lista Aposentados(a)</strong>.
+    </p>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% if form.errors %}
+        <div class="errorlist">
+            {{ form.errors }}
+        </div>
+    {% endif %}
+
+    <div class="form-container">
+        <div class="form-group">
+            {{ form.ano.label_tag }}
+            {{ form.ano }}
+        </div>
+        <div class="form-group">
+            {{ form.valor_anuidade.label_tag }}
+            {{ form.valor_anuidade }}
+        </div>
+    </div>
+
+    <button type="submit" class="btn-action">Salvar</button>
+</form>
+
+
+</div>
+
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+
+{% endblock %}
+{% endblock %}

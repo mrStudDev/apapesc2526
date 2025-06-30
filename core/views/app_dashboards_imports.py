@@ -1,0 +1,2 @@
+from app_associados.models import AssociadoModel
+from app_anuidades.models import AnuidadeModel

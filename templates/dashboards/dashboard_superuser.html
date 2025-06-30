@@ -1,12 +1,15 @@
 
 {% extends 'base.html' %}
-
 {% load static %}
 {% block title %}SuperDash {% endblock %}
-{% block extra_css %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/dash_superuser.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/tabs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
 {% endblock %}
+
 <!--Bloco Página -->
 {% block content %}
 {% include 'components/navbar_superuser.html' %}
@@ -27,12 +30,125 @@
     </div>
 
     
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Bem-vindo ao Dashboard do Superusuário</h1>
-            <p>Este é o painel de controle para superusuários.</p>
+    <div class="dashboard-container">
+        <!--Tabs-->
+        <div class="tabs">
+            <button class="tab-link active" data-tab="superdash">SuperDash</button>
+            <button class="tab-link" data-tab="anuidades">Anuidades</button>
+
+
+        </div>
+
+        <div class="tab-content active" id="tab-superdash">
+            <div>
+                <h1>Bem-vindo ao Dashboard do Superusuário</h1>
+                <p>Este é o painel de controle para superusuários.</p>
+            </div>
+
+        </div>        
+
+        <div class="tab-content" id="tab-anuidades">
+            <header class="dashboard-header">
+                <h1>Anuidades</h1>
+                <div class="dashboard-links">
+                <a href="{% url 'app_anuidades:create_anuidade' %}" class="dashboard-link">➕ Cadastrar Anuidade</a>
+                -- <a href="{% url 'app_anuidades:list_anuidades' %}" class="dashboard-link">📄 Lista de Anuidades</a>
+                -- <a href="#" class="dashboard-link">📊 Lista Triangular</a>
+                -- <a href="#" class="dashboard-link">💳 Pagamentos Efetuados</a>
+                </div><br>
+                <div class="header-widgets">
+                    <div class="widget">
+                        <h2>Anuidades Lançadas</h2>
+                        <p class="widget-value">{{ qtd_anos_lancados }}</p>
+                    </div>
+                    <div class="widget">
+                        <h2>Qtd Aplicadas</h2>
+                        <p class="widget-value">{{ total_anuidades_aplicadas }}</p>
+                    </div>
+                    <div class="widget">
+                        <h2>Arrecadação</h2>
+                        <p class="widget-value">{{ total_valor_aplicado|floatformat:2 }}</p>
+                    </div>
+                </div>
+
+            </header>
+            <section class="dashboard-section">
+                <div class="section-content">
+                
+                    <div class="widget">
+                        <h2>Cadastrados</h2>
+                        <p class="widget-value">{{ total_cadastrados }}</p>
+                    </div>
+                    <div class="widget">
+                        <h2>Ativos</h2>
+                        <p class="widget-value">{{ associados_ativos }}</p>
+                    </div>
+                    <div class="widget">
+                        <h2>Aposentados</h2>
+                        <p class="widget-value">{{ associados_aposentados }}</p>
+                    </div>
+                    <div class="widget">
+                        <h2>Pagantes</h2>
+                        <p class="widget-value">{{ total_pagantes }}</p>
+                    </div>                    
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <div class="section-content">
+                    <div class="card">
+                        <h3>Valor Arrecado</h3>
+                        <p class="card-value">37</p>
+                    </div>
+                    <div class="card">
+                        <h3>Descontos</h3>
+                        <p class="card-value">48</p>
+                    </div>
+                    <div class="card">
+                        <h3>Inadimplentes</h3>
+                        <p class="card-value">1 102</p>
+                    </div>
+                    <div class="card">
+                        <h3>Em dia</h3>
+                        <p class="card-value">95</p>
+                    </div>
+                    <div class="card">
+                        <h3>Á Receber</h3>
+                        <p class="card-value">95</p>
+                    </div>                
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Lançamentos</h2>
+                <table class="table-list-small">
+                    <thead>
+                        <tr>
+                            <th>Ano</th>
+                            <th>Valor Unitário</th>
+                            <th>Qtd Aplicadas</th>
+                            <th>Valor Total Ano</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in dados_por_ano %}
+                        <tr>
+                            <td>{{ item.ano }}</td>
+                            <td>R$ {{ item.valor_unitario|floatformat:2 }}</td>
+                            <td>{{ item.qtd_aplicadas }}</td>
+                            <td>R$ {{ item.valor_total_ano|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4">Nenhuma anuidade lançada.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
         </div>
     </div>
-    <!-- Adicione mais conteúdo aqui conforme necessário -->
+
+{% block extra_js %}
+    <script src="{% static 'js/tabs.js' %}"></script>
+
+{% endblock %}
 {% endblock %}

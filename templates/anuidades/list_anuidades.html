@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Anuidades Lançadas{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container-small">
+    <h1>Lançamentos</h1>
+    <a href="{% url 'app_anuidades:create_anuidade' %}" class="btn-action btn-right">
+        Nova Anuidade
+    </a>
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <table class="table-list-small">
+        <thead>
+            <tr>
+                <th>Ano</th>
+                <th>Valor</th>
+                <th>Data Criaçãor</th>
+                <th>Total UN</th>
+                <th>Valor Total</th>
+                <th>Ações</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for anuidade in anuidades %}
+            <tr>
+                <td>{{ anuidade.ano }}</td>
+                <td>{{ anuidade.valor_anuidade }}</td>
+                <td>{{ anuidade.data_criacao|date:"d/m/Y H:i" }}</td>
+                <td>{{ anuidade.qtd_anuidades }}</td>
+                <td>{{ anuidade.valor_total_anuidades|floatformat:2 }}</td>
+                <td>
+                    <a href="#" title="Editar"><span class="material-icons icon-edit">edit</span></a>
+                    <a href="#" title="Excluir"><span class="material-icons icon-delete">delete</span></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhum Anuidade encontrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
