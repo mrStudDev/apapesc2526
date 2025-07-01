@@ -21,7 +21,7 @@ from django.db.models import Sum
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from PIL import Image
-
+from django.utils import timezone
 from django.apps import apps
 
 from django.contrib import messages

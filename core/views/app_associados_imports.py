@@ -18,7 +18,8 @@ from app_uploads.models import UploadsDocs
 from app_associados.drive_service import upload_file_to_drive, get_drive_service
 
 from app_anuidades.models import (
-    AnuidadeAssociado
+    AnuidadeAssociado,
+    AnuidadeModel
 )
 
 

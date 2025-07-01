@@ -103,9 +103,33 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
                 'total_descontos': total_descontos,
                 'valor_anuidade': valor_anuidade,
                 'status_pagamento': "Paga" if (total_pago + total_descontos) >= valor_anuidade else "Em aberto",
+                'status_anuidade': "Paga" if (total_pago + total_descontos) >= valor_anuidade else "Em aberto",  # opcional
             })
 
+        # Status válido para aplicar anuidades
+        status_ok = associado.status in ['associado_lista_ativo', 'associado_lista_aposentado']
 
+        # Pega todos os anos de anuidades já aplicadas a esse associado
+        anos_aplicados = set(
+            associado.anuidades_associados.values_list('anuidade__ano', flat=True)
+        )
+
+        # Anos lançados no sistema
+        anos_lancados = list(
+            AnuidadeModel.objects.order_by('ano').values_list('ano', flat=True)
+        )
+
+        # Descobre os anos que devem ser aplicados (da filiação até o ano atual)
+        if associado.data_filiacao:
+            ano_filiacao = associado.data_filiacao.year
+            ano_atual = timezone.now().year
+            anos_aplicaveis = [a for a in anos_lancados if ano_filiacao <= a <= ano_atual]
+        else:
+            anos_aplicaveis = []
+        # Anos faltando aplicar
+        anos_faltantes = set(anos_aplicaveis) - anos_aplicados
+
+        
         from django.contrib.contenttypes.models import ContentType
         from app_uploads.models import UploadsDocs
 
@@ -118,7 +142,45 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
 
         context['uploads_docs'] = uploads
         context['ultimas_anuidades'] = ultimas_anuidades
+        context['status_ok'] = status_ok
+        context['anos_faltantes'] = sorted(list(anos_faltantes))
+        context['deve_aplicar_anuidades'] = status_ok and anos_faltantes
+        context['msg_anuidades_aplicadas'] = not anos_faltantes        
+        
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        associado = self.object
+
+        # Só aplica se status ok e POST para aplicar_anuidades
+        status_ok = associado.status in ['associado_lista_ativo', 'associado_lista_aposentado']
+
+        if status_ok and 'aplicar_anuidades' in request.POST:
+            anos_atuais = set(
+                associado.anuidades_associados.values_list('anuidade__ano', flat=True)
+            )
+            anos_lancados = list(
+                AnuidadeModel.objects.order_by('ano').values_list('ano', flat=True)
+            )
+            ano_filiacao = associado.data_filiacao.year
+            ano_atual = timezone.now().year
+            anos_aplicaveis = [a for a in anos_lancados if ano_filiacao <= a <= ano_atual]
+            anos_faltantes = set(anos_aplicaveis) - anos_atuais
+
+            for ano in anos_faltantes:
+                anuidade = AnuidadeModel.objects.get(ano=ano)
+                AnuidadeAssociado.objects.create(
+                    anuidade=anuidade,
+                    associado=associado,
+                    valor_pago=Decimal('0.00'),
+                    pago=False
+                )
+            messages.success(request, f"Anuidades {', '.join(str(a) for a in anos_faltantes)} aplicadas com sucesso!")
+        else:
+            messages.warning(request, "Status do associado não permite aplicar anuidades.")
+
+        return redirect('app_associados:single_associado', pk=associado.pk)
 
 # -----------------------------------------------------------------------------------------
 

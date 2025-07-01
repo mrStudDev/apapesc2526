@@ -7,7 +7,8 @@ def dashboard(request):
     user = request.user
 
     if user.is_superuser:
-        return render(request, 'dashboards/dashboard_superuser.html')
+        # Redireciona para a view que tem o contexto!
+        return redirect('app_dashboards:super_dashboard')
     
     user_type_template_map = {
         'admin_associacao': 'dashboard_admin.html',

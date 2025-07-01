@@ -52,7 +52,7 @@
                 <h1>Anuidades</h1>
                 <div class="dashboard-links">
                 <a href="{% url 'app_anuidades:create_anuidade' %}" class="dashboard-link">➕ Cadastrar Anuidade</a>
-                -- <a href="{% url 'app_anuidades:list_anuidades' %}" class="dashboard-link">📄 Lista de Anuidades</a>
+                -- <a href="{% url 'app_anuidades:list_anuidades' %}" class="dashboard-link">📄 Lançamentos Anuidades</a>
                 -- <a href="#" class="dashboard-link">📊 Lista Triangular</a>
                 -- <a href="#" class="dashboard-link">💳 Pagamentos Efetuados</a>
                 </div><br>
@@ -98,23 +98,23 @@
                 <div class="section-content">
                     <div class="card">
                         <h3>Valor Arrecado</h3>
-                        <p class="card-value">37</p>
+                        <p class="card-value">{{ total_arrecadado|floatformat:2 }}</p>
                     </div>
                     <div class="card">
                         <h3>Descontos</h3>
-                        <p class="card-value">48</p>
+                        <p class="card-value">{{ total_descontos_concedidos|floatformat:2 }}</p>
                     </div>
                     <div class="card">
-                        <h3>Inadimplentes</h3>
-                        <p class="card-value">1 102</p>
+                        <h3>Anuidades Pagas</h3>
+                        <p class="card-value">{{ total_anuidades_pagas }}</p>
                     </div>
                     <div class="card">
-                        <h3>Em dia</h3>
-                        <p class="card-value">95</p>
+                        <h3>Anuidades Em Aberto</h3>
+                        <p class="card-value">{{ total_anuidades_nao_pagas }}</p>
                     </div>
                     <div class="card">
                         <h3>Á Receber</h3>
-                        <p class="card-value">95</p>
+                        <p class="card-value"> {{ valor_anuidades_aberto|floatformat:2 }}</p>
                     </div>                
                 </div>
             </section>

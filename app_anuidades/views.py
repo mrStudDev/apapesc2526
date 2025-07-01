@@ -110,10 +110,7 @@ class AnuidadeAssociadoSingleView(DetailView):
                     registrado_por=request.user,
                     comprovante_up=form.cleaned_data.get('comprovante_up')
                 )
-                aa.valor_pago += pagamento.valor
-                if aa.valor_pago >= aa.anuidade.valor_anuidade:
-                    aa.pago = True
-                aa.save()
+                aa.atualizar_status_pagamento()
                 
         elif 'descontar' in request.POST:
             form = DescontoAnuidadeForm(request.POST)
@@ -122,5 +119,6 @@ class AnuidadeAssociadoSingleView(DetailView):
                 desconto.anuidade_associado = aa
                 desconto.concedido_por = request.user
                 desconto.save()
+                aa.atualizar_status_pagamento()
                 
         return redirect(reverse('app_anuidades:anuidade_associado_singular', args=[associado.pk]))

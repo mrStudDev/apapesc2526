@@ -114,15 +114,27 @@ class AnuidadeAssociado(models.Model):
 
     def calcular_saldo(self):
         """Calcula o saldo devedor da anuidade."""
-        return max(self.anuidade.valor_anuidade - self.valor_pago, Decimal('0.00'))  # ✅ Agora acessamos `valor_anuidade` corretamente
+        return max(self.anuidade.valor_anuidade - self.valor_pago, Decimal('0.00')) 
 
 
     def dar_baixa(self, valor_baixa):
         """Dá baixa parcial ou total no valor da anuidade."""
         self.valor_pago += valor_baixa
-        if self.valor_pago >= self.anuidade.valor_anuidade:  # ✅ Comparação com o valor cheio da anuidade
+        if self.valor_pago >= self.anuidade.valor_anuidade:
             self.pago = True
         self.save()    
+
+    def atualizar_status_pagamento(self):
+        # Soma todos pagamentos e descontos
+        total_pago = self.pagamentos.aggregate(total=Sum('valor'))['total'] or Decimal('0.00')
+        total_descontos = self.descontos.aggregate(total=Sum('valor_desconto'))['total'] or Decimal('0.00')
+        valor_total = total_pago + total_descontos
+        if valor_total >= self.anuidade.valor_anuidade:
+            self.pago = True
+        else:
+            self.pago = False
+        self.valor_pago = total_pago
+        self.save(update_fields=['pago', 'valor_pago'])
 
 # Pagamento de uma Anuidade
 class Pagamento(models.Model):

@@ -117,7 +117,25 @@
             </div>
             <div>
                 <h2>Aplicações</h2>
-                <p><strong>Anuidade:</strong> Aplciada!</p>
+                {% if status_ok %}
+                    {% if deve_aplicar_anuidades %}
+                        <form method="post" style="margin: 15px 0;">
+                            {% csrf_token %}
+                            <button type="submit" name="aplicar_anuidades" class="btn btn-primary">
+                                Aplicar Anuidade(s) {{ anos_faltantes|join:", " }}
+                            </button>
+                        </form>
+                    {% elif msg_anuidades_aplicadas %}
+                        <div style="color:green;">
+                            Todas as anuidades já foram aplicadas a este associado!
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        Este associado ainda não está ativo/aposentado. Anuidades só podem ser aplicadas quando o status for válido.
+                    </div>
+                {% endif %}
+
                 <p><strong>Seguro Defeso</strong> Não Aplicado</p>
                 <p><strong>INSS</strong> Aplicado</p>
             </div>            
