@@ -105,6 +105,7 @@ class EditAssociadoForm(forms.ModelForm):
             'cnh_data_emissao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
 
             'municipio_circunscricao': forms.Select(),
+            'petrechos_pesca': forms.CheckboxSelectMultiple,
         }
 
     def __init__(self, *args, **kwargs):

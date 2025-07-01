@@ -218,3 +218,9 @@ class DescontoAnuidade(models.Model):
 
     def __str__(self):
         return f"Desconto de R$ {self.valor_desconto} para {self.anuidade_associado}"        
+    
+    def clean(self):
+        super().clean()
+        if self.anuidade_associado and self.anuidade_associado.pago:
+            raise ValidationError("Não é permitido lançar desconto em anuidade já quitada!")
+        

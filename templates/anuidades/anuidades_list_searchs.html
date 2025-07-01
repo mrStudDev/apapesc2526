@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista e Busca Anuidade{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container">
+
+    <h1>Pesquisa de Anuidades</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <form method="get" class="form-grid grid-5-cols" style="margin-bottom: 24px;">
+        <div class="form-group">
+            <label>Ano:
+                <select name="ano">
+                    <option value="">Todos</option>
+                    {% for a in anos %}
+                        <option value="{{ a }}" {% if filtros.ano|default:'' == a|stringformat:"s" %}selected{% endif %}>{{ a }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Associação:
+                <select name="associacao">
+                    <option value="">Todas</option>
+                    {% for assoc in associacoes %}
+                        <option value="{{ assoc.pk }}" {% if filtros.associacao|default:'' == assoc.pk|stringformat:"s" %}selected{% endif %}>{{ assoc.nome_fantasia }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Repartição:
+                <select name="reparticao">
+                    <option value="">Todas</option>
+                    {% for rep in reparticoes %}
+                        <option value="{{ rep.pk }}" {% if filtros.reparticao|default:'' == rep.pk|stringformat:"s" %}selected{% endif %}>{{ rep.nome_reparticao }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Status:
+                <select name="status">
+                    <option value="">Todos</option>
+                    <option value="em_dia" {% if filtros.status == 'em_dia' %}selected{% endif %}>Em dia</option>
+                    <option value="em_aberto" {% if filtros.status == 'em_aberto' %}selected{% endif %}>Em aberto (Ano Atual)</option>
+                    <option value="em_atraso" {% if filtros.status == 'em_atraso' %}selected{% endif %}>Em atraso (Anos anteriores)</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="form-group" style="align-self: end;">
+            <button type="submit">Buscar</button>
+        </div>
+    </form>
+
+
+    <table class="table-list">
+        <thead>
+            <tr>
+                <th>Ano</th>
+                <th>Associado</th>
+                <th>Data Filiação</th>
+                <th>Associação</th>
+                <th>Repartição</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in resultados %}
+                <tr>
+                    <td>{{ item.anuidade.ano }}</td>
+                    <td>
+                        <a href="{% url 'app_anuidades:anuidade_associado_singular' item.associado.pk %}">
+                            {{ item.associado.user.get_full_name }}
+                        </a>
+                    </td>
+
+                    <td>{{ item.associado.data_filiacao }}</td>
+                    <td>{{ item.associado.associacao.nome_fantasia }}</td>
+                    <td>{{ item.associado.reparticao.nome_reparticao }}</td>
+                    <td>
+                        {% if item.pago %}
+                            <span class="status-tag status-pago">Paga</span>
+                        {% else %}
+                            <span class="status-tag status-pendente">Em aberto</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">Nenhum resultado encontrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}    

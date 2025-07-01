@@ -22,10 +22,11 @@ class AnuidadeForm(forms.ModelForm):
 class PagamentoForm(forms.Form):
     valor = forms.DecimalField(max_digits=10, decimal_places=2, label='Valor Pago')
     comprovante_up = forms.FileField(required=False, label='Comprovante do Pagamento')
+
+
     
 # Formulário simples para Desconto
-class DescontoAnuidadeForm(forms.ModelForm):
-    class Meta:
-        model = DescontoAnuidade
-        fields = ['valor_desconto', 'motivo']
-        # OU: exclude = []   (se quiser todos os campos, mas normalmente fields é melhor)        
+class DescontoAnuidadeForm(forms.Form):
+    valor_desconto = forms.DecimalField(max_digits=10, decimal_places=2, label='Valor Descontado')
+    motivo = forms.CharField(max_length=1000, label='Descrição do Motivo')
+

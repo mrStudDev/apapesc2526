@@ -10,13 +10,13 @@ html, body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: #1f2937; /* Cinza escuro */
+    color: #25303f; /* Cinza escuro */
     margin-bottom: 0.75rem;
 }
 
 p {
     margin-bottom: 1rem;
-    color: #374151;
+    color: #5b697e;
 }
 
 a {

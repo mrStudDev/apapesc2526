@@ -411,14 +411,15 @@
         <div class="checkbox-group">
             <label>Petrechos da Pesca</label>
             <div class="checkbox-grid">
-                {% for petrecho in form.fields.petrechos_pesca.queryset %}
-                    <label>
-                        <input type="checkbox" name="petrechos_pesca"
-                            value="{{ petrecho.id }}"
-                            {% if petrecho in form.instance.petrechos_pesca.all %}checked{% endif %}>
-                        {{ petrecho.nome }}
-                    </label>
-                {% endfor %}
+{% for petrecho in form.fields.petrechos_pesca.queryset %}
+    <label>
+        <input type="checkbox" name="petrechos_pesca"
+            value="{{ petrecho.id }}"
+            {% if petrecho in form.initial.petrechos_pesca %}checked{% endif %}>
+        {{ petrecho.nome }}
+    </label>
+{% endfor %}
+
             </div>
         </div>
       

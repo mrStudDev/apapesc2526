@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Anuidades Associado{% endblock title%}
+{% block title %}Anuidades do Associado{% endblock title%}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
@@ -17,23 +17,39 @@
 
 <div class="anuidades-container">
     <h1>Anuidades do Associado: {{ associado.user.get_full_name }}</h1>
-<div class="associado-header">
-    <div class="associado-info">
-        <a href="{% url 'app_associados:single_associado' associado.pk %}" class="link-associado">📌 Single Associado</a>
-        <div class="dados-associado">
-            <span><strong>Associação:</strong> {{ associado.associacao.nome_fantasia }}</span>
-            <span><strong>Repartição:</strong> {{ associado.reparticao.nome_reparticao }}</span>
-            <span><strong>Celular:</strong> {{ associado.celular }}</span>
-            <span><strong>Filiação:</strong> {{ associado.data_filiacao }}</span>
-        </div>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
     </div>
 
-    <div class="anuidades-totais">
-        <span><strong>Total Pago:</strong> R$ {{ total_pago_geral|floatformat:2 }}</span>
-        <span><strong>Total Descontado:</strong> R$ {{ total_descontos_geral|floatformat:2 }}</span>
-        <span><strong>Saldo Devedor:</strong> R$ {{ saldo_devedor_geral|floatformat:2 }}</span>
+    <div class="associado-header">
+        <div class="associado-info">
+            <a href="{% url 'app_associados:single_associado' associado.pk %}" class="link-associado">📌 Single Associado</a>
+            <div class="dados-associado">
+                <span><strong>Associação:</strong> {{ associado.associacao.nome_fantasia }}</span>
+                <span><strong>Repartição:</strong> {{ associado.reparticao.nome_reparticao }}</span>
+                <span><strong>Celular:</strong> {{ associado.celular }}</span>
+                <span><strong>Filiação:</strong> {{ associado.data_filiacao }}</span>
+            </div>
+        </div>
+
+        <div class="anuidades-totais">
+            <span><strong>Total Pago:</strong> R$ {{ total_pago_geral|floatformat:2 }}</span>
+            <span><strong>Total Descontado:</strong> R$ {{ total_descontos_geral|floatformat:2 }}</span>
+            <span><strong>Saldo Devedor:</strong> R$ {{ saldo_devedor_geral|floatformat:2 }}</span>
+        </div>
     </div>
-</div>
 
     {% for info in anuidade_infos %}
         <div class="anuidade-detalhes">        
@@ -60,9 +76,7 @@
                 </tbody>
             </table>
 
-
             <div style="flex: 1 1 45%;">
-                <h3>Pagamentos: {{ info.aa.anuidade.ano }}</h3>
                 <ul>
                     {% for p in info.pagamentos %}
                     <li class="pagamento-item">
@@ -80,11 +94,12 @@
                         </div>
                     </li>
                     <hr>
-
                     {% empty %}
                         <li>Nenhum pagamento registrado.</li>
                     {% endfor %}
                 </ul>
+                <h3>Pagamentos: {{ info.aa.anuidade.ano }}</h3>
+            
                 {% if info.status_anuidade == "PAGA" %}
                     <div style="margin-top:20px; text-align:center;">
                         <button type="button" class="btn-quitacao" onclick="alert('Aqui você gera o recibo de quitação de toda a anuidade!')">
@@ -93,17 +108,20 @@
                         <br>
                         <span style="font-size: 0.95em; color: #008000;">Anuidade quitada!</span>
                     </div>
-                {% endif %}                  
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input type="hidden" name="anuidade_id" value="{{ info.aa.pk }}">
-                    <div class="form-container">
-                        <div class="form-group">
-                            {{ info.pagamento_form.as_p }}
+                {% endif %}   
+
+                {% if info.status_anuidade != "PAGA" %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="anuidade_id" value="{{ info.aa.pk }}">
+                        <div class="form-container">
+                            <div class="form-group">
+                                {{ info.pagamento_form.as_p }} 
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" name="pagar">Lançar Pagamento</button>
-                </form>
+                        <button type="submit" name="pagar">Lançar Pagamento</button>
+                    </form>
+                {% endif %}
             </div>
 
             <!-- BLOCO DE DESCONTOS -->
@@ -117,16 +135,18 @@
                     {% endfor %}
                 </ul>              
 
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="anuidade_id" value="{{ info.aa.pk }}">
-                    <div class="form-container">
-                        <div class="form-group">
-                            {{ info.desconto_form.as_p }}
+                {% if info.status_anuidade != "PAGA" %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="anuidade_id" value="{{ info.aa.pk }}">
+                        <div class="form-container">
+                            <div class="form-group">
+                                {{ info.desconto_form.as_p }}
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" name="descontar">Lançar Desconto</button>
-                </form>                
+                        <button type="submit" name="descontar">Lançar Desconto</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     {% endfor %}

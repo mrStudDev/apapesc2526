@@ -12,5 +12,7 @@ from app_anuidades.forms import (
 )
 
 from app_associados.models import (
-    AssociadoModel
+    AssociadoModel,
+    AssociacaoModel,
+    ReparticoesModel
 )

@@ -5,7 +5,6 @@ from core.views.app_anuidades_imports import *
 
 
 
-
 class CreateAnuidadeView(CreateView):
     model = AnuidadeModel
     form_class = AnuidadeForm
@@ -48,6 +47,14 @@ class AnuidadeAssociadoSingleView(DetailView):
     template_name = 'anuidades/anuidade_associado.html'
     context_object_name = 'associado'
 
+    def form_valid(self, form):
+        messages.success(self.request, f"pagemento Registrado com sucesso!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro registrar o pagamento. Verifique os campos obrigatórios e o formato dos dados.')
+        return super().form_invalid(form)    
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         associado = self.object
@@ -100,25 +107,151 @@ class AnuidadeAssociadoSingleView(DetailView):
         
         anuidade_id = request.POST.get('anuidade_id')
         aa = anuidades.get(pk=anuidade_id)
-
+        
         if 'pagar' in request.POST:
             form = PagamentoForm(request.POST, request.FILES)
             if form.is_valid():
-                pagamento = Pagamento.objects.create(
+                pagamento = Pagamento(
                     anuidade_associado=aa,
                     valor=form.cleaned_data['valor'],
-                    registrado_por=request.user,
-                    comprovante_up=form.cleaned_data.get('comprovante_up')
+                    comprovante_up=form.cleaned_data.get('comprovante_up'),
+                    registrado_por=request.user
                 )
-                aa.atualizar_status_pagamento()
-                
-        elif 'descontar' in request.POST:
+                try:
+                    pagamento.full_clean()
+                    pagamento.save()
+                    aa.atualizar_status_pagamento()
+                    messages.success(request, "Pagamento lançado com sucesso!")
+
+                except ValidationError as e:
+                    messages.error(request, "; ".join(e.messages))
+                    form.add_error(None, "; ".join(e.messages))
+                    context = self.get_context_data()
+                    for info in context['anuidade_infos']:
+                        if info['aa'].pk == aa.pk:
+                            info['pagamento_form'] = form
+                    return self.render_to_response(context)                
+            else:
+                for erro in form.errors.values():
+                    messages.error(request, erro)
+                return self.get(request, *args, **kwargs)
+
+
+        if 'descontar' in request.POST:
             form = DescontoAnuidadeForm(request.POST)
             if form.is_valid():
-                desconto = form.save(commit=False)
-                desconto.anuidade_associado = aa
-                desconto.concedido_por = request.user
-                desconto.save()
-                aa.atualizar_status_pagamento()
+                # BLOQUEIA desconto em anuidade quitada:
+                if aa.pago:
+                    msg = "Não é permitido lançar desconto em anuidade já quitada!"
+                    messages.error(request, msg)
+                    form.add_error(None, msg)
+                    context = self.get_context_data()
+                    for info in context['anuidade_infos']:
+                        if info['aa'].pk == aa.pk:
+                            info['desconto_form'] = form
+                    return self.render_to_response(context)
                 
+                # Se não está paga, pode lançar desconto normalmente
+                desconto = DescontoAnuidade(
+                    anuidade_associado=aa,
+                    valor_desconto=form.cleaned_data['valor_desconto'],
+                    motivo=form.cleaned_data['motivo'],
+                    concedido_por=request.user
+                )
+                try:
+                    desconto.full_clean()
+                    desconto.save()
+                    aa.atualizar_status_pagamento()
+                    messages.success(request, "Desconto lançado com sucesso!")
+                except ValidationError as e:
+                    messages.error(request, "; ".join(e.messages))
+                    form.add_error(None, "; ".join(e.messages))
+                    context = self.get_context_data()
+                    for info in context['anuidade_infos']:
+                        if info['aa'].pk == aa.pk:
+                            info['desconto_form'] = form
+                    return self.render_to_response(context)
+            else:
+                for erro in form.errors.values():
+                    messages.error(request, erro)
+                context = self.get_context_data()
+                for info in context['anuidade_infos']:
+                    if info['aa'].pk == aa.pk:
+                        info['desconto_form'] = form
+                return self.render_to_response(context)
+
+
+            
         return redirect(reverse('app_anuidades:anuidade_associado_singular', args=[associado.pk]))
+
+
+
+class AnuidadesListaBuscaView(ListView):
+    model = AnuidadeAssociado
+    template_name = 'anuidades/anuidades_list_searchs.html'
+    context_object_name = 'resultados'
+    paginate_by = 30
+
+    def get_queryset(self):
+        # Parâmetros de busca
+        ano = self.request.GET.get('ano')
+        associacao_id = self.request.GET.get('associacao')
+        reparticao_id = self.request.GET.get('reparticao')
+        status = self.request.GET.get('status')  # em_dia, em_aberto, em_atraso
+
+        # Base: todos os AnuidadeAssociado
+        queryset = AnuidadeAssociado.objects.select_related('associado', 'anuidade', 'associado__associacao', 'associado__reparticao')
+
+        # Filtro por ano/anuidade
+        if ano:
+            queryset = queryset.filter(anuidade__ano=ano)
+
+        # Filtro por associação
+        if associacao_id:
+            queryset = queryset.filter(associado__associacao_id=associacao_id)
+
+        # Filtro por repartição
+        if reparticao_id:
+            queryset = queryset.filter(associado__reparticao_id=reparticao_id)
+
+        # Busca por status especial
+        ano_atual = timezone.now().year
+
+
+        if status == 'em_dia':
+            ano_atual = timezone.now().year
+            em_dia_ids = AssociadoModel.objects.exclude(
+                anuidades_associados__anuidade__ano__lte=ano_atual,
+                anuidades_associados__pago=False
+            ).values_list('pk', flat=True)
+            queryset = queryset.filter(
+                associado_id__in=em_dia_ids,
+                anuidade__ano=ano_atual,  # <--- Mostra só do ano atual!
+            )
+
+
+        elif status == 'em_aberto':
+            # Apenas anuidades do ano atual NÃO pagas
+            queryset = queryset.filter(anuidade__ano=ano_atual, pago=False)
+
+        elif status == 'em_atraso':
+            # Anuidades de anos anteriores ao atual em aberto
+            queryset = queryset.filter(anuidade__ano__lt=ano_atual, pago=False)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Para preencher selects/filtros do template:
+        context['anos'] = AnuidadeModel.objects.values_list('ano', flat=True).order_by('-ano')
+        context['associacoes'] = AssociacaoModel.objects.all()
+        context['reparticoes'] = ReparticoesModel.objects.all()
+        context['ano_atual'] = timezone.now().year
+        # Mantém os filtros selecionados
+        context['filtros'] = {
+            'ano': self.request.GET.get('ano') or '',
+            'associacao': self.request.GET.get('associacao') or '',
+            'reparticao': self.request.GET.get('reparticao') or '',
+            'status': self.request.GET.get('status') or '',
+        }
+        return context
