@@ -139,6 +139,11 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
             proprietario_content_type=content_type,
             proprietario_object_id=associado.pk
         ).order_by('tipo__nome')
+        
+        # INSS:
+        context['guias_inss'] = INSSGuiaDoMes.objects.filter(
+            associado=associado
+        ).order_by('-ano', '-mes', '-rodada')        
 
         context['uploads_docs'] = uploads
         context['ultimas_anuidades'] = ultimas_anuidades
@@ -146,6 +151,9 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
         context['anos_faltantes'] = sorted(list(anos_faltantes))
         context['deve_aplicar_anuidades'] = status_ok and anos_faltantes
         context['msg_anuidades_aplicadas'] = not anos_faltantes        
+        context['guias_inss'] = INSSGuiaDoMes.objects.filter(associado=associado).order_by('-ano', '-mes', '-rodada')
+        context['STATUS_EMISSAO_INSS'] = STATUS_EMISSAO_INSS
+        context['ACESSO_CHOICES'] = ACESSO_CHOICES
         
         return context
 
@@ -153,6 +161,28 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
         self.object = self.get_object()
         associado = self.object
 
+        guia_id = request.POST.get('guia_id')
+        if guia_id:
+            try:
+                guia = INSSGuiaDoMes.objects.get(id=guia_id, associado=associado)
+                status_emissao = request.POST.get('status_emissao')
+                status_acesso = request.POST.get('status_acesso')
+                mudou = False
+                if status_emissao and status_emissao != guia.status_emissao:
+                    guia.status_emissao = status_emissao
+                    mudou = True
+                if status_acesso and status_acesso != guia.status_acesso:
+                    guia.status_acesso = status_acesso
+                    mudou = True
+                if mudou:
+                    guia.save(update_fields=['status_emissao', 'status_acesso'])
+                    messages.success(request, f"Status da guia {guia.get_mes_display()}/{guia.ano} atualizado!")
+                else:
+                    messages.info(request, "Nada foi alterado.")
+            except INSSGuiaDoMes.DoesNotExist:
+                messages.error(request, "Guia não encontrada para edição.")
+
+                
         # Só aplica se status ok e POST para aplicar_anuidades
         status_ok = associado.status in ['associado_lista_ativo', 'associado_lista_aposentado']
 

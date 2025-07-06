@@ -115,6 +115,7 @@
                     </div>
                 {% endif %}
             </div>
+
             <div>
                 <h2>Aplicações</h2>
                 {% if status_ok %}
@@ -138,43 +139,43 @@
 
                 <p><strong>Seguro Defeso</strong> Não Aplicado</p>
                 <p><strong>INSS</strong> Aplicado</p>
-            </div>            
+            </div>  
+
             <div>
                 <h2>Financeiro</h2>
                 <a href="{% url 'app_anuidades:anuidade_associado_singular' associado.pk %}" class="upload-link">
                     📅 Ver anuidades e baixar/descontar
                 </a>
-            </div>
 
-            <div class="mini-tabela-anuidades">
-                <small>Últimas Anuidades</small>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Ano</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in ultimas_anuidades %}
-                        <tr>
-                            <td>{{ item.ano }}</td>
-                            <td>
-                            <span class="status-tag {% if item.status_pagamento == 'Paga' %}status-pago{% else %}status-pendente{% endif %}">
-                                {{ item.status_pagamento }}
-                            </span>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="2">Sem dados disponíveis.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
+                <div class="mini-tabela-anuidades">
+                    <small>Últimas Anuidades</small>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ano</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in ultimas_anuidades %}
+                            <tr>
+                                <td>{{ item.ano }}</td>
+                                <td>
+                                <span class="status-tag {% if item.status_pagamento == 'Paga' %}status-pago{% else %}status-pendente{% endif %}">
+                                    {{ item.status_pagamento }}
+                                </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="2">Sem dados disponíveis.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>            
         </div>
     </div>
+
     <!--Dados Pessoais-->
     <div class="tab-content" id="tab-pessoais">
         <div class="detail-section multi-cols">
@@ -537,15 +538,67 @@
 
   
 
-    <!--Produção Anual-->
+    <!--Produção INSS e DEFESO-->
     <div class="tab-content" id="tab-producao">
         <div class="detail-section full-width">
-        <h2>Produção Anual</h2>
-        <p>Artigos publicados em 2024: 12</p>
-        <p>Participação em eventos: 5</p>
-        <p>Voluntariado: 40 horas</p>
+        <h2>Guias INSS</h2>
+        <table class="table table-sm" style="width: auto;">
+            <thead>
+                <tr>
+                    <th>Mês/Ano</th>
+                    <th>Status Emissão</th>
+                    <th>Status Acesso</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for guia in guias_inss %}
+                    <tr>
+                        <form method="post" style="display: contents;">
+                            {% csrf_token %}
+                            <input type="hidden" name="guia_id" value="{{ guia.id }}">
+                            <td>{{ guia.get_mes_display }}/{{ guia.ano }}</td>
+                            <td>
+                                <div style="display: flex; gap: 6px; background: #f2faff; border-radius: 4px; padding: 4px 8px;">
+                                {% for value, label in STATUS_EMISSAO_INSS %}
+                                    <label style="font-weight: 400; margin: 0 3px 0 0;">
+                                        <input type="radio" name="status_emissao" value="{{ value }}" {% if guia.status_emissao == value %}checked{% endif %}>
+                                        {{ label }}
+                                    </label>
+                                {% endfor %}
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 6px; background: #f6f6f9; border-radius: 4px; padding: 4px 8px;">
+                                {% for value, label in ACESSO_CHOICES %}
+                                    <label style="font-weight: 400; margin: 0 3px 0 0;">
+                                        <input type="radio" name="status_acesso" value="{{ value }}" {% if guia.status_acesso == value %}checked{% endif %}>
+                                        {{ label }}
+                                    </label>
+                                {% endfor %}
+                                </div>
+                            </td>
+                            <td>
+                                <button type="submit" onclick="saveTabHash(this)">Salvar</button>
+
+                            </td>
+                        </form>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">Nenhuma guia encontrada.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
         </div>
+        <div class="detail-section full-width">
+            <h2>Seguro Defeso</h2>
+            <p>Artigos publicados em 2024: 12</p>
+            <p>Participação em eventos: 5</p>
+            <p>Voluntariado: 40 horas</p>
+        </div>        
     </div>
+
     <div class="tab-content" id="tab-anotacoes">
         <div class="detail-section full-width">
             <h2>Anotações</h2>
