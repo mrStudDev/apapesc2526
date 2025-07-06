@@ -17,6 +17,19 @@ class LancamentosINSSListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        ano = self.request.GET.get('ano') or timezone.now().year
+        mes = self.request.GET.get('mes') or timezone.now().strftime('%m')
+        # Descubra a rodada atual (igual já faz)
+        rodada = INSSGuiaDoMes.objects.filter(ano=ano, mes=mes).aggregate(Max('rodada'))['rodada__max'] or 1
+        # Verifica se há qualquer guia em processamento
+        tem_processamento = INSSGuiaDoMes.objects.filter(
+            ano=ano, mes=mes, rodada=rodada, em_processamento_por__isnull=False
+        ).exists()
+        context['tem_processamento'] = tem_processamento
+        context['ano_selecionado'] = ano
+        context['mes_selecionado'] = mes        
+        
         context['anos'] = range(2023, timezone.now().year + 2)
         context['meses'] = MESES
         context['ano_selecionado'] = int(self.request.GET.get('ano', timezone.now().year))

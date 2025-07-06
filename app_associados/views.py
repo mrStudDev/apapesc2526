@@ -170,6 +170,7 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
         self.object = self.get_object()
         associado = self.object
 
+        # Busca Guias do Associado
         guia_id = request.POST.get('guia_id')
         if guia_id:
             try:
@@ -191,10 +192,9 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
             except INSSGuiaDoMes.DoesNotExist:
                 messages.error(request, "Guia não encontrada para edição.")
 
-        # NOVA LÓGICA: aplicar INSS em todos os meses lançados
+        # Aplica as Guias do INSS ao Associado
         if 'aplicar_inss' in request.POST and associado.recolhe_inss == 'Sim':
-            # Pega todos os meses/anos já lançados no sistema
-            from app_inss.models import INSSGuiaDoMes
+            # Pega todos os meses/anos já lançados no sistema e aplica
             meses_anos_rodadas = INSSGuiaDoMes.objects.values_list('ano', 'mes', 'rodada').distinct()
             criados = 0
             for ano, mes, rodada in meses_anos_rodadas:
@@ -212,7 +212,6 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
             else:
                 messages.info(request, 'Nenhuma nova guia INSS criada: o associado já estava incluído em todas as guias.')
             return redirect('app_associados:single_associado', pk=associado.pk)
-
 
                 
         # Só aplica se status ok e POST para aplicar_anuidades
