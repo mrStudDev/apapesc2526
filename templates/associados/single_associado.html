@@ -137,8 +137,26 @@
                     </div>
                 {% endif %}
 
-                <p><strong>Seguro Defeso</strong> Não Aplicado</p>
-                <p><strong>INSS</strong> Aplicado</p>
+                <!-- BLOCO PARA INSS -->
+                {% if associado.recolhe_inss == 'Sim' %}
+                    {% if inss_aplicado %}
+                        <div style="color:green;">
+                            Todas as guias INSS já foram aplicadas a este associado!
+                        </div>
+                    {% else %}
+                        <form method="post" style="margin: 15px 0;">
+                            {% csrf_token %}
+                            <button type="submit" name="aplicar_inss" class="btn btn-success">
+                                Incluir em todas Guias INSS lançadas
+                            </button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <div style="color:#888;">
+                        Associado não recolhe INSS.
+                    </div>
+                {% endif %}
+                <p><strong>Seguro Defeso</strong> Não Aplicado</p>                
             </div>  
 
             <div>

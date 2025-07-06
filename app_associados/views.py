@@ -145,6 +145,15 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
             associado=associado
         ).order_by('-ano', '-mes', '-rodada')        
 
+        # INSS já aplicado? (Ou seja: este associado já tem guia para TODOS os meses lançados?)
+        meses_anos_rodadas = INSSGuiaDoMes.objects.values_list('ano', 'mes', 'rodada').distinct()
+        inss_faltando = 0
+        for ano, mes, rodada in meses_anos_rodadas:
+            if not INSSGuiaDoMes.objects.filter(associado=associado, ano=ano, mes=mes, rodada=rodada).exists():
+                inss_faltando += 1
+                break
+        context['inss_aplicado'] = (inss_faltando == 0)
+    
         context['uploads_docs'] = uploads
         context['ultimas_anuidades'] = ultimas_anuidades
         context['status_ok'] = status_ok
@@ -181,6 +190,29 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
                     messages.info(request, "Nada foi alterado.")
             except INSSGuiaDoMes.DoesNotExist:
                 messages.error(request, "Guia não encontrada para edição.")
+
+        # NOVA LÓGICA: aplicar INSS em todos os meses lançados
+        if 'aplicar_inss' in request.POST and associado.recolhe_inss == 'Sim':
+            # Pega todos os meses/anos já lançados no sistema
+            from app_inss.models import INSSGuiaDoMes
+            meses_anos_rodadas = INSSGuiaDoMes.objects.values_list('ano', 'mes', 'rodada').distinct()
+            criados = 0
+            for ano, mes, rodada in meses_anos_rodadas:
+                guia, created = INSSGuiaDoMes.objects.get_or_create(
+                    associado=associado,
+                    ano=ano,
+                    mes=mes,
+                    rodada=rodada,
+                    defaults={'status_emissao': 'pendente'}
+                )
+                if created:
+                    criados += 1
+            if criados:
+                messages.success(request, f'{criados} guias INSS aplicadas ao associado!')
+            else:
+                messages.info(request, 'Nenhuma nova guia INSS criada: o associado já estava incluído em todas as guias.')
+            return redirect('app_associados:single_associado', pk=associado.pk)
+
 
                 
         # Só aplica se status ok e POST para aplicar_anuidades
@@ -289,7 +321,7 @@ class AssociadoListView(LoginRequiredMixin, ListView):
     model = AssociadoModel
     template_name = 'associados/list_associados.html'
     context_object_name = 'associados'
-
+    ordering = ['user__first_name', 'user__last_name']
 
 
 class AssociadoHistoricoView(DetailView):
