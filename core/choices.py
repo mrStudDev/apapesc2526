@@ -156,11 +156,45 @@ ESCOLARIDADE_CHOICES = [
     ('Ensino Superior', 'Ensino Superior'),
     ('Undefined ', 'Undefined'),
 ]
+
 RECOLHE_INSS_CHOICES = [
     ('Sim', 'Sim'),
     ('Não', 'Não'),
     ('Undefined ', 'Undefined'),
 ]
+MESES = [
+    ('04', 'Abril'),
+    ('05', 'Maio'),
+    ('06', 'Junho'),
+    ('07', 'Julho'),
+    ('08', 'Agosto'),
+    ('09', 'Setembro'),
+    ('10', 'Outubro'),
+    ('11', 'Novembro'),
+
+]
+STATUS_EMISSAO_INSS = [
+    ('pendente', 'Pendente'),
+    ('emitido', 'Emitido'),
+    ('pago', 'Pago'),
+    ('atrasada', 'Atrasada'),
+]
+
+ACESSO_CHOICES = [
+    ('validar_codigo_acesso', 'Validar Código Acesso'),
+    ('senha_invalida', 'Senha Inválida'),
+    ('nivel_conta_insuficiente', 'Nível Conta Insuficiente'),
+    ('sem_caepf', 'Sem CAEPF'),
+    ('sem_login', 'Sem Login'),
+    ('ok', 'OK'),
+]
+STATUS_PROCESSAMENTO = (
+    ('usuario_processando', 'Usuário Processando'),
+    ('Processada', 'Processada'),
+    ('aguardando_processamento', 'Aguardando Processamento'),
+)
+
+
 SEGURO_DEFESO_CHOICES = [
     ('Não Recebe', 'Não Recebe'),
     ('Recebe', 'Recebe'),
@@ -213,6 +247,7 @@ STATUS_CHOICES = [
     ('extra_associado', 'Extra Associado(a)'),
     ('desassociado', 'Desassociado(a)'),
 ]
+
 ESPECIES_MARITIMAS = [
     ('Abrótea', 'Abrótea (Phycis phycis)'),
     ('Anchova', 'Anchova (Pomatomus saltatrix)'),

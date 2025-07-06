@@ -30,6 +30,7 @@ urlpatterns = [
     path('uploads/', include('app_uploads.urls', namespace='app_uploads')),
     path('anuidades/', include('app_anuidades.urls', namespace='app_anuidades')),
     path('dashboards/', include('app_dashboards.urls', namespace='app_dashboards')),
+    path('inss', include('app_inss.urls', namespace='app_inss')),
 ]
 
 if settings.DEBUG:

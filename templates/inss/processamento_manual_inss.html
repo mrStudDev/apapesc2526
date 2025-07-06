@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Cargos{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+    <div class="lista-container-small">
+
+        <div id="toast-container">
+            {% for message in messages %}
+                {% with message.tags as tag %}
+                    <div class="toast 
+                        {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                        {% elif 'info' in tag %}toast-info
+                        {% elif 'warning' in tag %}toast-warning
+                        {% else %}toast-info{% endif %}">
+                        <span>{{ message }}</span>
+                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <h2 style="margin-bottom: 16px;">📄 Processamento Manual INSS - Guias do Mês de {{ guia.get_mes_display }}:</h2>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem; margin-bottom: 24px;">
+            <div style="display: flex; flex-wrap: wrap;">
+                <div>
+                    <strong>👤 Associado:</strong> {{ guia.associado.user.get_full_name }}
+                </div>
+                <div>
+                    <strong>📌 Vínculos:</strong> {{ guia.associado.associacao.nome_fantasia }} |
+                    {{ guia.associado.reparticao.nome_reparticao }} |
+                    {{ guia.associado.user.user_type }}
+                </div>
+                <div>
+                    <strong>📆 Mês/Ano:</strong> {{ guia.get_mes_display }}/{{ guia.ano }} |
+                    <strong>Rodada:</strong> {{ guia.rodada }}
+                </div>
+            </div>
+
+            {% if processamento %}
+            <div style="background: #f9f9f9; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 6px;">
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                    <div>
+                        <strong>🔁 Processando:</strong> {{ guia.associado.user.get_full_name }} |
+                        <strong>Por:</strong> {{ guia.em_processamento_por }} |
+                        <strong>Rodada:</strong> {{ processamento.rodada }}
+                    </div>
+                    <div>
+                        <strong>🗓 Referência:</strong> {{ processamento.get_mes_display }}/{{ processamento.ano }}
+                        {% if guia_index and total_guias %}
+                            | <strong>Guia:</strong> {{ guia_index }}/{{ total_guias }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if usuarios_em_processamento %}
+                <div style="margin-top: 6px;">
+                    <strong>👥 Usuários em processamento:</strong>
+                    {{ usuarios_em_processamento|join:", " }}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <div style="display: flex; flex-wrap: wrap;">
+                <!-- CPF -->
+                <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                    <span id="cpf-{{ guia.associado.pk }}" style="color: #222;">
+                        <strong style="font-weight: 600;">CPF:</strong> {{ guia.associado.cpf }}
+                    </span>
+                    <button onclick="copyToClipboard('cpf-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                        <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                    </button>
+                </div>
+
+                <!-- Senha Gov -->
+                <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                    <span id="senha_gov-{{ guia.associado.pk }}" style="color: #222;">
+                        <strong style="font-weight: 600;">Senha Gov:</strong> {{ guia.associado.senha_gov }}
+                    </span>
+                    <button onclick="copySenhas('senha_gov-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                        <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                    </button>
+                </div>
+
+                <!-- Celular -->
+                <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                    <span id="celular-{{ guia.associado.pk }}" style="color: #222;">
+                        <strong style="font-weight: 600;">Celular:</strong> {{ guia.associado.celular_correspondencia }}
+                    </span>
+                    <button onclick="copyToClipboard('celular-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar Celular">
+                        <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                    </button>
+                </div>
+
+                <!-- Nome + Mês Atual -->
+                <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                    <span id="nome_mes-{{ guia.associado.pk }}" style="color: #222;">
+                        <strong style="font-weight: 600;">Nome e Mês:</strong>
+                        {{ guia.associado.user.get_full_name}}_{{ guia.get_mes_display|slugify }}
+                    </span>
+
+                </div>
+                <div class="recadinho-apapesc" style="
+                    display: flex; align-items: center; gap: 10px;
+                    padding: 6px 14px; margin-bottom: 8px;
+                    box-shadow: 0 1px 5px 0 #0001;">
+                    <span id="recado-apapesc-{{ guia.id }}">
+                        APAPESC - Guia do mês de {{ guia.get_mes_display|capfirst }} ❤️
+                    </span>
+                    <button onclick="copySenhas('recado-apapesc-{{ guia.id }}', this)" class="copy-btn" title="Copiar Recado" style="margin-left: 3px;">
+                        <i class="material-icons" style="font-size: 19px; color: #d91627;">content_copy</i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <form method="post" class="form-container">
+            {% csrf_token %}
+            <input type="hidden" name="guia_id" value="{{ guia.id }}">
+
+            <div class="form-group">
+                <label>Status da Emissão do Mês Atual:</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+                    {% for value, label in STATUS_EMISSAO_INSS %}
+                        <label style="display: flex; align-items: center; gap: 6px; font-weight: 500;">
+                            <input type="radio" name="status_emissao" value="{{ value }}"
+                                {% if guia.status_emissao == value %}checked{% endif %}>
+                            {{ label }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if guias_anteriores %}
+                <div class="form-group" style="margin-top: 2em;">
+                    <p style="margin-bottom: 12px;"><strong>Atualizar meses anteriores:</strong></p>
+                    <table class="table-list" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left; padding: 8px;">Mês</th>
+                                <th style="text-align: left; padding: 8px;">Status da Emissão</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for antiga in guias_anteriores %}
+                                <tr style="border-bottom: 1px solid #e5e7eb;">
+                                    <td style="padding: 8px;">{{ antiga.get_mes_display }}/{{ antiga.ano }}</td>
+                                    <td style="padding: 8px;">
+                                        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                                            {% for value, label in STATUS_EMISSAO_INSS %}
+                                                <label style="
+                                                    display: flex; align-items: center; gap: 4px;
+                                                    font-weight: 500;
+                                                    {% if value == 'pago' %} color: #23a023;
+                                                    {% elif value == 'emitido' %} color: #2586cc;
+                                                    {% elif value == 'pendente' %} color: #a08415;
+                                                    {% endif %}
+                                                ">
+                                                    <input type="radio"
+                                                        name="status_emissao_{{ antiga.id }}"
+                                                        value="{{ value }}"
+                                                        {% if antiga.status_emissao == value %}checked{% endif %}>
+                                                    {{ label }}
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            <br><div class="form-group" style="margin-top: 12px;">
+                <label>Status do Acesso:</label>
+                <div style="display: flex; gap: 4px; flex-wrap: nowrap; white-space: nowrap;">
+                    {% for value, label in ACESSO_CHOICES %}
+                        <label style="display: flex; align-items: center; gap: 4px; margin: 0; white-space: nowrap;">
+                            <input type="radio" name="status_acesso" value="{{ value }}"
+                                {% if guia.status_acesso == value %}checked{% endif %}>
+                            {{ label }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <small>
+                    <b>Criado em:</b> {{ guia.criado_em|date:"d/m/Y H:i" }} |
+                    <b>Atualizado em:</b> {{ guia.atualizado_em|date:"d/m/Y H:i" }}
+                </small>
+            </div>
+            <br>
+            <button type="submit">Salvar e Ir para Próximo</button>
+        </form>
+
+        <!-- Mensagem: Validação de acesso -->
+        <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px; margin-bottom: 4px;">
+            <span id="msg-codigo-{{ guia.id }}" style="color: #222;">
+                <strong style="font-weight: 600;">Mensagem:</strong>
+                ❗ Não foi possível emitir a guia deste mês. O sistema solicitou uma validação de acesso com código adicional de segurança.
+            </span>
+            <button onclick="copySenhas('msg-codigo-{{ guia.id }}', this)" class="copy-btn" title="Copiar Mensagem">
+                <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+            </button>
+        </div><br>
+
+        <!-- Mensagem: Senha inválida -->
+        <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px; margin-bottom: 4px;">
+            <span id="msg-senha-{{ guia.id }}" style="color: #222;">
+                <strong style="font-weight: 600;">Mensagem:</strong>
+                ❗ Não conseguimos emitir sua guia porque a senha GOV informada está inválida.
+            </span>
+            <button onclick="copySenhas('msg-senha-{{ guia.id }}', this)" class="copy-btn" title="Copiar Mensagem">
+                <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+            </button>
+        </div><br>
+
+        <!-- Mensagem: Nível Bronze -->
+        <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+            <span id="msg-nivel-{{ guia.id }}" style="color: #222;">
+                <strong style="font-weight: 600;">Mensagem:</strong>
+                🔐 Sua guia não pôde ser emitida porque sua conta GOV está com nível Bronze. Para usar os serviços da Receita Federal, é necessário atualizar para nível Prata ou Ouro.
+            </span>
+            <button onclick="copySenhas('msg-nivel-{{ guia.id }}', this)" class="copy-btn" title="Copiar Mensagem">
+                <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+            </button>
+        </div>
+    </div>
+
+
+{% block extra_js %}
+    <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
+    <script src="{% static 'js/copy_senhas.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

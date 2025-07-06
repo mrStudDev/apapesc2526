@@ -24,9 +24,9 @@ from reportlab.lib.pagesizes import A4
 from PIL import Image
 from django.utils import timezone
 from django.apps import apps
-
+from django.db.models import Max
 from django.contrib import messages
-
+from django.views.decorators.http import require_POST
 from app_accounts.models import CustomUser
 
 from django.contrib.auth.mixins import LoginRequiredMixin

@@ -1,4 +1,8 @@
 # apapesc2526
+
+samara_adm@apapesc.com
+@senhafake
+
 Apapesc - Alpha2526
 
 ----- Iniciação

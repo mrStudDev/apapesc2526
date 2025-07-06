@@ -143,6 +143,51 @@
 .table-list-small tbody td a:hover {
     text-decoration: underline;
 }
+.botoes-inss-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2em;
+}
+
+.btn-left, .btn-right {
+    flex-basis: 48%;  /* para deixar espaço proporcional, se quiser */
+}
+
+.btn-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.box-info {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.info-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.box-processamento {
+    border-left: 4px solid #3b82f6;
+}
+
+.usuarios-processamento {
+    margin-top: 10px;
+    font-size: 0.88rem;
+    color: #4b5563;
+}
+
+
 
 /* Scroll horizontal no mobile se precisar */
 @media (max-width: 768px) {
