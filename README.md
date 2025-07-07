@@ -42,52 +42,55 @@ pip install reportlab
 
 ------ Tipo Docs
 
-    001_RG_Identidade
-    002_CNH_Cart_Motorista
-    003_Titulo_Eleitor
-    004_CTPS_Cart.Trabalho
-    005_RGP_Cart_Pescador
-    006_NIT_Extrato
-    006_CAEPF
-    006_CEI
-    007_Declaração_Residência_MAPA
-    008_Comprovante_Residencia_LUZ_AGUA_FATURAS
-    009_Ficha_Requrimento_Filiação_ASSINADA
-    010_Foto_3x4
-    011_TIE_Titulo_Embarcação
-    012_Licença_Embarcação
-    014_CPF_Pessoa_Física
-    015_Ficha_Filiação_ASSINADA_PRESIDENTE_JURÍDICO
-    016_Procuração_indicidual_AD_JUDICIA
-    017_Procuracao_Indicidual_ADMINISTRATIVA
-    018_Autorização_IMAGEM
-    019_Auto_Declaração_Pesca
-    020_Comprovante_SEGURO_DEFESO
-    021_Protocolo_ENTRADA_RGP
-    022_Autorização_ACESSO_GOV
+Essencial:
+
+001_Auto_Declaração_Pesca  
+002_Autorização_ACESSO_GOV_ASS_Associado  
+003_Autorização_IMAGEM_ASS_Associado   
+004_CAEPF  
+005_CEI  
+006_CNH_Cart_Motorista  
+007_Comp_Resid_LUZ_AGUA_FATURAS  
+008_Comp_SEGURO_DEFESO  
+009_CPF_Pessoa_Física  
+0010_CTPS_Cart.Trabalho  
+0011_Declaração_Residência_MAPA  
+0012_Ficha_Req_Filiação_ASS_PRESID_JUR  
+0013_Ficha_Req_Filiação_ASS_Associado  
+0014_Foto_3x4  
+0015_Licença_Embarcação  
+0016_NIT_Extrato  
+0017_Procuração_AD_JUDICIA  
+0018_Procuracao_ADMINISTRATIVA  
+0019_Protocolo_ENTRADA_RGP  
+0020_RG_Identidade_CIN  
+0021_RGP_Cart_Pescador  
+0021_TIE_Titulo_Embarcação  
+0022_Titulo_Eleitor
 
 
-
-001_RG_Identidade
-002_CNH_Cart_Motorista
-003_Titulo_Eleitor
-004_CPF_Pessoa_Física
-005_CTPS_Cart.Trabalho
-006_RGP_Cart_Pescador
-007_NIT_Extrato
-008_CAEPF
-009_CEI
-010_Auto_Declaração_Pesca
-011_Comprovante_SEGURO_DEFESO
-012_Protocolo_ENTRADA_RGP
-013_TIE_Titulo_Embarcação
-014_Licença_Embarcação
-015_Declaração_Residência_MAPA
-016_Comprovante_Residencia_LUZ_AGUA_FATURAS
-017_Ficha_Requrimento_Filiação_ASSINADA
-018_Ficha_Filiação_ASSINADA_PRESIDENTE_JURÍDICO
-019_Procuração_indicidual_AD_JUDICIA
-020_Procuracao_Indicidual_ADMINISTRATIVA
-021_Autorização_IMAGEM
-022_Autorização_ACESSO_GOV
-023_Foto_3x4
+        tipos_doc_essencial = [
+            '001_Auto_Declaração_Pesca', 
+            '002_Autorização_ACESSO_GOV_ASS_Associado',  
+            '003_Autorização_IMAGEM_ASS_Associado',   
+            '004_CAEPF',  
+            '005_CEI',  
+            '006_CNH_Cart_Motorista',  
+            '007_Comp_Resid_LUZ_AGUA_FATURAS',  
+            '008_Comp_SEGURO_DEFESO',  
+            '009_CPF_Pessoa_Física',  
+            '0010_CTPS_Cart_Trabalho', 
+            '0011_Declaração_Residência_MAPA',  
+            '0012_Ficha_Req_Filiação_ASS_PRESID_JUR', 
+            '0013_Ficha_Req_Filiação_ASS_Associado',  
+            '0014_Foto_3x4', 
+            '0015_Licença_Embarcação',  
+            '0016_NIT_Extrato',  
+            '0017_Procuração_AD_JUDICIA',  
+            '0018_Procuracao_ADMINISTRATIVA',  
+            '0019_Protocolo_ENTRADA_RGP',  
+            '0020_RG_Identidade_CIN',
+            '0021_RGP_Cart_Pescador',
+            '0021_TIE_Titulo_Embarcação',
+            '0022_Titulo_Eleitor',
+        ]

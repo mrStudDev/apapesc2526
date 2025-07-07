@@ -156,7 +156,31 @@
                         Associado não recolhe INSS.
                     </div>
                 {% endif %}
-                <p><strong>Seguro Defeso</strong> Não Aplicado</p>                
+
+                <!-- BLOCO PARA SEGURO DEFESO -->
+                {% if associado.recebe_seguro == 'Recebe' %}
+                    {% if not beneficio_defeso_ultimo %}
+                        <div style="color:orange;">
+                            Não há defeso lançado para o estado onde este associado está vinculado.
+                        </div>
+                    {% elif defeso_aplicado %}
+                        <div style="color:green;">
+                            Seguro Defeso já foi aplicado para este associado!
+                        </div>
+                    {% else %}
+                        <form method="post" style="margin: 15px 0;">
+                            {% csrf_token %}
+                            <button type="submit" name="aplicar_defeso" class="btn btn-info">
+                                Incluir no último Seguro Defeso lançado
+                            </button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <div style="color:#888;">
+                        Associado não é elegível ao Seguro Defeso.
+                    </div>
+                {% endif %}
+          
             </div>  
 
             <div>
@@ -442,8 +466,13 @@
                 </div>               
             </div>
             <div>
-                <h2>Contatos</h2>
-            </div>                                                           
+                <h2>Contato</h2>
+                <p><strong>Celular:</strong> {{associado.associacao.celular}}</p>
+                <p><strong>Correspondência: </strong> {{associado.celular_correspondencia}}</p>
+                <p><strong>Email</strong> {{associado.associacao.email}}</p>
+                <p><strong>Senha Site: </strong> {{associado.senha_site}}</p>
+                <p><strong>Senha Google: </strong> {{associado.senha_google}}</p>
+            </div>                                                          
         </div>
     </div>
 

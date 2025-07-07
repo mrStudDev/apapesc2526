@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Associado Seguro Defeso{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/defeso.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container">
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <h2>Controle do Benefício - {{ object.associado.user.get_full_name }}</h2>
+    <p><b>Benefício:</b> {{ object.beneficio }}</p>
+    <form method="post" enctype="multipart/form-data" class="form-group">
+        {% csrf_token %}
+        <div class="form-grid grid-4-cols">
+            <!-- Nome do Associado (readonly) -->
+            <div class="form-group">
+                <label>Nome Completo:</label>
+                <div class="readonly-field" style="color:#3161ff; font-weight:bold;">
+                    {{ object.associado.user.get_full_name }}
+                </div>
+            </div>
+            <!-- Data de Soliciatação -->
+            <div class="form-group">
+                {{ form.data_solicitacao.label_tag }}
+                {{ form.data_solicitacao }}
+                {% if form.data_solicitacao.errors %}
+                    <div class="field-error">{% for error in form.data_solicitacao.errors %}<span>{{ error }}</span>{% endfor %}</div>
+                {% endif %}
+            </div>
+            <!-- Número do Protocolo -->
+            <div class="form-group">
+                {{ form.numero_protocolo.label_tag }}
+                {{ form.numero_protocolo }}
+            </div>        
+            <!-- Status Pedido -->
+            <div class="form-group">
+                {{ form.status_pedido.label_tag }}
+                {{ form.status_pedido }}
+            </div>                
+        </div>
+
+        <!-- Motivo Exigência -->
+        <div class="form-group">
+            {{ form.motivo_exigencia.label_tag }}
+            {{ form.motivo_exigencia }}
+        </div>
+        <!-- Motivo Negativa -->
+        <div class="form-group">
+            {{ form.motivo_negativa.label_tag }}
+            {{ form.motivo_negativa }}
+        </div>
+        <!-- Anotações -->
+        <div class="form-group">
+            {{ form.anotacoes.label_tag }}
+            {{ form.anotacoes }}
+        </div>
+        <!-- Resultado Final -->
+        <div class="form-group">
+            {{ form.resultado_final.label_tag }}
+            {{ form.resultado_final }}
+        </div>
+
+        <div class="form-grid grid-2-cols">
+            <!-- Upload do comprovante -->
+            <div class="form-group">
+                {{ form.comprovante_protocolo.label_tag }}
+                {{ form.comprovante_protocolo }}
+                {% if controle.comprovante_protocolo %}
+                    <div style="margin-top:4px;">
+                        <a href="{{ controle.comprovante_protocolo.url }}" target="_blank">Ver arquivo atual</a>
+                    </div>
+                {% endif %}
+            </div>
+            <!-- Data Concessão -->
+            <div class="form-group">
+                {{ form.data_concessao.label_tag }}
+                {{ form.data_concessao }}
+            </div>
+        </div>
+
+        <div style="margin-top: 18px;">
+            <button type="submit" class="btn btn-success">Salvar Alteraçẽes</button>
+            <a href="{% url 'app_defeso:lancamento_defeso' %}" class="btn btn-light">Voltar</a>
+        </div>
+    </form>
+
+    <br><div class="cards-grid">
+        <!-- RG / Identidade -->
+        <div class="card-doc">
+            <h3>Identidade - CIN</h3>
+            <div class="copy-wrapper">
+                <p id="rg_numero-{{ associado.pk }}"><strong>RG:</strong> {{ object.associado.rg_numero }}</p>
+                <button onclick="copyToClipboard('rg_numero-{{ associado.pk }}', this)" class="copy-btn" title="Copiar RG">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+            <div class="copy-wrapper">
+                <p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ object.associado.cpf }}</p>
+                <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+            <div class="copy-wrapper">
+                <p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ object.associado.senha_gov }}</p>
+                <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+        </div>
+
+        <!-- CNH -->
+        <div class="card-doc">
+            <h3>Carteira Motorista</h3>
+            <div class="copy-wrapper">
+                <p id="cnh-{{ associado.pk }}"><strong>No Registro:</strong> {{ object.associado.cnh }}</p>
+                <button onclick="copyToClipboard('cnh-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número Registro">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+            <div class="copy-wrapper">
+                <p id="cnh_data_validade-{{ associado.pk }}"><strong>Data Validade:</strong> {{ object.associado.cnh_data_validade|date:"d/m/Y" }}</p>
+                <button onclick="copyToClipboard('cnh_data_validade-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Validade">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- RGP -->
+        <div class="card-doc">
+            <h3>Carteira de Pescador</h3>
+            <div class="copy-wrapper">
+                <p id="rgp-{{ associado.pk }}"><strong>RGP:</strong> {{ object.associado.rgp }}</p>
+                <button onclick="copyToClipboard('rgp-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número RGP">
+                    <i class="material-icons">content_copy</i>
+            </button>
+            </div>
+            <div class="copy-wrapper">
+                <p id="primeiro_registro-{{ associado.pk }}"><strong>Primeiro Registro:</strong> {{ object.associado.primeiro_registro|date:"d/m/Y" }}</p>
+                <button onclick="copyToClipboard('primeiro_registro-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Primeiro Registro">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+        </div>
+        <!-- Cidadania -->
+        <div class="card-doc">
+            <h3>Documentos Cidadania</h3>
+            <div class="copy-wrapper">
+                <p id="titulo_eleitor-{{ associado.pk }}"><strong>Título:</strong> {{ object.associado.titulo_eleitor }}</p>
+                <button onclick="copyToClipboard('titulo_eleitor-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número Título">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+            <div class="copy-wrapper">
+                <p id="caepef-{{ associado.pk }}"><strong>CAEPF:</strong> {{ object.associado.caepef }}</p>
+                <button onclick="copyToClipboard('caepef-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número CAEPF">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+            <div class="copy-wrapper">
+                <p id="cei-{{ associado.pk }}"><strong>CEI:</strong> {{ object.associado.cei }}</p>
+                <button onclick="copyToClipboard('cei-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número CEI">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+        </div>      
+    </div>
+
+    <div class="grid-2-cols" style="gap: 16px; margin-top: 20px;">
+    
+        <!-- Mensagens -->
+        <div class="card-doc">
+            <h3>Textos - DOC</h3>
+            <div class="copy-wrapper">
+            <p id="rgp_doc-{{ associado.pk }}"><strong>RGP-DOC:</strong> Carteira de Pescador Artesanal</p>
+            <button onclick="copySenhas('rgp_doc-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                <i class="material-icons">content_copy</i>
+            </button>
+            </div>
+            <div class="copy-wrapper">
+            <p id="doc_caepef-{{ associado.pk }}"><strong>CAEPF-DOC:</strong> Documento CAEPF</p>
+            <button onclick="copySenhas('doc_caepef-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                <i class="material-icons">content_copy</i>
+            </button>
+            </div>
+            <div class="copy-wrapper">
+            <p id="doc_cei-{{ associado.pk }}"><strong>CEI-DOC:</strong> Documento CEI</p>
+            <button onclick="copySenhas('doc_cei-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                <i class="material-icons">content_copy</i>
+            </button>
+            </div>
+            <div class="copy-wrapper">
+            <p id="doc_email-{{ associado.pk }}"><strong>Email:</strong> apaescpescadores@gmail.com</p>
+            <button onclick="copySenhas('doc_email-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                <i class="material-icons">content_copy</i>
+            </button>
+            </div>
+            <div class="copy-wrapper">
+            <p id="comprovente_residencia-{{ associado.pk }}"><strong>Comprovante Resid:</strong> Comprovante Residência</p>
+            <button onclick="copySenhas('comprovente_residencia-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                <i class="material-icons">content_copy</i>
+            </button>
+            </div>            
+        </div>
+
+        <!-- Textos -->
+        <div class="card-doc">
+            <h3>Outros</h3>
+
+            <div class="copy-wrapper">
+            <p id="celular-{{ associado.pk }}"><strong>CELUAR:</strong> {{ object.associado.celular }}</p>
+            <button onclick="copyToClipboard('celular-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                <i class="material-icons">content_copy</i>
+            </button>
+            </div>
+            <div class="copy-wrapper">
+            <p id="cep-{{ associado.pk }}"><strong>CEP:</strong> {{ object.associado.cep }}</p>
+            <button onclick="copyToClipboard('cep-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                <i class="material-icons">content_copy</i>
+            </button>
+            </div>  
+            <div class="copy-wrapper">
+            <p id="end-{{ associado.pk }}"><strong>End:</strong> {{ object.associado.logradouro }},
+                {{ object.associado.numero }}, {{ object.associado.complemento }}, {{ object.associado.municipio }}, {{ object.associado.uf }}</p>
+            <button onclick="copyToClipboard('end-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                <i class="material-icons">content_copy</i>
+            </button>
+            </div>                        
+        </div>
+    </div>
+
+    {% if documentos_essenciais_up %}
+        <h4>Documentos Essenciais do Associado</h4>
+        <table class="table-list-small">
+            <thead>
+                <tr>
+                    <th style="text-align:left;">Tipo</th>
+                    <th style="text-align:left;">Extensão</th>
+                    <th style="text-align:left;">Data UP</th>
+                    <th style="text-align:left;">Arquivo</th>
+                    <th style="text-align:center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documentos_essenciais_up %}
+                    <tr>
+                        <td>{{ doc.tipo.nome }}</td>
+                        <td>{{ doc.arquivo.name|slice:"-4:"|upper }}</td>
+                        <td>{{ doc.data_envio|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if doc.arquivo %}
+                                <span style="color: #31708f;">{{ doc.arquivo.name|slice:"30:" }}</span>
+                            {% else %}
+                                <span style="color:#aaa;">Arquivo não encontrado</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align:center;">
+                            {% if doc.arquivo %}
+                                <a href="{{ doc.arquivo.url }}" target="_blank" class="btn btn-outline-primary btn-sm" title="Visualizar">
+                                    <i class="material-icons" style="font-size:15px;vertical-align:middle;">visibility</i>
+                                </a>
+                                <a href="{{ doc.arquivo.url }}" download class="btn btn-outline-secondary btn-sm" title="Download">
+                                    <i class="material-icons" style="font-size:15px;vertical-align:middle;">download</i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div style="color:#888;">Nenhum documento essencial enviado para este associado.</div>
+    {% endif %}
+
+<br><br><br><br><br>
+</div>
+
+{% block extra_js %}
+    <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
+    <script src="{% static 'js/copy_senhas.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

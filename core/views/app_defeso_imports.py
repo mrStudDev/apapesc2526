@@ -1,0 +1,2 @@
+from  app_defeso.models import SeguroDefesoBeneficioModel, ControleBeneficioModel
+from app_defeso.forms import ControleBeneficioForm

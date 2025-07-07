@@ -2,8 +2,6 @@ from core.views.app_inss_imports import *
 from core.views.base_imports import *
 
 
-
-
 class LancamentosINSSListView(ListView):
     model = INSSGuiaDoMes
     template_name = 'inss/lancamentos_inss.html'
@@ -179,7 +177,7 @@ class ProcessamentoINSSDoMesView(LoginRequiredMixin, View):
             rodada=rodada
         ).order_by('mes')
 
-        # <<< SALVA ALTERAÇÕES DOS MESES ANTERIORES:
+        # SALVA ALTERAÇÕES DOS MESES ANTERIORES:
         for antiga in guias_anteriores:
             novo_status = request.POST.get(f'status_emissao_{antiga.id}')
             if novo_status and novo_status != antiga.status_emissao:
@@ -241,8 +239,6 @@ class ProcessamentoINSSDoMesView(LoginRequiredMixin, View):
             'usuarios_em_processamento': usuarios_em_processamento,
             'guias_anteriores': guias_anteriores_proxima,
         })
-
-
 
     def get_context_data(self, request, **kwargs):
         context = super().get_context_data(**kwargs)

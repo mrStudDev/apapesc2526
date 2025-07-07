@@ -21,9 +21,11 @@ from app_anuidades.models import (
     AnuidadeAssociado,
     AnuidadeModel
 )
+from app_defeso.models import ControleBeneficioModel, SeguroDefesoBeneficioModel
 from app_inss.models import INSSGuiaDoMes
 from core.choices import (
     MESES,
     ACESSO_CHOICES,
     STATUS_EMISSAO_INSS
 )
+

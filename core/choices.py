@@ -278,3 +278,21 @@ TIPO_MODELOS_MAP = {
     'associacao': ('app_associacao', 'associacaomodel'),
     'reparticao': ('app_associacao', 'reparticoesmodel'),
 }
+
+# Choices para o tipo de ato normativo (para o campo 'tipo' em Portaria, por exemplo)
+TIPO_ATO_NORMATIVO_CHOICES = [
+    ('FEDERAL', 'Federal'),
+    ('ESTADUAL', 'Estadual'),
+    ('MUNICIPAL', 'Municipal'),
+]
+
+# Choices para o status do benefício
+STATUS_BENEFICIO_CHOICES = [
+    ('EM_PREPARO', 'Em Preparo'),
+    ('PROTOCOLADO_EM_ANALISE', 'Protocolado, em Análise'),
+    ('CUMPRIDA_EXIGENCIA_EM_ANALISE', 'Exigência cumprida, em Análise'),
+    ('CONCEDIDO', 'Concedido'),
+    ('NEGADO', 'Negado'),
+    ('RECURSO', 'Recurso'),
+    ('CANCELADO', 'Cancelado'),
+]

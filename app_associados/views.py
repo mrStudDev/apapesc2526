@@ -87,6 +87,47 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
 
         associado = self.object  # 👈 MOVA ESTA LINHA PARA CIMA
 
+        # DOCUMENTOS ESSENCIAIS E RELACIONADOS
+        tipos_doc_essencial = [
+            '001_Auto_Declaração_Pesca', 
+            '002_Autorização_ACESSO_GOV_ASS_Associado',  
+            '003_Autorização_IMAGEM_ASS_Associado',   
+            '004_CAEPF',  
+            '005_CEI',  
+            '006_CNH_Cart_Motorista',  
+            '007_Comp_Resid_LUZ_AGUA_FATURAS',  
+            '008_Comp_SEGURO_DEFESO',  
+            '009_CPF_Pessoa_Física',  
+            '0010_CTPS_Cart_Trabalho', 
+            '0011_Declaração_Residência_MAPA',  
+            '0012_Ficha_Req_Filiação_ASS_PRESID_JUR', 
+            '0013_Ficha_Req_Filiação_ASS_Associado',  
+            '0014_Foto_3x4', 
+            '0015_Licença_Embarcação',  
+            '0016_NIT_Extrato',  
+            '0017_Procuração_AD_JUDICIA',  
+            '0018_Procuracao_ADMINISTRATIVA',  
+            '0019_Protocolo_ENTRADA_RGP',  
+            '0020_RG_Identidade_CIN',
+            '0021_RGP_Cart_Pescador',
+            '0021_TIE_Titulo_Embarcação',
+            '0022_Titulo_Eleitor',
+        ]
+        content_type = ContentType.objects.get_for_model(AssociadoModel)
+        documentos_up = UploadsDocs.objects.filter(
+            proprietario_content_type=content_type,
+            proprietario_object_id=associado.pk
+        )
+
+        status_documentos_up = {}
+        for tipo in tipos_doc_essencial:
+            tem_documento = documentos_up.filter(tipo__nome__iexact=tipo).exists()
+            status_documentos_up[tipo] = tem_documento
+
+        context['status_documentos_up'] = status_documentos_up
+        # Documentos relacionados ao associado
+        context['documentos_up'] = documentos_up 
+        # ANUIDADES
         ultimas_anuidades_qs = AnuidadeAssociado.objects.filter(
             associado=associado
         ).select_related('anuidade').order_by('-anuidade__ano')[:3]
@@ -129,9 +170,6 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
         # Anos faltando aplicar
         anos_faltantes = set(anos_aplicaveis) - anos_aplicados
 
-        
-        from django.contrib.contenttypes.models import ContentType
-        from app_uploads.models import UploadsDocs
 
         content_type = ContentType.objects.get_for_model(AssociadoModel)
 
@@ -152,8 +190,27 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
             if not INSSGuiaDoMes.objects.filter(associado=associado, ano=ano, mes=mes, rodada=rodada).exists():
                 inss_faltando += 1
                 break
+            
         context['inss_aplicado'] = (inss_faltando == 0)
-    
+        # Seguro Defeso aplicado
+        # Último benefício para o estado do associado
+        uf = associado.municipio_circunscricao.uf
+        beneficio_defeso_ultimo = (
+            SeguroDefesoBeneficioModel.objects
+            .filter(estado=uf)
+            .order_by('-ano_concessao', '-data_inicio')
+            .first()
+        )
+
+        defeso_aplicado = False
+        if beneficio_defeso_ultimo:
+            defeso_aplicado = ControleBeneficioModel.objects.filter(
+                associado=associado,
+                beneficio=beneficio_defeso_ultimo
+            ).exists()
+        context['defeso_aplicado'] = defeso_aplicado
+        context['beneficio_defeso_ultimo'] = beneficio_defeso_ultimo
+
         context['uploads_docs'] = uploads
         context['ultimas_anuidades'] = ultimas_anuidades
         context['status_ok'] = status_ok
@@ -213,7 +270,37 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
                 messages.info(request, 'Nenhuma nova guia INSS criada: o associado já estava incluído em todas as guias.')
             return redirect('app_associados:single_associado', pk=associado.pk)
 
-                
+        # Aplicar Seguro Defeso
+        if 'aplicar_defeso' in request.POST and associado.recebe_seguro == 'Recebe':
+            # Pegue o estado do associado (ajuste se o campo não for exatamente esse)
+            uf = associado.municipio_circunscricao.uf
+
+            # Encontra o benefício MAIS RECENTE lançado para aquele estado
+            ultimo_beneficio = (
+                SeguroDefesoBeneficioModel.objects
+                .filter(estado=uf)
+                .order_by('-ano_concessao', '-data_inicio')
+                .first()
+            )
+
+            aplicados = 0
+            if ultimo_beneficio:
+                if not ControleBeneficioModel.objects.filter(associado=associado, beneficio=ultimo_beneficio).exists():
+                    ControleBeneficioModel.objects.create(
+                        associado=associado,
+                        beneficio=ultimo_beneficio,
+                        status_pedido='EM_PREPARO'
+                    )
+                    aplicados = 1
+
+            if aplicados:
+                messages.success(request, f"Seguro Defeso {ultimo_beneficio.ano_concessao} aplicado ao associado!")
+            else:
+                messages.info(request, "Nenhum benefício novo a aplicar para o último ano lançado.")
+
+            return redirect('app_associados:single_associado', pk=associado.pk)
+
+                    
         # Só aplica se status ok e POST para aplicar_anuidades
         status_ok = associado.status in ['associado_lista_ativo', 'associado_lista_aposentado']
 

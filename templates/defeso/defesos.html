@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lançamentos Seguro Defeso{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container">
+
+    <h1>Lançamentos: Seguro Defeso</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <p>Total benefícios lançados: {{ beneficios|length }}</p>
+
+    <form method="get" class="form-group">
+        <label>Selecione o benefício:</label>
+        <select name="beneficio" onchange="this.form.submit()">
+            <option value="">--- Selecione ---</option>
+            {% for b in beneficios %}
+                <option value="{{ b.id }}" {% if b.id|stringformat:"s" == beneficio_id %}selected{% endif %}>
+                    {{ b.especie_alvo }} ({{ b.data_inicio|date:'d/m/Y' }} - {{ b.data_fim|date:'d/m/Y' }}) - {{ b.estado }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if associados_beneficiados %}
+        <h2>Associados beneficiados</h2>
+        <table class="table-list-small">
+            <tr>
+                <th style="text-align: left;">Nome</th>
+                <th style="text-align: left;">CPF</th>
+                <th style="text-align: left;">Município</th>
+                <th style="text-align: left;">UF</th>
+                <th style="text-align: left;">Status Pedido</th>
+                <th style="text-align: left;">Ano Concessão</th>
+            </tr>
+            {% for c in associados_beneficiados %}
+                <tr>
+                    <td>
+                        <a href="{% url 'app_defeso:controle_beneficio_edit' c.pk %}" class="nome-link">
+                            {{ c.associado.user.get_full_name }}
+                        </a>
+                    </td>
+                    <td>{{ c.associado.cpf }}</td>
+                    <td>{{ c.associado.municipio_circunscricao }}</td>
+                    <td>{{ c.associado.municipio_circunscricao.uf }}</td>
+                    <td>{{ c.get_status_pedido_display }}</td>
+                    <td>{{ c.beneficio.ano_concessao }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    {% elif beneficio_id %}
+        <div style="margin-top: 12px; color: #b22222;">Nenhum associado encontrado para esse benefício.</div>
+    {% endif %}
+
+
+    </div>
+</div>
+
+
+
+{% endblock %}
