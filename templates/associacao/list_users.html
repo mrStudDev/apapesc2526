@@ -14,8 +14,8 @@
 <div class="lista-container">
     <h1>Lista de Usuários</h1>
     <a href="{% url 'app_accounts:criar_usuario_fake' %}" class="btn-action btn-right">
-        Criar Usuário Fake
-    </a>
+       👤 Criar Usuário Fake
+    </a><br>
     <div id="toast-container">
         {% for message in messages %}
             {% with message.tags as tag %}

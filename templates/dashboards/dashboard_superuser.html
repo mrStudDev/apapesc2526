@@ -14,23 +14,22 @@
 {% block content %}
 {% include 'components/navbar_superuser.html' %}
 
-    <div id="toast-container">
-        {% for message in messages %}
-            {% with message.tags as tag %}
-                <div class="toast 
-                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
-                    {% elif 'info' in tag %}toast-info
-                    {% elif 'warning' in tag %}toast-warning
-                    {% else %}toast-info{% endif %}">
-                    <span>{{ message }}</span>
-                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-                </div>
-            {% endwith %}
-        {% endfor %}
-    </div>
-
-    
     <div class="dashboard-container">
+        <div id="toast-container">
+            {% for message in messages %}
+                {% with message.tags as tag %}
+                    <div class="toast 
+                        {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                        {% elif 'info' in tag %}toast-info
+                        {% elif 'warning' in tag %}toast-warning
+                        {% else %}toast-info{% endif %}">
+                        <span>{{ message }}</span>
+                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+
         <!--Tabs-->
         <div class="tabs">
             <button class="tab-link active" data-tab="superdash">SuperDash</button>

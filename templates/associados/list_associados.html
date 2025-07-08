@@ -44,10 +44,29 @@
         <tbody>
             {% for associado in associados %}
             <tr>
-                <td>{{associado.user.get_full_name}}</td>
+                <td>
+                    <a href="{% url 'app_associados:single_associado' associado.pk %}">
+                        {{associado.user.get_full_name}}
+                    </a>
+                    
+                </td>
                 <td>{{associado.apelido}}</td>
-                <td>{{associado.cpf}}</td>
-                <td>{{associado.senha_gov}}</td>
+                <td>
+                    <div class="copy-wrapper" style="display: flex; align-items: center;">
+                        <span id="cpf-{{ associado.pk }}">{{ associado.cpf }}</span>
+                        <button type="button" onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF" style="margin-left:5px;">
+                            <i class="material-icons" style="font-size:14px;">content_copy</i>
+                        </button>
+                    </div>
+                </td>
+                <td>
+                    <div class="copy-wrapper" style="display: flex; align-items: center;">
+                        <span id="senha_gov-{{ associado.pk }}">{{ associado.senha_gov }}</span>
+                        <button type="button" onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov" style="margin-left:5px;">
+                            <i class="material-icons" style="font-size:14px;">content_copy</i>
+                        </button>
+                    </div>
+                </td>
                 <td>{{associado.celular}}</td>
                 <td>{{associado.email}}</td>
                 <td>
@@ -64,6 +83,9 @@
         </tbody>
     </table>
 </div>
-
+{% block extra_js %}
+    <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
+    <script src="{% static 'js/copy_senhas.js' %}"></script>
+{% endblock %}
 
 {% endblock %}    

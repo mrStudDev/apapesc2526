@@ -4,13 +4,18 @@ from django.utils.text import slugify
 from app_associados.models import AssociadoModel
 import os
 from simple_history.models import HistoricalRecords
+from django.db import transaction
+import threading
+import time
+from django.conf import settings
+from django.db.models import Max
 
 from core.choices import(
     UF_CHOICES,
     TIPO_ATO_NORMATIVO_CHOICES,
-    STATUS_BENEFICIO_CHOICES
+    STATUS_BENEFICIO_CHOICES,
+    STATUS_PROCESSAMENTO
 )
-
 
 
 
@@ -242,7 +247,16 @@ class ControleBeneficioModel(models.Model):
         null=True,
         verbose_name="Comprovante do Protocolo"
     )
-
+    # 👇 ADICIONE ESTE CAMPO!
+    em_processamento_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='controles_beneficio_em_processamento'
+    )
+    processada = models.BooleanField(default=False)  # (se ainda não tem, recomendo adicionar!)
+    rodada = models.PositiveIntegerField(default=1)
+    
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
@@ -256,3 +270,104 @@ class ControleBeneficioModel(models.Model):
     def __str__(self):
         return f"{self.associado} - {self.beneficio.lei_federal} ({self.status_pedido})"
 
+
+class ProcessamentoSeguroDefesoModel(models.Model):
+    beneficio = models.ForeignKey(
+        'SeguroDefesoBeneficioModel',
+        on_delete=models.CASCADE,
+        related_name='processamentos'
+    )
+    processada = models.BooleanField(default=False)
+    em_processamento_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='controles_defeso_em_processamento'
+    )    
+    rodada = models.PositiveIntegerField(default=1)
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='processamentos_seguro_defeso'
+    )
+    status = models.CharField(
+        max_length=30,
+        choices=STATUS_PROCESSAMENTO,
+        default='usuario_processando'
+    )
+    iniciado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+    concluido_em = models.DateTimeField(null=True, blank=True)
+    indice_atual = models.PositiveIntegerField(default=0)
+    total_associados = models.PositiveIntegerField(default=0)
+    observacoes = models.TextField(blank=True, null=True)
+
+    history = HistoricalRecords()
+
+    class Meta:
+        unique_together = ('beneficio', 'rodada', 'usuario')
+        ordering = ['-iniciado_em']
+
+    def __str__(self):
+        return f"Processamento Defeso {self.beneficio} - {self.usuario} (Rodada {self.rodada})"
+
+
+def pegar_proximo_defeso_para_usuario(beneficio, rodada, usuario):
+    with transaction.atomic():
+        # tenta encontrar guia em aberto não processada e não em processamento
+        defeso = ControleBeneficioModel.objects.select_for_update(skip_locked=True).filter(
+            beneficio=beneficio,
+            rodada=rodada,
+            processada=False,
+            em_processamento_por__isnull=True
+        ).first()
+        if defeso:
+            defeso.em_processamento_por = usuario
+            defeso.save(update_fields=['em_processamento_por'])
+            return defeso
+        # se não há nenhuma, retorna None
+        return None
+        
+def avancar(self):
+    """Avança para o próximo associado."""
+    if self.indice_atual < len(self.lista_associados) - 1:
+        self.indice_atual += 1
+        self.save()
+        return True
+    return False
+
+def finalizar_processamento_defeso(defeso, usuario):
+    defeso.processada = True
+    defeso.em_processamento_por = None
+    defeso.save(update_fields=['processada', 'em_processamento_por'])
+
+
+def resetar_processamento_rodada(beneficio_id):
+    # Busca o benefício
+    beneficio = SeguroDefesoBeneficioModel.objects.get(pk=beneficio_id)
+    # Descobre a última rodada
+    ultima_rodada = ControleBeneficioModel.objects.filter(
+        beneficio=beneficio
+    ).aggregate(Max('rodada'))['rodada__max']
+
+    if ultima_rodada is None:
+        return 0
+
+    # Apaga todos os processamentos dessa rodada
+    ProcessamentoSeguroDefesoModel.objects.filter(
+        beneficio=beneficio,
+        rodada=ultima_rodada
+    ).delete()
+
+    # (Opcional, para garantir) Limpa locks de processamento dos controles (se precisar reusar esses registros em nova rodada, geralmente não precisa, pois nova rodada cria novos controles)
+    ControleBeneficioModel.objects.filter(
+        beneficio=beneficio,
+        rodada=ultima_rodada
+    ).update(
+        em_processamento_por=None,
+        # processada=False,  # Só se for para reusar os mesmos controles!
+    )
+
+    return ultima_rodada

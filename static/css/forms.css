@@ -237,6 +237,7 @@
 }
 .form-group label {
     font-weight: normal;
+
 }
 .form-group input[type="checkbox"], .form-group input[type="radio"] {
     margin-right: 4px;

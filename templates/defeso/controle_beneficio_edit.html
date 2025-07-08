@@ -102,10 +102,38 @@
         </div>
 
         <div style="margin-top: 18px;">
-            <button type="submit" class="btn btn-success">Salvar Alteraçẽes</button>
+            <button type="submit" name="action" value="salvar" class="btn btn-success">Salvar alterações</button>
+
+            {% if pode_salvar_proximo %}
+                <button type="submit" name="action" value="salvar_proximo" class="btn btn-primary">⏩ Salvar e ir para o Próximo</button>
+                <br>
+                <div class="painel-processamento-card">
+                    <h4>Processamento Manual do Defeso</h4>
+                    <div class="painel-grid">
+                        <div><strong>Usuário:</strong> {{ user.username }}</div>
+                        <div><strong>Controle Atual:</strong> {{ controle_index }} / {{ total_controles }}</div>
+                        <div>
+                            <strong>Usuários na rodada: {{ rodada }}</strong>
+                            {% if usuarios_em_processamento %}
+                                    {% for username in usuarios_em_processamento %}
+                                        - {{ username }} 
+                                    {% endfor %}
+                            {% else %}
+                                <span class="sem-usuarios">Nenhum outro usuário</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+
+            {% endif %}
+            
             <a href="{% url 'app_defeso:lancamento_defeso' %}" class="btn btn-light">Voltar</a>
         </div>
     </form>
+    <br>
+
+
 
     <br><div class="cards-grid">
         <!-- RG / Identidade -->
@@ -295,7 +323,9 @@
         <div style="color:#888;">Nenhum documento essencial enviado para este associado.</div>
     {% endif %}
 
-<br><br><br><br><br>
+    <br><br><br><br><br>
+
+
 </div>
 
 {% block extra_js %}

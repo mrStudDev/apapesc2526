@@ -47,6 +47,30 @@
 
     {% if associados_beneficiados %}
         <h2>Associados beneficiados</h2>
+        <!-- SÓ MOSTRA O BOTÃO SE HÁ BENEFÍCIO SELECIONADO E ASSOCIADOS -->
+    {% if beneficio and beneficio.id %}
+        {% if mostrar_iniciar %}
+            <form method="get" action="{% url 'app_defeso:proximo_controle_para_processar' %}">
+                <input type="hidden" name="beneficio_id" value="{{ beneficio.id }}">
+                <button type="submit" class="btn btn-primary">
+                    ⚙️ Iniciar Processamento Manual Defeso
+                </button>
+            </form>
+        {% endif %}
+
+        {% if mostrar_reset %}
+            <form method="post" action="{% url 'app_defeso:resetar_rodada_processamento' %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="beneficio_id" value="{{ beneficio.id }}">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Deseja realmente resetar a última rodada?');">
+                    🔁 Resetar Última Rodada de Processamento
+                </button>
+            </form>
+        {% endif %}
+    {% endif %}
+
+
+      
         <table class="table-list-small">
             <tr>
                 <th style="text-align: left;">Nome</th>
@@ -75,6 +99,9 @@
     {% elif beneficio_id %}
         <div style="margin-top: 12px; color: #b22222;">Nenhum associado encontrado para esse benefício.</div>
     {% endif %}
+
+
+
 
 
     </div>

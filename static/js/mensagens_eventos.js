@@ -7,6 +7,6 @@ document.addEventListener("DOMContentLoaded", function() {
             setTimeout(function() {
                 msg.remove();
             }, 600);
-        }, 4000);
+        }, 3000);
     });
 });
