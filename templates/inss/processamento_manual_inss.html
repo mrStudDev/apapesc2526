@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Lista de Cargos{% endblock title%}
+{% block title %}Processamento INSS{% endblock title%}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
@@ -29,29 +29,22 @@
             {% endfor %}
         </div>
 
-        <h2 style="margin-bottom: 16px;">📄 Processamento Manual INSS - Guias do Mês de {{ guia.get_mes_display }}:</h2>
+        <h2 style="margin-bottom: 16px;">📄 Processamento Manual INSS - Guias do Mês de {{ guia.get_mes_display }}</h2>
 
         <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem; margin-bottom: 24px;">
-            <div style="display: flex; flex-wrap: wrap;">
-                <div>
-                    <strong>👤 Associado:</strong> {{ guia.associado.user.get_full_name }}
-                </div>
-                <div>
-                    <strong>📌 Vínculos:</strong> {{ guia.associado.associacao.nome_fantasia }} |
-                    {{ guia.associado.reparticao.nome_reparticao }} |
-                    {{ guia.associado.user.user_type }}
-                </div>
-                <div>
-                    <strong>📆 Mês/Ano:</strong> {{ guia.get_mes_display }}/{{ guia.ano }} |
-                    <strong>Rodada:</strong> {{ guia.rodada }}
-                </div>
-            </div>
 
             {% if processamento %}
             <div style="background: #f9f9f9; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 6px;">
                 <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
                     <div>
-                        <strong>🔁 Processando:</strong> {{ guia.associado.user.get_full_name }} |
+                        <strong>👤 Associado:</strong> {{ guia.associado.user.get_full_name }}
+                    </div>
+                    <div>
+                        <strong>📌 Vínculos:</strong> {{ guia.associado.associacao.nome_fantasia }} |
+                        {{ guia.associado.reparticao.nome_reparticao }} |
+                        {{ guia.associado.user.user_type }}
+                    </div>                    
+                    <div>
                         <strong>Por:</strong> {{ guia.em_processamento_por }} |
                         <strong>Rodada:</strong> {{ processamento.rodada }}
                     </div>
@@ -72,47 +65,61 @@
             </div>
             {% endif %}
         </div>
+        <br>
 
         <div>
-            <div style="display: flex; flex-wrap: wrap;">
-                <!-- CPF -->
-                <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
-                    <span id="cpf-{{ guia.associado.pk }}" style="color: #222;">
-                        <strong style="font-weight: 600;">CPF:</strong> {{ guia.associado.cpf }}
-                    </span>
-                    <button onclick="copyToClipboard('cpf-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
-                        <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
-                    </button>
-                </div>
 
-                <!-- Senha Gov -->
-                <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
-                    <span id="senha_gov-{{ guia.associado.pk }}" style="color: #222;">
-                        <strong style="font-weight: 600;">Senha Gov:</strong> {{ guia.associado.senha_gov }}
-                    </span>
-                    <button onclick="copySenhas('senha_gov-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
-                        <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
-                    </button>
-                </div>
+            <!-- CPF -->
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                <span id="cpf-{{ guia.associado.pk }}" style="color: #222;">
+                    <strong style="font-weight: 600;">CPF:</strong> {{ guia.associado.cpf }}
+                </span>
+                <button onclick="copyToClipboard('cpf-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                    <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                </button>
+            </div>
 
-                <!-- Celular -->
-                <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
-                    <span id="celular-{{ guia.associado.pk }}" style="color: #222;">
-                        <strong style="font-weight: 600;">Celular:</strong> {{ guia.associado.celular_correspondencia }}
-                    </span>
-                    <button onclick="copyToClipboard('celular-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar Celular">
-                        <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
-                    </button>
-                </div>
+            <!-- Senha Gov -->
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                <span id="senha_gov-{{ guia.associado.pk }}" style="color: #222;">
+                    <strong style="font-weight: 600;">Senha Gov:</strong> {{ guia.associado.senha_gov }}
+                </span>
+                <button onclick="copySenhas('senha_gov-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                    <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                </button>
+            </div>
+            
+            <!-- Celular -->
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                <span id="celular-{{ guia.associado.pk }}" style="color: #222;">
+                    <strong style="font-weight: 600;">Celular:</strong> {{ guia.associado.celular_correspondencia }}
+                </span>
+                <button onclick="copyToClipboard('celular-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar Celular">
+                    <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                </button>
+            </div>
+            <!-- Nome-->
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                <span id="primeiro_nome-{{ guia.associado.pk }}" style="color: #222;">
+                    <strong style="font-weight: 600;">Nome:</strong>
+                    {{ guia.associado.user.first_name}}
+                </span>
+                <button onclick="copySenhas('primeiro_nome-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar Nome">
+                    <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                </button>
+            </div>
+            <!-- Nome + Mês Atual -->
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                <span id="nome_mes-{{ guia.associado.pk }}" style="color: #222;">
+                    <strong style="font-weight: 600;">Nome e Mês:</strong>
+                    {{ guia.associado.user.get_full_name}}_{{ guia.get_mes_display|slugify }}
+                </span>
+                <button onclick="copySenhas('nome_mes-{{ guia.associado.pk }}', this)" class="copy-btn" title="Copiar Nome">
+                    <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                </button>
+            </div>
 
-                <!-- Nome + Mês Atual -->
-                <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
-                    <span id="nome_mes-{{ guia.associado.pk }}" style="color: #222;">
-                        <strong style="font-weight: 600;">Nome e Mês:</strong>
-                        {{ guia.associado.user.get_full_name}}_{{ guia.get_mes_display|slugify }}
-                    </span>
-
-                </div>
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
                 <div class="recadinho-apapesc" style="
                     display: flex; align-items: center; gap: 10px;
                     padding: 6px 14px; margin-bottom: 8px;
@@ -206,7 +213,11 @@
                 </small>
             </div>
             <br>
-            <button type="submit" style="background-color:#dfdfdf; color:#414141;">⏩ Salvar e Ir para Próximo</button>
+            <div class="form-group" style="margin-top: 16px;">
+                <button type="submit" name="action" value="proximo" class="btn btn-primary">⏩ Salvar e Ir para Próximo</button>
+                <button type="submit" name="action" value="voltar" class="btn btn-secondary">💾 Salvar e Voltar para Lista</button>
+            </div>
+
         </form>
 
         <!-- Mensagem: Validação de acesso -->

@@ -154,8 +154,8 @@
 
 .form-container button[type="submit"] {
     padding: 12px 24px;
-    background: #2bbe57;
-    color: white;
+    background: #e5e5e5;
+    color: rgb(86, 86, 86);
     border: none;
     border-radius: 6px;
     font-size: 1rem;
@@ -168,7 +168,7 @@
 }
 
 .form-container button[type="submit"]:hover {
-    background: #209b45;
+    background: #a0d3af;
     box-shadow: 0 3px 10px rgba(43, 190, 87, 0.12);
 }
 

@@ -165,7 +165,7 @@ class ProcessamentoINSSDoMesView(LoginRequiredMixin, View):
         guia.status_acesso = request.POST.get('status_acesso', guia.status_acesso)
         guia.save()
         
-        # <<< PEGA OS ANTERIORES DO ASSOCIADO DA GUIA QUE ESTÁ SENDO PROCESSADA AGORA!
+        # Atualiza meses anteriores...
         ano_atual = guia.ano
         mes_atual = int(guia.mes)
         associado = guia.associado
@@ -177,14 +177,20 @@ class ProcessamentoINSSDoMesView(LoginRequiredMixin, View):
             rodada=rodada
         ).order_by('mes')
 
-        # SALVA ALTERAÇÕES DOS MESES ANTERIORES:
         for antiga in guias_anteriores:
             novo_status = request.POST.get(f'status_emissao_{antiga.id}')
             if novo_status and novo_status != antiga.status_emissao:
                 antiga.status_emissao = novo_status
                 antiga.save(update_fields=['status_emissao'])
 
-        # AGORA pega a próxima guia para processar normalmente:
+        action = request.POST.get('action', 'proximo')
+
+        if action == "voltar":
+            # Só salva, não finaliza processamento, permanece na rodada
+            messages.success(request, "Alterações salvas! Você pode retomar o processamento depois.")
+            return redirect('app_inss:lancamentos_inss')
+
+        # Se for 'proximo' (default), segue fluxo normal:
         finalizar_processamento_guia(guia, request.user)
         proxima_guia = pegar_proxima_guia_para_usuario(ano, mes, rodada, request.user)
         if not proxima_guia:
@@ -199,32 +205,26 @@ class ProcessamentoINSSDoMesView(LoginRequiredMixin, View):
             ano=ano, mes=mes, rodada=rodada
         ).count()
 
-        if proxima_guia:
-            guias_ordenadas = list(INSSGuiaDoMes.objects.filter(
-                ano=ano, mes=mes, rodada=rodada
-            ).order_by('associado__user', 'id'))
-            guia_index = guias_ordenadas.index(proxima_guia) + 1
-        else:
-            guia_index = None
+        guias_ordenadas = list(INSSGuiaDoMes.objects.filter(
+            ano=ano, mes=mes, rodada=rodada
+        ).order_by('associado__user', 'id'))
+        guia_index = guias_ordenadas.index(proxima_guia) + 1
 
         usuarios_em_processamento = INSSGuiaDoMes.objects.filter(
             ano=ano, mes=mes, rodada=rodada,
             em_processamento_por__isnull=False
         ).values_list('em_processamento_por__username', flat=True).distinct()
 
-        # Agora sim, busca os meses anteriores para a proxima guia:
-        if proxima_guia:
-            ano_atual_proxima = proxima_guia.ano
-            mes_atual_proxima = int(proxima_guia.mes)
-            associado_proxima = proxima_guia.associado
-            guias_anteriores_proxima = INSSGuiaDoMes.objects.filter(
-                associado=associado_proxima,
-                ano=ano_atual_proxima,
-                mes__lt=str(mes_atual_proxima).zfill(2),
-                rodada=rodada
-            ).order_by('mes')
-        else:
-            guias_anteriores_proxima = []
+        # Meses anteriores da próxima guia:
+        ano_atual_proxima = proxima_guia.ano
+        mes_atual_proxima = int(proxima_guia.mes)
+        associado_proxima = proxima_guia.associado
+        guias_anteriores_proxima = INSSGuiaDoMes.objects.filter(
+            associado=associado_proxima,
+            ano=ano_atual_proxima,
+            mes__lt=str(mes_atual_proxima).zfill(2),
+            rodada=rodada
+        ).order_by('mes')
 
         return render(request, self.template_name, {
             'guia': proxima_guia,
@@ -239,6 +239,7 @@ class ProcessamentoINSSDoMesView(LoginRequiredMixin, View):
             'usuarios_em_processamento': usuarios_em_processamento,
             'guias_anteriores': guias_anteriores_proxima,
         })
+
 
     def get_context_data(self, request, **kwargs):
         context = super().get_context_data(**kwargs)

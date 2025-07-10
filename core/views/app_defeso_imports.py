@@ -8,3 +8,4 @@ from  app_defeso.models import (
     )
 from app_defeso.forms import ControleBeneficioForm
 from app_uploads.models import UploadsDocs
+from core.choices import STATUS_BENEFICIO_CHOICES

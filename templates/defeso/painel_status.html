@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load kamban_utils %}
+{% load static %}
+
+{% block title %}Painel Status Kamban{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/kamban.css' %}">
+
+  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+<div class="kanban-container">
+
+    <h2 class="kanban-title">Painel de Acompanhamento do Defeso</h2>
+
+    <div class="kanban-board">
+        {% for status, controles in colunas.items %}
+            {% if forloop.counter <= 4 %}
+                {% if forloop.first %}<div class="kanban-row">{% endif %}
+                <div class="kanban-column">
+                    <h4 class="kanban-column-title">{{ status_labels|get_item:status }}</h4>
+                    {% for c in controles %}
+                        <div class="kanban-card">
+                            <a href="{% url 'app_defeso:controle_beneficio_edit' c.pk %}" class="kanban-card-title">
+                                {{ c.associado.user.get_full_name }}
+                            </a>
+                            <div class="kanban-card-details">
+                                Atualizado em {{ c.atualizado_em|date:"d/m/Y H:i" }} | <b>Espécie:</b> {{ c.beneficio.especie_alvo }}
+                                <br><span class="kanban-card-status">Estado: {{ c.beneficio.get_estado_display }} | Ano: {{ c.beneficio.ano_concessao }}</span>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="kanban-empty">Nenhum</div>
+                    {% endfor %}
+                </div>
+                {% if forloop.counter == 4 %}</div>{% endif %}
+            {% else %}
+                {% if forloop.counter == 5 %}<div class="kanban-row">{% endif %}
+                <div class="kanban-column">
+                    <h4 class="kanban-column-title">{{ status_labels|get_item:status }}</h4>
+                    {% for c in controles %}
+                        <div class="kanban-card">
+                            <a href="{% url 'app_defeso:controle_beneficio_edit' c.pk %}" class="kanban-card-title">
+                                {{ c.associado.user.get_full_name }}
+                            </a>
+                            <div class="kanban-card-details">
+                                Atualizado em {{ c.atualizado_em|date:"d/m/Y H:i" }} | <b>Espécie:</b> {{ c.beneficio.especie_alvo }}
+                                <br><span class="kanban-card-status">Estado: {{ c.beneficio.get_estado_display }} | Ano: {{ c.beneficio.ano_concessao }}</span>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="kanban-empty">Nenhum</div>
+                    {% endfor %}
+                </div>
+                {% if forloop.last %}</div>{% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

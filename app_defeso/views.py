@@ -203,3 +203,27 @@ def resetar_rodada_processamento(request):
     qs.update(processada=False, em_processamento_por=None)
     messages.success(request, f"Rodada {ultima_rodada} resetada!")
     return redirect(f"{reverse('app_defeso:lancamento_defeso')}?beneficio={beneficio.id}")
+
+
+
+class PainelDefesoStatusView(View):
+    template_name = 'defeso/painel_status.html'
+
+    def get(self, request):
+        # Busca todos os status possíveis (ordem definida por STATUS_BENEFICIO_CHOICES)
+        status_colunas = [choice[0] for choice in STATUS_BENEFICIO_CHOICES]
+        status_labels = dict(STATUS_BENEFICIO_CHOICES)
+        
+        # Busca todos os controles com benefício vigente (ou filtre por beneficio_id, se quiser)
+        controles = ControleBeneficioModel.objects.select_related('associado', 'beneficio').all()
+        
+        # Organiza os associados por status em um dicionário: {status: [controles]}
+        colunas = {status: [] for status in status_colunas}
+        for c in controles:
+            colunas[c.status_pedido].append(c)
+
+        context = {
+            'colunas': colunas,
+            'status_labels': status_labels,
+        }
+        return render(request, self.template_name, context)

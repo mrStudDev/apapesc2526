@@ -187,7 +187,7 @@ class SeguroDefesoBeneficioModel(models.Model):
         verbose_name = "Benefício Seguro Defeso"
         verbose_name_plural = "Benefícios Seguro Defeso"
         # Garante que um associado não tenha dois benefícios para a mesma espécie no mesmo período
-        unique_together = ('especie_alvo', 'data_inicio', 'data_fim')
+        unique_together = ('especie_alvo', 'data_inicio', 'data_fim', 'estado')
 
     def __str__(self):
         return f"Benefício para {self.especie_alvo} ({self.data_inicio} a {self.data_fim})"
