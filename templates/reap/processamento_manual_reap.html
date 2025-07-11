@@ -110,68 +110,68 @@
             </div>
         </div>
 
-<!-- Informações do Associado -->
-<div class="associado-info">
-    <h4>Dados do Associado</h4>
-    <ul>
-        <li><strong>Relação de Trabalho:</strong> {{ reap.associado.relacao_trabalho }}</li>
-        <li><strong>Comercializa Produtos:</strong> {{ reap.associado.comercializa_produtos }}</li>
-        <li><strong>Outra Fonte de Renda:</strong> {{ reap.associado.outra_fonte_renda }}</li>
-        <li><strong>Casa onde Mora:</strong> {{ reap.associado.casa_onde_mora }}</li>
-        <li>
-            <strong>Petrechos de Pesca:</strong>
-            {% if reap.associado.petrechos_pesca.all %}
-                {% for petrecho in reap.associado.petrechos_pesca.all %}
-                    {{ petrecho.nome }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            {% else %}
-                <span style="color: #aaa;">Nenhum informado</span>
-            {% endif %}
-        </li>
-    </ul>
-</div>
+        <!-- Informações do Associado -->
+        <div class="associado-info">
+            <h4>Dados do Associado</h4>
+            <ul>
+                <li><strong>Relação de Trabalho:</strong> {{ reap.associado.relacao_trabalho }}</li>
+                <li><strong>Comercializa Produtos:</strong> {{ reap.associado.comercializa_produtos }}</li>
+                <li><strong>Outra Fonte de Renda:</strong> {{ reap.associado.outra_fonte_renda }}</li>
+                <li><strong>Casa onde Mora:</strong> {{ reap.associado.casa_onde_mora }}</li>
+                <li>
+                    <strong>Petrechos de Pesca:</strong>
+                    {% if reap.associado.petrechos_pesca.all %}
+                        {% for petrecho in reap.associado.petrechos_pesca.all %}
+                            {{ petrecho.nome }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <span style="color: #aaa;">Nenhum informado</span>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
 
 
-<!-- Tabela de Espécies Comercializadas -->
-<div class="table-list-small">
-    <h4>Espécies Comercializadas no Ano</h4>
-    <table class="table-list-small">
-        <thead>
-            <tr>
-                <th>Espécie</th>
-                <th>Quantidade</th>
-                <th>Preço (R$)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ reap.associado.especie1 }}</td>
-                <td>{{ reap.associado.quantidade1 }}</td>
-                <td>{{ reap.associado.preco1 }}</td>
-            </tr>
-            <tr>
-                <td>{{ reap.associado.especie2 }}</td>
-                <td>{{ reap.associado.quantidade2 }}</td>
-                <td>{{ reap.associado.preco2 }}</td>
-            </tr>
-            <tr>
-                <td>{{ reap.associado.especie3 }}</td>
-                <td>{{ reap.associado.quantidade3 }}</td>
-                <td>{{ reap.associado.preco3 }}</td>
-            </tr>
-            <tr>
-                <td>{{ reap.associado.especie4 }}</td>
-                <td>{{ reap.associado.quantidade4 }}</td>
-                <td>{{ reap.associado.preco4 }}</td>
-            </tr>
-            <tr>
-                <td>{{ reap.associado.especie5 }}</td>
-                <td>{{ reap.associado.quantidade5 }}</td>
-                <td>{{ reap.associado.preco5 }}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+        <!-- Tabela de Espécies Comercializadas -->
+        <div class="table-list-small">
+            <h4>Espécies Comercializadas no Ano</h4>
+            <table class="table-list-small">
+                <thead>
+                    <tr>
+                        <th>Espécie</th>
+                        <th>Quantidade</th>
+                        <th>Preço (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ reap.associado.especie1 }}</td>
+                        <td>{{ reap.associado.quantidade1 }}</td>
+                        <td>{{ reap.associado.preco1 }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ reap.associado.especie2 }}</td>
+                        <td>{{ reap.associado.quantidade2 }}</td>
+                        <td>{{ reap.associado.preco2 }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ reap.associado.especie3 }}</td>
+                        <td>{{ reap.associado.quantidade3 }}</td>
+                        <td>{{ reap.associado.preco3 }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ reap.associado.especie4 }}</td>
+                        <td>{{ reap.associado.quantidade4 }}</td>
+                        <td>{{ reap.associado.preco4 }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ reap.associado.especie5 }}</td>
+                        <td>{{ reap.associado.quantidade5 }}</td>
+                        <td>{{ reap.associado.preco5 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
 
 
@@ -182,7 +182,7 @@
             <div class="form-group">
                 <label>Status da Resposta:</label>
                 <div style="display: flex; flex-wrap: wrap; gap: 16px;">
-                    {% for value, label in STATUS_RESPOSTA %}
+                    {% for value, label in STATUS_RESPOSTAS_REAP %}
                         <label style="display: flex; align-items: center; gap: 6px; font-weight: 500;">
                             <input type="radio" name="status_resposta" value="{{ value }}"
                                 {% if reap.status_resposta == value %}checked{% endif %}>

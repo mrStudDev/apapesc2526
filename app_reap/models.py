@@ -43,7 +43,15 @@ class REAPdoAno(models.Model):
     def nome_reap(self):
         return f"reap_ano_{self.ano}"
     
-    
+    @property
+    def status_processamento(self):
+        if self.processada:
+            return "Processada"
+        elif self.em_processamento_por:
+            return "Usuário Processando"
+        else:
+            return "Aguardando Processamento"
+        
 def criar_reap_do_ano(ano, rodada=1):
     ativos_aposentados = AssociadoModel.objects.filter(
         status__in=['associado_lista_ativo', 'associado_lista_aposentado'],
@@ -97,6 +105,7 @@ def pegar_proximo_reap_para_usuario(ano, rodada, usuario):
         reap = REAPdoAno.objects.select_for_update(skip_locked=True).filter(
             ano=ano,
             rodada=rodada,
+            status_resposta='pendente',
             processada=False,
             em_processamento_por__isnull=True
         ).first()

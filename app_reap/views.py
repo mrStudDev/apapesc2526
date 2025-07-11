@@ -15,6 +15,10 @@ class LancamentosREAPListView(ListView):
         context = super().get_context_data(**kwargs)
         ano = int(self.request.GET.get('ano', timezone.now().year))
         rodada = REAPdoAno.objects.filter(ano=ano).aggregate(Max('rodada'))['rodada__max'] or 1
+        
+        total_reaps = REAPdoAno.objects.filter(ano=ano, rodada=rodada).count()
+        total_processados = REAPdoAno.objects.filter(ano=ano, rodada=rodada, processada=True).count()
+        todos_processados = total_reaps > 0 and total_reaps == total_processados
         tem_processamento = REAPdoAno.objects.filter(
             ano=ano, rodada=rodada, em_processamento_por__isnull=False
         ).exists()
@@ -24,6 +28,7 @@ class LancamentosREAPListView(ListView):
         context['ano_selecionado'] = ano
         context['rodada'] = rodada
         context['tem_processamento'] = tem_processamento
+        context['todos_processados'] = todos_processados
         return context
 
     def post(self, request, *args, **kwargs):
@@ -41,7 +46,21 @@ class LancamentosREAPListView(ListView):
 class ProcessamentoREAPdoAnoView(LoginRequiredMixin, View):
     template_name = 'reap/processamento_manual_reap.html'
 
-    def get(self, request):
+    def get(self, request, pk=None):
+        if pk:
+            # Acessando um REAP individual
+            reap = get_object_or_404(REAPdoAno, pk=pk)
+            return render(request, self.template_name, {
+                'reap': reap,
+                'ano': reap.ano,
+                'rodada': reap.rodada,
+                'processamento': None,  # Ou busque algum processamento específico, se quiser mostrar
+                'STATUS_RESPOSTAS_REAP': STATUS_RESPOSTAS_REAP,
+                'total_reaps': 1,
+                'reap_index': 1,
+                'usuarios_em_processamento': [],
+            })        
+        
         ano = request.GET.get('ano')
         if not ano:
             messages.error(request, "Selecione o ano primeiro.")
@@ -104,7 +123,14 @@ class ProcessamentoREAPdoAnoView(LoginRequiredMixin, View):
             'usuarios_em_processamento': usuarios_em_processamento,
         })
 
-    def post(self, request):
+    def post(self, request, pk=None):
+        if pk:
+            reap = get_object_or_404(REAPdoAno, pk=pk)
+            reap.status_resposta = request.POST.get('status_resposta', reap.status_resposta)
+            reap.save()
+            messages.success(request, "Alterações salvas!")
+            return redirect('app_reap:lancamentos_reap')
+                
         ano = int(request.GET.get('ano'))
         rodada = int(request.GET.get('rodada', 1))
         reap_id = request.POST.get('reap_id')
@@ -158,15 +184,29 @@ class ProcessamentoREAPdoAnoView(LoginRequiredMixin, View):
 
         context['ano_selecionado'] = str(ano)
         return context
-    
+
+
+
 @require_POST
 @login_required
 def resetar_processamento(request):
     ano = int(request.GET.get('ano'))
     rodada = REAPdoAno.objects.filter(ano=ano).aggregate(Max('rodada'))['rodada__max'] or 1
 
-    qs = REAPdoAno.objects.filter(ano=ano, rodada=rodada)
-    # Aqui reseta só os campos de processamento!
-    updated = qs.update(processada=False, em_processamento_por=None)
-    messages.success(request, f"{updated} guias resetadas para {ano}, rodada {rodada}!")
+    # Reset só para os pendentes!
+    qs_pendentes = REAPdoAno.objects.filter(
+        ano=ano, rodada=rodada, status_resposta='pendente'
+    )
+    updated = qs_pendentes.update(processada=False, em_processamento_por=None)
+
+    # Garantir que respondidos seguem processados
+    qs_respondidos = REAPdoAno.objects.filter(
+        ano=ano, rodada=rodada, status_resposta='respondido'
+    )
+    qs_respondidos.update(processada=True, em_processamento_por=None)
+
+    messages.success(
+        request,
+        f"{updated} REAPs resetados para {ano}, rodada {rodada}. REAPs já respondidos permanecem processados!"
+    )
     return redirect(f"{reverse('app_reap:lancamentos_reap')}?ano={ano}")

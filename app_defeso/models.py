@@ -270,7 +270,16 @@ class ControleBeneficioModel(models.Model):
     def __str__(self):
         return f"{self.associado} - {self.beneficio.lei_federal} ({self.status_pedido})"
 
-
+    @property
+    def status_processamento(self):
+        if self.status_pedido in ['CANCELADO', 'CONCEDIDO']:
+            return 'Processada'
+        if self.processada:
+            return 'Processada'
+        if self.em_processamento_por:
+            return 'Usuário Processando'
+        return 'Aguardando Processamento'
+    
 class ProcessamentoSeguroDefesoModel(models.Model):
     beneficio = models.ForeignKey(
         'SeguroDefesoBeneficioModel',
@@ -322,6 +331,8 @@ def pegar_proximo_defeso_para_usuario(beneficio, rodada, usuario):
             rodada=rodada,
             processada=False,
             em_processamento_por__isnull=True
+        ).exclude(
+            status_pedido__in=['CANCELADO', 'CONCEDIDO']
         ).first()
         if defeso:
             defeso.em_processamento_por = usuario

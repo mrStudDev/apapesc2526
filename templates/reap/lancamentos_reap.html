@@ -53,25 +53,30 @@
             </div>
         </div>
     </div>
-    <div class="btn-right">
-        <form method="get" action="{% url 'app_reap:processamento_reap_do_ano' %}">
-            <input type="hidden" name="ano" value="{{ ano_selecionado }}">
-            <button type="submit" class="btn btn-primary">
-                ⚙️ Iniciar Processamento Manual REAP
-            </button>
-        </form> 
-    </div>
-    <br>
-    {% if not tem_processamento %}
+    {# Mostrar botão INICIAR só se: não tem processamento, existe reap, e nem todos processados #}
+    {% if not todos_processados %}
+        <div class="btn-right">
+            <form method="get" action="{% url 'app_reap:processamento_reap_do_ano' %}">
+                <input type="hidden" name="ano" value="{{ ano_selecionado }}">
+                <button type="submit" class="btn btn-primary">
+                    ⚙️ Iniciar Processamento Manual REAP
+                </button>
+            </form> 
+        </div>
+    {% endif %}
+
+    {# Mostrar botão RESETAR só se todos processados #}
+    {% if todos_processados %}
         <div class="btn-right">
             <form method="post" action="{% url 'app_reap:resetar_processamento' %}?ano={{ ano_selecionado }}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">
-                🔁 Resetar Processamento
+                    🔁 Resetar Processamento
                 </button>
             </form>
         </div>
-    {% endif %}  
+    {% endif %}
+ 
 
     <div style="margin-bottom:24px;">
         <form method="get" class="form-group" style="grid-column: span 4;">
@@ -99,15 +104,21 @@
                 <th>Ano</th>
                 <th>Resposta</th>
                 <th>Atualizada</th>
+                <th>Processamento</th>
             </tr>
         </thead>
         <tbody>
             {% for reap in reaps %}
             <tr>
-                <td>{{ reap.associado.user.get_full_name }}</td>
+                <td>
+                    <a href="{% url 'app_reap:processamento_reap_individual' reap.pk %}" class="nome-link">
+                        {{ reap.associado.user.get_full_name }}
+                    </a>
+                </td>
                 <td>{{ reap.ano }}</td>
                 <td>{{ reap.get_status_resposta_display }}</td>
                 <td>{{ reap.atualizado_em }}</td>
+                <td>{{ reap.status_processamento }}</td>
             </tr>
             {% empty %}
             <tr><td colspan="8">Nenhum reap encontrada para este ano.</td></tr>

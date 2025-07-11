@@ -181,9 +181,7 @@ STATUS_EMISSAO_INSS = [
 ]
 STATUS_RESPOSTAS_REAP = [
     ('pendente', 'Pendente'),
-    ('emitido', 'Emitido'),
-    ('pago', 'Pago'),
-    ('atrasada', 'Atrasada'),
+    ('respondido', 'Respondido'),
 ]
 ACESSO_CHOICES = [
     ('validar_codigo_acesso', 'Validar Código Acesso'),
@@ -204,6 +202,16 @@ SEGURO_DEFESO_CHOICES = [
     ('Não Recebe', 'Não Recebe'),
     ('Recebe', 'Recebe'),
     ('Undefined ', 'Undefined'),
+]
+# Choices para o status do benefício
+STATUS_BENEFICIO_CHOICES = [
+    ('EM_PREPARO', 'Em Preparo'),
+    ('PROTOCOLADO_EM_ANALISE', 'Protocolado, em Análise'),
+    ('CUMPRIDA_EXIGENCIA_EM_ANALISE', 'Exigência cumprida, em Análise'),
+    ('CONCEDIDO', 'Concedido'),
+    ('NEGADO', 'Negado'),
+    ('RECURSO', 'Recurso'),
+    ('CANCELADO', 'Cancelado'),
 ]
 JA_RECEBEU_DEFESO_ALGUMA_VEZ = [
     ('Sim', 'Sim'),
@@ -291,13 +299,4 @@ TIPO_ATO_NORMATIVO_CHOICES = [
     ('MUNICIPAL', 'Municipal'),
 ]
 
-# Choices para o status do benefício
-STATUS_BENEFICIO_CHOICES = [
-    ('EM_PREPARO', 'Em Preparo'),
-    ('PROTOCOLADO_EM_ANALISE', 'Protocolado, em Análise'),
-    ('CUMPRIDA_EXIGENCIA_EM_ANALISE', 'Exigência cumprida, em Análise'),
-    ('CONCEDIDO', 'Concedido'),
-    ('NEGADO', 'Negado'),
-    ('RECURSO', 'Recurso'),
-    ('CANCELADO', 'Cancelado'),
-]
+

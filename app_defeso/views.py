@@ -90,7 +90,11 @@ class ControleBeneficioEditView(UpdateView):
             rodada=current_controle.rodada,
             processada=False,
             em_processamento_por__isnull=True
-        ).exclude(pk=current_controle.pk).order_by('id').first()
+        ).exclude(
+            pk=current_controle.pk
+        ).exclude(
+            status_pedido__in=['CANCELADO', 'CONCEDIDO']
+        ).order_by('id').first()
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -189,6 +193,7 @@ def proximo_controle_para_processar(request):
         messages.success(request, "Todos os controles já foram processados para este benefício!")
         return redirect('app_defeso:lancamento_defeso')
 
+
 @require_POST
 @login_required
 def resetar_rodada_processamento(request):
@@ -200,7 +205,15 @@ def resetar_rodada_processamento(request):
     qs = ControleBeneficioModel.objects.filter(
         beneficio=beneficio, rodada=ultima_rodada
     )
-    qs.update(processada=False, em_processamento_por=None)
+    for controle in qs:
+        if controle.status_pedido in ['CANCELADO', 'CONCEDIDO']:
+            # Mantém processada!
+            controle.processada = True
+        else:
+            controle.processada = False
+        controle.em_processamento_por = None
+        controle.save(update_fields=['processada', 'em_processamento_por'])
+
     messages.success(request, f"Rodada {ultima_rodada} resetada!")
     return redirect(f"{reverse('app_defeso:lancamento_defeso')}?beneficio={beneficio.id}")
 
