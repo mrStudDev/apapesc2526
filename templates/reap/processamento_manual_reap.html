@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Processamento REAP{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+    <div class="lista-container-small">
+
+        <div id="toast-container">
+            {% for message in messages %}
+                {% with message.tags as tag %}
+                    <div class="toast 
+                        {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                        {% elif 'info' in tag %}toast-info
+                        {% elif 'warning' in tag %}toast-warning
+                        {% else %}toast-info{% endif %}">
+                        <span>{{ message }}</span>
+                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <h2 style="margin-bottom: 16px;">📄 Processamento Manual REAP - Reap do Ano de {{ reap.ano }}</h2>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem; margin-bottom: 24px;">
+
+            {% if processamento %}
+            <div style="background: #f9f9f9; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 6px;">
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                    <div>
+                        <strong>👤 Associado:</strong> {{ reap.associado.user.get_full_name }}
+                    </div>
+                    <div>
+                        <strong>📌 Vínculos:</strong> {{ reap.associado.associacao.nome_fantasia }} |
+                        {{ reap.associado.reparticao.nome_reparticao }} |
+                        {{ reap.associado.user.user_type }}
+                    </div>                    
+                    <div>
+                        <strong>Por:</strong> {{ reap.em_processamento_por }} |
+                        <strong>Rodada:</strong> {{ processamento.rodada }}
+                    </div>
+                    <div>
+                        <strong>🗓 Referência:</strong> {{ processamento.ano }}
+                        {% if reap_index and total_reaps %}
+                            | <strong>Reap:</strong> {{ reap_index }}/{{ total_reaps }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if usuarios_em_processamento %}
+                <div style="margin-top: 6px;">
+                    <strong>👥 Usuários em processamento:</strong>
+                    {{ usuarios_em_processamento|join:", " }}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        <br>
+
+        <div>
+
+            <!-- CPF -->
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                <span id="cpf-{{ reap.associado.pk }}" style="color: #222;">
+                    <strong style="font-weight: 600;">CPF:</strong> {{ reap.associado.cpf }}
+                </span>
+                <button onclick="copyToClipboard('cpf-{{ reap.associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                    <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                </button>
+            </div>
+
+            <!-- Senha Gov -->
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                <span id="senha_gov-{{ reap.associado.pk }}" style="color: #222;">
+                    <strong style="font-weight: 600;">Senha Gov:</strong> {{ reap.associado.senha_gov }}
+                </span>
+                <button onclick="copySenhas('senha_gov-{{ reap.associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                    <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                </button>
+            </div>
+            
+            <!-- Celular -->
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                <span id="celular-{{ reap.associado.pk }}" style="color: #222;">
+                    <strong style="font-weight: 600;">Celular:</strong> {{ reap.associado.celular_correspondencia }}
+                </span>
+                <button onclick="copyToClipboard('celular-{{ reap.associado.pk }}', this)" class="copy-btn" title="Copiar Celular">
+                    <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                </button>
+            </div>
+            <!-- Nome-->
+            <div class="copy-wrapper" style="display: flex; align-items: center; gap: 4px; background: #f8f8fa; border-radius: 5px; padding: 3px 8px;">
+                <span id="primeiro_nome-{{ reap.associado.pk }}" style="color: #222;">
+                    <strong style="font-weight: 600;">Nome:</strong>
+                    {{ reap.associado.user.first_name}}
+                </span>
+                <button onclick="copySenhas('primeiro_nome-{{ reap.associado.pk }}', this)" class="copy-btn" title="Copiar Nome">
+                    <i class="material-icons" style="font-size: 17px; vertical-align: middle;">content_copy</i>
+                </button>
+            </div>
+        </div>
+
+<!-- Informações do Associado -->
+<div class="associado-info">
+    <h4>Dados do Associado</h4>
+    <ul>
+        <li><strong>Relação de Trabalho:</strong> {{ reap.associado.relacao_trabalho }}</li>
+        <li><strong>Comercializa Produtos:</strong> {{ reap.associado.comercializa_produtos }}</li>
+        <li><strong>Outra Fonte de Renda:</strong> {{ reap.associado.outra_fonte_renda }}</li>
+        <li><strong>Casa onde Mora:</strong> {{ reap.associado.casa_onde_mora }}</li>
+        <li>
+            <strong>Petrechos de Pesca:</strong>
+            {% if reap.associado.petrechos_pesca.all %}
+                {% for petrecho in reap.associado.petrechos_pesca.all %}
+                    {{ petrecho.nome }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            {% else %}
+                <span style="color: #aaa;">Nenhum informado</span>
+            {% endif %}
+        </li>
+    </ul>
+</div>
+
+
+<!-- Tabela de Espécies Comercializadas -->
+<div class="table-list-small">
+    <h4>Espécies Comercializadas no Ano</h4>
+    <table class="table-list-small">
+        <thead>
+            <tr>
+                <th>Espécie</th>
+                <th>Quantidade</th>
+                <th>Preço (R$)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ reap.associado.especie1 }}</td>
+                <td>{{ reap.associado.quantidade1 }}</td>
+                <td>{{ reap.associado.preco1 }}</td>
+            </tr>
+            <tr>
+                <td>{{ reap.associado.especie2 }}</td>
+                <td>{{ reap.associado.quantidade2 }}</td>
+                <td>{{ reap.associado.preco2 }}</td>
+            </tr>
+            <tr>
+                <td>{{ reap.associado.especie3 }}</td>
+                <td>{{ reap.associado.quantidade3 }}</td>
+                <td>{{ reap.associado.preco3 }}</td>
+            </tr>
+            <tr>
+                <td>{{ reap.associado.especie4 }}</td>
+                <td>{{ reap.associado.quantidade4 }}</td>
+                <td>{{ reap.associado.preco4 }}</td>
+            </tr>
+            <tr>
+                <td>{{ reap.associado.especie5 }}</td>
+                <td>{{ reap.associado.quantidade5 }}</td>
+                <td>{{ reap.associado.preco5 }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+        <form method="post" class="form-container">
+            {% csrf_token %}
+            <input type="hidden" name="reap_id" value="{{ reap.id }}">
+
+            <div class="form-group">
+                <label>Status da Resposta:</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+                    {% for value, label in STATUS_RESPOSTA %}
+                        <label style="display: flex; align-items: center; gap: 6px; font-weight: 500;">
+                            <input type="radio" name="status_resposta" value="{{ value }}"
+                                {% if reap.status_resposta == value %}checked{% endif %}>
+                            {{ label }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <small>
+                    <b>Criado em:</b> {{ reap.criado_em|date:"d/m/Y H:i" }} |
+                    <b>Atualizado em:</b> {{ reap.atualizado_em|date:"d/m/Y H:i" }}
+                </small>
+            </div>
+            <br>
+            <div class="form-group" style="margin-top: 16px;">
+                <button type="submit" name="action" value="proximo" class="btn btn-primary">⏩ Salvar e Ir para Próximo</button>
+                <button type="submit" name="action" value="voltar" class="btn btn-secondary">💾 Salvar e Voltar para Lista</button>
+            </div>
+
+        </form>
+
+    </div>
+
+
+{% block extra_js %}
+    <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
+    <script src="{% static 'js/copy_senhas.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

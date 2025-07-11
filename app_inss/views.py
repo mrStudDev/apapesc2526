@@ -240,7 +240,6 @@ class ProcessamentoINSSDoMesView(LoginRequiredMixin, View):
             'guias_anteriores': guias_anteriores_proxima,
         })
 
-
     def get_context_data(self, request, **kwargs):
         context = super().get_context_data(**kwargs)
         ano = request.GET.get('ano') or str(timezone.now().year)
@@ -251,7 +250,6 @@ class ProcessamentoINSSDoMesView(LoginRequiredMixin, View):
 
         return context
     
-
 
 @require_POST
 @login_required

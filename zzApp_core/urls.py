@@ -32,6 +32,7 @@ urlpatterns = [
     path('dashboards/', include('app_dashboards.urls', namespace='app_dashboards')),
     path('inss', include('app_inss.urls', namespace='app_inss')),
     path('seguro-defeso/', include('app_defeso.urls', namespace='app_defeso')),
+    path('reap/', include('app_reap.urls', namespace='app_reap')),
 ]
 
 if settings.DEBUG:

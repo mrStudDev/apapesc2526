@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lançamentos REAP{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+
+<div class="lista-container-small">
+    <h1>Lançamentos REAP</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <div class="btn-left">
+        <form method="post" id="form-gerar-reap">
+            {% csrf_token %}
+            <input type="hidden" name="ano" value="{{ ano_selecionado }}">
+            <p>Você pode gerar e distribuir Reap's a partir do dia 1 de cada Ano. Por padrão, os campos select virão com ano atual.</p>
+            <button type="button" id="btn-gerar-reap"
+                {% if not ano_selecionado  %}disabled{% endif %}>
+                📄 Gerar Reap do Ano
+            </button>
+        </form>    
+        <!-- Modal dentro do btn-left, se quiser que fique relacionado ao botão esquerdo -->
+        <div id="modal_confirm" class="modal-overlay" style="display:none;">
+            <div class="modal">
+                <h2 id="modal-confirm-title">Confirmação</h2>
+                <p id="modal-confirm-message">Deseja realizar esta ação?</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn-sim" id="btn-modal-sim">Sim</button>
+                    <button type="button" class="btn-nao" id="btn-modal-nao">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="btn-right">
+        <form method="get" action="{% url 'app_reap:processamento_reap_do_ano' %}">
+            <input type="hidden" name="ano" value="{{ ano_selecionado }}">
+            <button type="submit" class="btn btn-primary">
+                ⚙️ Iniciar Processamento Manual REAP
+            </button>
+        </form> 
+    </div>
+    <br>
+    {% if not tem_processamento %}
+        <div class="btn-right">
+            <form method="post" action="{% url 'app_reap:resetar_processamento' %}?ano={{ ano_selecionado }}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                🔁 Resetar Processamento
+                </button>
+            </form>
+        </div>
+    {% endif %}  
+
+    <div style="margin-bottom:24px;">
+        <form method="get" class="form-group" style="grid-column: span 4;">
+            <div class="form-grid grid-3-cols">
+                <div class="form-group">
+                    <label for="id_ano">Ano:
+                        <select name="ano" id="id_ano" required>
+                            {% for ano in anos %}
+                                <option value="{{ ano }}" {% if ano|stringformat:"s" == ano_selecionado|stringformat:"s" %}selected{% endif %}>{{ ano }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+                <div class="form-group" style="align-self: end;">
+                    <button type="submit">Filtrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Lista de Guias Criadas -->
+    <table class="table-list-small">
+        <thead>
+            <tr>
+                <th>Associado</th>
+                <th>Ano</th>
+                <th>Resposta</th>
+                <th>Atualizada</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reap in reaps %}
+            <tr>
+                <td>{{ reap.associado.user.get_full_name }}</td>
+                <td>{{ reap.ano }}</td>
+                <td>{{ reap.get_status_resposta_display }}</td>
+                <td>{{ reap.atualizado_em }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8">Nenhum reap encontrada para este ano.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>    
+</div>
+
+{% block extra_js %}
+    <script src="{% static 'js/modal_confirm_reap.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

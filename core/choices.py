@@ -179,7 +179,12 @@ STATUS_EMISSAO_INSS = [
     ('pago', 'Pago'),
     ('atrasada', 'Atrasada'),
 ]
-
+STATUS_RESPOSTAS_REAP = [
+    ('pendente', 'Pendente'),
+    ('emitido', 'Emitido'),
+    ('pago', 'Pago'),
+    ('atrasada', 'Atrasada'),
+]
 ACESSO_CHOICES = [
     ('validar_codigo_acesso', 'Validar Código Acesso'),
     ('senha_invalida', 'Senha Inválida'),
