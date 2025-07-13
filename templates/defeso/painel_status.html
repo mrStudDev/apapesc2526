@@ -2,19 +2,17 @@
 {% load kamban_utils %}
 {% load static %}
 
-{% block title %}Painel Status Kamban{% endblock title%}
+{% block title %}Painel Status Kanban{% endblock title%}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/kamban.css' %}">
-
-  
 {% endblock %}
 
 {% block content %}
 {% include 'components/navbar_superuser.html' %}
 <div class="kanban-container">
 
-    <h2 class="kanban-title">Painel Kamban - Defesos</h2>
+    <h2 class="kanban-title">Painel Kanban - Defesos</h2>
 
     <div class="kanban-board">
         {% for status, controles in colunas.items %}

@@ -1,7 +1,6 @@
 from  app_defeso.models import (
     SeguroDefesoBeneficioModel,
     ControleBeneficioModel,
-    ProcessamentoSeguroDefesoModel,
     DecretosModel,
     PeriodoDefesoOficial,
     PortariasModel,

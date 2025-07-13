@@ -246,48 +246,48 @@ class SeguroDefesoBeneficioCreateView(CreateView):
     model = SeguroDefesoBeneficioModel
     form_class = SeguroDefesoBeneficioForm
     template_name = 'defeso/create_defeso.html'
-    success_url = 'app_defeso:lancamento_defeso' 
+    success_url = reverse_lazy('app_defeso:lancamento_defeso')
 
 class DecretoCreateView(CreateView):
     model = DecretosModel
     form_class = DecretosForm
     template_name = 'defeso/create_decreto.html'
-    success_url = 'app_accounts:dashboard_superuser' 
+    success_url = reverse_lazy('app_dashboards:super_dashboard')
     
     
 class PeriodoCreateView(CreateView):
     model = PeriodoDefesoOficial
     form_class = PeriodoDefesoOficialForm
     template_name = 'defeso/create_periodo.html'
-    success_url = 'app_accounts:dashboard_superuser' 
+    success_url = reverse_lazy('app_dashboards:super_dashboard')
     
 
 class PortariasCreateView(CreateView):
     model = PortariasModel
     form_class = PortariasForm
     template_name = 'defeso/create_portaria.html'
-    success_url = 'app_accounts:dashboard_superuser' 
+    success_url = reverse_lazy('app_dashboards:super_dashboard')
     
     
 class EspecieCreateView(CreateView):
     model = Especie
     form_class = EspeciesForm
     template_name = 'defeso/create_especie.html'
-    success_url = 'app_accounts:dashboard_superuser' 
+    success_url = reverse_lazy('app_dashboards:super_dashboard')
     
 
 class LeiFederalCreateView(CreateView):
     model = LeiFederalPrevidenciaria
     form_class = LeiFederalPrevidenciariaForm
     template_name = 'defeso/create_lei_federal.html'
-    success_url = 'app_accounts:dashboard_superuser' 
+    success_url = reverse_lazy('app_dashboards:super_dashboard')
     
     
 class InstrucoesNormativasCreateView(CreateView):
     model = InstrucoesNormativasModel
     form_class = InstrucoesNormativasForm
     template_name = 'defeso/create_inst_normativa.html'
-    success_url = 'app_accounts:dashboard_superuser' 
+    success_url = reverse_lazy('app_dashboards:super_dashboard')
     
        
          

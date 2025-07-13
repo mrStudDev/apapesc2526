@@ -278,48 +278,7 @@ class ControleBeneficioModel(models.Model):
         if self.em_processamento_por:
             return 'Usuário Processando'
         return 'Aguardando Processamento'
-    
-class ProcessamentoSeguroDefesoModel(models.Model):
-    beneficio = models.ForeignKey(
-        'SeguroDefesoBeneficioModel',
-        on_delete=models.CASCADE,
-        related_name='processamentos'
-    )
-    processada = models.BooleanField(default=False)
-    em_processamento_por = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        on_delete=models.SET_NULL,
-        related_name='controles_defeso_em_processamento'
-    )    
-    rodada = models.PositiveIntegerField(default=1)
-    usuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='processamentos_seguro_defeso'
-    )
-    status = models.CharField(
-        max_length=30,
-        choices=STATUS_PROCESSAMENTO,
-        default='usuario_processando'
-    )
-    iniciado_em = models.DateTimeField(auto_now_add=True)
-    atualizado_em = models.DateTimeField(auto_now=True)
-    concluido_em = models.DateTimeField(null=True, blank=True)
-    indice_atual = models.PositiveIntegerField(default=0)
-    total_associados = models.PositiveIntegerField(default=0)
-    observacoes = models.TextField(blank=True, null=True)
 
-    history = HistoricalRecords()
-
-    class Meta:
-        unique_together = ('beneficio', 'rodada', 'usuario')
-        ordering = ['-iniciado_em']
-
-    def __str__(self):
-        return f"Processamento Defeso {self.beneficio} - {self.usuario} (Rodada {self.rodada})"
 
 
 def pegar_proximo_defeso_para_usuario(beneficio, rodada, usuario):
@@ -364,12 +323,6 @@ def resetar_processamento_rodada(beneficio_id):
 
     if ultima_rodada is None:
         return 0
-
-    # Apaga todos os processamentos dessa rodada
-    ProcessamentoSeguroDefesoModel.objects.filter(
-        beneficio=beneficio,
-        rodada=ultima_rodada
-    ).delete()
 
     # (Opcional, para garantir) Limpa locks de processamento dos controles (se precisar reusar esses registros em nova rodada, geralmente não precisa, pois nova rodada cria novos controles)
     ControleBeneficioModel.objects.filter(

@@ -10,7 +10,7 @@ from .models import (
     PeriodoDefesoOficial,
     SeguroDefesoBeneficioModel,
     ControleBeneficioModel,
-    ProcessamentoSeguroDefesoModel
+    #ProcessamentoSeguroDefesoModel
 )
 from simple_history.admin import SimpleHistoryAdmin
 
@@ -62,40 +62,4 @@ class ControleBeneficioModelAdmin(SimpleHistoryAdmin):
     list_filter = ['status_pedido', 'data_solicitacao', 'data_concessao', 'beneficio']
     readonly_fields = ['criado_em', 'atualizado_em']
     
-
-@admin.register(ProcessamentoSeguroDefesoModel)
-class ProcessamentoSeguroDefesoAdmin(admin.ModelAdmin):
-    list_display = (
-        'beneficio',
-        'rodada',
-        'usuario',
-        'status',
-        'iniciado_em',
-        'concluido_em',
-        'indice_atual',
-        'total_associados',
-        'processada',
-    )
-    list_filter = ('beneficio', 'rodada', 'status', 'usuario')
-    search_fields = ('beneficio__especie_alvo__nome', 'usuario__username', 'usuario__first_name', 'usuario__last_name')
-    readonly_fields = ('iniciado_em', 'concluido_em', 'atualizado_em')
-    ordering = ('-iniciado_em',)
-
-    fieldsets = (
-        (None, {
-            'fields': (
-                'beneficio',
-                'rodada',
-                'usuario',
-                'status',
-                'indice_atual',
-                'total_associados',
-                'processada',
-                'observacoes',
-            )
-        }),
-        ('Datas', {
-            'fields': ('iniciado_em', 'concluido_em', 'atualizado_em')
-        }),
-    )    
 
