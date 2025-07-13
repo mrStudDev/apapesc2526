@@ -4,6 +4,7 @@
 {% block title %}SuperDash {% endblock %}
 
 {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/associado.css' %}"> <!-- Cards-->
     <link rel="stylesheet" href="{% static 'css/dash_superuser.css' %}"> 
     <link rel="stylesheet" href="{% static 'css/tabs.css' %}">
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
@@ -34,6 +35,7 @@
         <div class="tabs">
             <button class="tab-link active" data-tab="superdash">SuperDash</button>
             <button class="tab-link" data-tab="anuidades">Anuidades</button>
+            <button class="tab-link" data-tab="defesos">Defesos</button>
 
 
         </div>
@@ -144,6 +146,46 @@
                 </table>
             </section>
         </div>
+        <div class="tab-content" id="tab-defesos">
+            <div class="detail-section three-cols">
+<div class="links-fasts">
+    <h2>Formulários de Criação</h2>
+
+    <p><strong>Benefício:</strong> 
+        <a href="{% url 'app_defeso:create_beneficio' %}" class="btn-action">Lançar novo Benefício</a>
+    </p>
+    <p><strong>Lei Federal:</strong> 
+        <a href="{% url 'app_defeso:create_lei_federal' %}" class="btn-action">Lançar nova Lei Federal</a>
+    </p>
+    <p><strong>Decreto:</strong> 
+        <a href="{% url 'app_defeso:create_decreto' %}" class="btn-action">Lançar novo Decreto</a>
+    </p>
+    <p><strong>Portaria:</strong> 
+        <a href="{% url 'app_defeso:create_portaria' %}" class="btn-action">Lançar nova Portaria</a>
+    </p>
+    <p><strong>Espécie:</strong> 
+        <a href="{% url 'app_defeso:create_especie' %}" class="btn-action">Lançar nova Espécie</a>
+    </p>
+    <p><strong>Período:</strong> 
+        <a href="{% url 'app_defeso:create_periodo' %}" class="btn-action">Lançar novo Período</a>
+    </p>
+    <p><strong>Instr. Normativa:</strong> 
+        <a href="{% url 'app_defeso:create_instrucao_normativa' %}" class="btn-action">Lançar nova Instr. Normativa</a>
+    </p>
+</div>
+
+                <div>
+                    <h2>Dados</h2>
+                    <p><strong>Dados</strong> {{associado.associacao.email}}</p>
+                    <p><strong>Dados Site: </strong> {{associado.senha_site}}</p>
+                    <p><strong>Dados Google: </strong> {{associado.senha_google}}</p>
+                </div> 
+                <div>
+                    <h2>Dados</h2>
+
+                </div> 
+            </div>
+        </div>                     
     </div>
 
 {% block extra_js %}

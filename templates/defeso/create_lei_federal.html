@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Criar Lei Federal{% endblock title%}
+
+{% block extra_css %}
+
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container-small">
+    <h1>Criar Lei Federal.</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- Espécies Leis e Decretos -->
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                {{ form.numero.label_tag }}
+                {{ form.numero }}
+            </div>
+            <div class="form-group">
+                {{ form.data_publicacao.label_tag }}
+                {{ form.data_publicacao }}
+                {% if form.data_publicacao.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_publicacao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>          
+        </div>    
+        <div class="form-group">
+            {{ form.ementa.label_tag }}
+            {{ form.ementa }}
+        </div>    
+        <div class="form-group">
+            {{ form.link_dou.label_tag }}
+            {{ form.link_dou }}
+        </div>          
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+
+
+</div>
+
+
+{% endblock %}

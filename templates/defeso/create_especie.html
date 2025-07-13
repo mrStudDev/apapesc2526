@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Criar Espécie{% endblock title%}
+
+{% block extra_css %}
+
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container-small">
+    <h1>Criar Espécie.</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- Espécies Leis e Decretos -->
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                {{ form.nome_cientifico.label_tag }}
+                {{ form.nome_cientifico }}
+            </div>
+            <div class="form-group">
+                {{ form.nome_popular.label_tag }}
+                {{ form.nome_popular }}
+            </div>  
+        </div>                 
+        <div class="form-group">
+            {{ form.descricao.label_tag }}
+            {{ form.descricao }}
+        </div>                         
+       
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+</div>
+
+
+{% endblock %}

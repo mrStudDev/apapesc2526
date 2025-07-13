@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Lista Integrantes{% endblock title%}
+{% block title %}👨‍🔧 Lista Integrantes{% endblock title%}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
@@ -12,7 +12,7 @@
 {% include 'components/navbar_superuser.html' %}
 
 <div class="lista-container">
-    <h1>Lista de Integrantes</h1>
+    <h1>👨‍🔧 Lista de Integrantes</h1>
 
     <div id="toast-container">
         {% for message in messages %}

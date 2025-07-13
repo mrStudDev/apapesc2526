@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Criar Período{% endblock title%}
+
+{% block extra_css %}
+
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container-small">
+    <h1>Criar Período.</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- Espécies Leis e Decretos -->
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                {{ form.especie.label_tag }}
+                {{ form.especie }}
+            </div>
+    
+            <div class="form-group">
+                {{ form.ato_normativo_oficial.label_tag }}
+                {{ form.ato_normativo_oficial }}
+            </div>  
+            <div class="form-group">
+                {{ form.data_inicio_oficial.label_tag }}
+                {{ form.data_inicio_oficial }}
+                {% if form.data_inicio_oficial.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_inicio_oficial.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>    
+            <div class="form-group">
+                {{ form.data_fim_oficial.label_tag }}
+                {{ form.data_fim_oficial }}
+                {% if form.data_fim_oficial.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_fim_oficial.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>   
+        </div>   
+        <div class="form-group">
+            {{ form.orgao_definidor.label_tag }}
+            {{ form.orgao_definidor }}
+        </div> 
+        <div class="form-group">
+            {{ form.observacoes.label_tag }}
+            {{ form.observacoes }}
+        </div>                                                                           
+
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+</div>
+
+
+{% endblock %}

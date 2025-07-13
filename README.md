@@ -106,7 +106,7 @@ Barco / Navio
 ⛵ 🚤 🚢 ⛴️ 🛥️ 🚣‍♂️ 🚣‍♀️
 
 Casa / Vila
-🏠 🏡 🏘️ 🏚️ 🏢 🏛️
+🏠 🏡 🏘️ 🏚️ 🏢 🏛️ 🌆, 🗺️
 
 Trabalho / Processo
 ⚙️ 🛠️ 🔧 🔨 🧰 📋 📝 📂 📑

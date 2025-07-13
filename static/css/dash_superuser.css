@@ -104,3 +104,28 @@
 .table-dashboard tbody tr:hover {
   background: #f9fafb;
 }
+
+/* Formulários Links*/
+.links-fasts h2 {
+  font-size: 1.3em;
+  margin-bottom: 12px;
+  color: #2a2a3a;
+}
+
+.links-fasts p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0;
+  background: #fdfdfd;
+  padding: 2px 2px;
+  font-size: 14px;
+}
+
+.btn-action {
+  padding: 4px 10px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+}
+

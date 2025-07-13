@@ -126,7 +126,6 @@ class PeriodoDefesoOficial(models.Model):
     data_inicio_oficial = models.DateField(help_text="Data de início oficial do defeso")
     data_fim_oficial = models.DateField(help_text="Data de fim oficial do defeso")
     estado = models.CharField(max_length=20, choices=UF_CHOICES, blank=True, null=True, help_text="UF, se o defeso for regionalizado")
-    municipios_abrangidos = models.TextField(blank=True, null=True, help_text="Lista de municípios abrangidos, se aplicável")
     observacoes = models.TextField(blank=True, null=True)
 
     class Meta:

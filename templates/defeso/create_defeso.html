@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Criar Seguro Defeso{% endblock title%}
+
+{% block extra_css %}
+
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container-small">
+    <h1>Criar Seguro Defeso.</h1>
+    <p>Ao lançar Seguro defeso, o sistema aplicará para todos associados conforme o estado de cada associado/benefício:
+
+    </p>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- Espécies Leis e Decretos -->
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">
+                {{ form.especie_alvo.label_tag }}
+                {{ form.especie_alvo }}
+            </div>
+            <div class="form-group">
+                {{ form.lei_federal.label_tag }}
+                {{ form.lei_federal }}
+            </div>
+            <div class="form-group">
+                {{ form.decreto_regulamentador.label_tag }}
+                {{ form.decreto_regulamentador }}
+            </div>
+            <div class="form-group">
+                {{ form.instrucao_normativa.label_tag }}
+                {{ form.instrucao_normativa }}
+            </div>
+            <div class="form-group">
+                {{ form.portaria_especifica.label_tag }}
+                {{ form.portaria_especifica }}
+            </div>
+            <div class="form-group">
+                {{ form.estado.label_tag }}
+                {{ form.estado }}
+            </div>                                                
+            <div class="form-group">
+                {{ form.reparticao.label_tag }}
+                {{ form.reparticao }}
+                {% if form.reparticao.errors %}
+                    <div class="field-error">
+                        {% for error in form.reparticao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+        </div> 
+
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">
+                {{ form.ano_concessao.label_tag }}
+                {{ form.ano_concessao }}
+            </div>
+            <div class="form-group">
+                {{ form.data_inicio.label_tag }}
+                {{ form.data_inicio }}
+                {% if form.data_inicio.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_inicio.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>
+            <div class="form-group">
+                {{ form.data_fim.label_tag }}
+                {{ form.data_fim }}
+                {% if form.data_fim.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_fim.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                  
+            </div>                       
+        </div>         
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+
+
+</div>
+
+
+{% endblock %}

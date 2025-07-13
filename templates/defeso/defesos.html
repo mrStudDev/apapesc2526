@@ -31,7 +31,13 @@
         {% endfor %}
     </div>
 
-    <p>Total benefícios lançados: {{ beneficios|length }}</p>
+    <div>
+        <a href="{% url 'app_defeso:create_beneficio' %}" class="btn-action btn-left">
+            🆘 Lançar novo Benefício
+        </a>
+        <p>Total benefícios lançados: {{ beneficios|length }}</p>
+    </div>
+    
 
     <form method="get" class="form-group">
         <label>Selecione o benefício:</label>
@@ -101,10 +107,6 @@
     {% elif beneficio_id %}
         <div style="margin-top: 12px; color: #b22222;">Nenhum associado encontrado para esse benefício.</div>
     {% endif %}
-
-
-
-
 
     </div>
 </div>
