@@ -226,6 +226,25 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         associado = self.object
+        
+        # Verifica se é AJAX e só salva anotações
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            new_content = request.POST.get('content', '').strip()
+            if new_content != self.object.content:
+                self.object.content = new_content
+                self.object.save(update_fields=['content'])
+            return JsonResponse({
+                'success': True,
+                'message': "Anotações salvas com sucesso.",
+                'content': self.object.content
+            })
+
+        # 1. Edição manual via formulário tradicional
+        new_content = request.POST.get('content', '').strip()
+        if new_content != self.object.content:
+            self.object.content = new_content
+            self.object.save(update_fields=['content'])
+
 
         # Busca Guias do Associado
         guia_id = request.POST.get('guia_id')
@@ -408,6 +427,35 @@ class AssociadoListView(LoginRequiredMixin, ListView):
     template_name = 'associados/list_associados.html'
     context_object_name = 'associados'
     ordering = ['user__first_name', 'user__last_name']
+    paginate_by = 25  # Opcional, se quiser paginação
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        form = AssociadoSearchForm(self.request.GET)
+
+        if form.is_valid():
+            nome = form.cleaned_data.get('nome')
+            associacao = form.cleaned_data.get('associacao')
+            reparticao = form.cleaned_data.get('reparticao')
+            status = form.cleaned_data.get('status')
+
+            if nome:
+                queryset = queryset.filter(
+                    Q(user__first_name__icontains=nome) | Q(user__last_name__icontains=nome)
+                )
+            if associacao:
+                queryset = queryset.filter(associacao=associacao)
+            if reparticao:
+                queryset = queryset.filter(reparticao=reparticao)
+            if status:
+                queryset = queryset.filter(status=status)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_form'] = AssociadoSearchForm(self.request.GET)
+        return context
 
 
 class AssociadoHistoricoView(DetailView):

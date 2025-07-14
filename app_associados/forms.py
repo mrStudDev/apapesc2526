@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.utils.dateformat import DateFormat
 from django.forms import DateInput
 
+from core.choices import STATUS_CHOICES
+
 from core.validators import (
     validate_and_format_cpf,
     validate_and_format_celular,
@@ -23,12 +25,13 @@ from app_associacao.models import (
 class AssociadoForm(forms.ModelForm):
     class Meta:
         model = AssociadoModel
-        fields = 'user', 'associacao', 'reparticao', 'municipio_circunscricao', 'celular', 'celular_correspondencia', 'email', 'cpf', 'senha_gov', 'data_filiacao'
+        fields = 'user', 'associacao', 'reparticao', 'municipio_circunscricao', 'celular', 'celular_correspondencia', 'email', 'cpf', 'senha_gov', 'data_filiacao', 'content'
         widgets = {
             'data_filiacao': forms.DateInput(attrs={'type': 'date'}),
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),            
             'data_desfiliacao': forms.DateInput(attrs={'type': 'date'}),
             'municipio_circunscricao': forms.Select(),
+            'content': forms.Textarea(attrs={'rows': 10, 'cols': 50, 'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -103,7 +106,6 @@ class EditAssociadoForm(forms.ModelForm):
             'rgp_data_emissao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
             'cnh_data_emissao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
             'cnh_data_emissao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
-
             'municipio_circunscricao': forms.Select(),
             'petrechos_pesca': forms.CheckboxSelectMultiple,
         }
@@ -111,6 +113,8 @@ class EditAssociadoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user_initial = kwargs.pop('user_initial', None)
         super().__init__(*args, **kwargs)
+        # Drive
+        self.fields['drive_folder_id'].widget.attrs['readonly'] = True
 
         # IDs para JS
         self.fields['associacao'].widget.attrs.update({'id': 'id_associacao'})
@@ -167,3 +171,30 @@ class EditAssociadoForm(forms.ModelForm):
     def clean_cep(self):
         cep = self.cleaned_data.get('cep', '')
         return validate_and_format_cep(cep)    
+    
+    
+    
+# Buscas
+class AssociadoSearchForm(forms.Form):
+    nome = forms.CharField(
+        label='Nome',
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Digite o nome'})
+    )
+    associacao = forms.ModelChoiceField(
+        label='Associação',
+        queryset=AssociacaoModel.objects.all(),
+        required=False,
+        empty_label='Todas'
+    )
+    reparticao = forms.ModelChoiceField(
+        label='Repartição',
+        queryset=ReparticoesModel.objects.all(),
+        required=False,
+        empty_label='Todas'
+    )
+    status = forms.ChoiceField(
+        label='Status',
+        choices=[('', 'Todos')] + STATUS_CHOICES,
+        required=False
+    )    

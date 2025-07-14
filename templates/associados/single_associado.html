@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'css/tabs.css' %}">
     <link rel="stylesheet" href="{% static 'css/associado_uploads.css' %}">
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -648,8 +649,23 @@
 
     <div class="tab-content" id="tab-anotacoes">
         <div class="detail-section full-width">
-            <h2>Anotações</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque in arcu vitae arcu tincidunt venenatis.</p>
+            <h3>Anotações</h3>
+            <form id="notas-form" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea
+                        name="content"
+                        id="content-textarea"
+                        rows="10"
+                        style="width:100%; min-height:160px; resize:vertical; padding:10px; font-size:14px; font-family: inherit; background:white;"
+                        oninput="autoGrow(this)"
+                    >{{ associado.content|default_if_none:"" }}</textarea>
+
+
+                </div>
+                <button type="submit" id="btn-salvar-anotacao" class="btn btn-primary" style="margin-top:8px;">Salvar Anotações</button>
+                <span id="notas-msg" style="margin-left:15px;color:green;display:none;"></span>
+            </form>
         </div>
     </div>
 
@@ -672,6 +688,8 @@
     <script src="{% static 'js/delete_upload.js' %}"></script>
     <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
     <script src="{% static 'js/copy_senhas.js' %}"></script>
+    <script src="{% static 'js/content_associados.js' %}"></script>
+    <script src="{% static 'js/config_content_associados.js' %}"></script>
 {% endblock %}
 
 {% endblock %}

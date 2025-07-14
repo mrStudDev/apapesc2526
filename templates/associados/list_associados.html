@@ -5,6 +5,7 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
 {% endblock %}
 
@@ -27,6 +28,33 @@
                 </div>
             {% endwith %}
         {% endfor %}
+    </div>
+
+    <div class="lista-container" style="margin-bottom: 24px;">
+        <form method="get" autocomplete="off">
+            <div class="form-grid grid-4-cols">
+                <div class="form-group">
+                    {{ search_form.nome.label_tag }}
+                    {{ search_form.nome }}
+                </div>
+                <div class="form-group">
+                    {{ search_form.associacao.label_tag }}
+                    {{ search_form.associacao }}
+                </div>
+                <div class="form-group">
+                    {{ search_form.reparticao.label_tag }}
+                    {{ search_form.reparticao }}
+                </div>
+                <div class="form-group">
+                    {{ search_form.status.label_tag }}
+                    {{ search_form.status }}
+                </div>
+            </div>
+            <div class="text-right">
+                <button type="submit">Buscar</button>
+                <a href="{% url 'app_associados:list_associados' %}" class="btn btn-secondary">Limpar</a>
+            </div>
+        </form>
     </div>
 
     <table class="table-list">

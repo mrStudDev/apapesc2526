@@ -6,7 +6,8 @@ from app_associados.models import (
 
 from app_associados.forms import (
     AssociadoForm,
-    EditAssociadoForm
+    EditAssociadoForm,
+    AssociadoSearchForm
 )
 
 from app_associacao.models import (
@@ -23,6 +24,7 @@ from app_anuidades.models import (
 )
 from app_defeso.models import ControleBeneficioModel, SeguroDefesoBeneficioModel
 from app_inss.models import INSSGuiaDoMes
+
 from core.choices import (
     MESES,
     ACESSO_CHOICES,

@@ -242,3 +242,11 @@
 .form-group input[type="checkbox"], .form-group input[type="radio"] {
     margin-right: 4px;
 }
+#content-textarea {
+    font-family: inherit;   /* herda a fonte do body */
+    color: #222;
+}
+#content-textarea:focus {
+    border-color: #bbf8ff; /* ou mantenha #ccc */
+    outline: none;
+}

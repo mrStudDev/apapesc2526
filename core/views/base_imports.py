@@ -30,7 +30,7 @@ from django.views.decorators.http import require_POST
 from app_accounts.models import CustomUser
 from django.db import transaction
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.db.models import Q
 from django.utils.text import slugify
 
 from django.contrib.auth.decorators import login_required, user_passes_test
