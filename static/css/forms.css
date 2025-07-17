@@ -247,6 +247,6 @@
     color: #222;
 }
 #content-textarea:focus {
-    border-color: #bbf8ff; /* ou mantenha #ccc */
+    border-color: #078905; /* ou mantenha #ccc */
     outline: none;
 }

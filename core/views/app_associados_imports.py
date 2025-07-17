@@ -24,7 +24,7 @@ from app_anuidades.models import (
 )
 from app_defeso.models import ControleBeneficioModel, SeguroDefesoBeneficioModel
 from app_inss.models import INSSGuiaDoMes
-
+from app_servicos.models import ServicoModel
 from core.choices import (
     MESES,
     ACESSO_CHOICES,

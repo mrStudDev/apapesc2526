@@ -300,3 +300,76 @@ TIPO_ATO_NORMATIVO_CHOICES = [
 ]
 
 
+NATUREZA_SERVICO_CHOICES = [
+    ('assessoria', 'Assessoria'),    
+    ('consultoria', 'Consultoria'),           
+    ('emissao_documento', 'Emissão e Documento'),
+
+]
+
+TIPO_SERVICO = [
+    # Assessoria
+    ('assessoria_administrativa', 'Assessoria Administrativa (Recursos)'),    
+    ('assessoria_processo_paa', 'Assessoria Processo PAA'),     
+    ('assessoria_processo_pronaf', 'Assessoria Processo PRONAF'),
+    
+    # Emissão
+    ('emissao_tie', 'Emissão de TIE'),
+    ('emissao_rgp', 'Emissão de RGP'),
+    ('emissao_licanca_pesca', 'Emissão Licença Pesca'),   
+
+    # Consultorias
+    ('consultoria_geral', 'Consultoria Geral'),
+]
+
+
+STATUS_EMISSAO_DOC = [
+    ('pendente', 'Pendente'),
+    ('protocolado_analise', 'Protocolado, em Análise'),
+    ('exigencia_cumprida', 'Exigencia cumprida, em análise'),
+    ('deferido', 'Documento Deferido'),
+    ('indeferido', 'Documento Indeferido'),
+    ('recurso', 'Recurso'),
+    ('pedido_cancelado', 'Pedido Cancelado'),
+]
+
+STATUS_ASSESSORIA_PROCESSO = [
+    ('agendada', 'Agendada'),
+    ('processo_preparo', 'Processo em Preparo'),
+    ('processo_protocolado_analise', 'Protocolado, em Análise'),
+    ('processo_exigencia_cumprida', 'Exigencia cumprida, em análise'),
+    ('processo_deferido', 'Documento Deferido'),
+    ('processo_indeferido', 'Documento Indeferido'),
+    ('processo_recurso_preparo', 'Recurso em Preparo'),
+    ('processo_recurso_protocolado', 'Recurso Protocolado'),
+    ('processo_recurso_concedido', 'Recurso Concedido'),
+    ('processo_recurso_negado', 'Recurso Negado'),
+    ('processo_pedido_cancelado', 'Pedido Cancelado'),
+]   
+
+STATUS_CONSULTORIA = [
+    ('agendada', 'Agendada'),
+    ('concluida', 'Concluída'),
+    ('cancelada', 'Cancelada'),
+]
+
+FORMA_PAGAMENTO_CHOICES = [
+    ('pix', 'PIX'),
+    ('credito', 'Cartão de Crédito'),
+    ('debito', 'Cartão de Débito'),
+    ('deposito', 'Depósito'),
+    ('dinheiro', 'Dinheiro'),
+]
+
+PARCELAMENTO_CHOICES = [
+    ('avista', 'Pagamento à Vista'),
+    ('duas_parcelas', 'Duas Parcelas'),
+    ('tres_parcelas', 'Três Parcelas'),
+]
+
+STATUS_PAGAMENTO_CHOICES = [
+    ('pendente', 'Pendente'),
+    ('parcial', 'Parcial'),
+    ('pago', 'Pago'),
+]
+STATUS_COBRANCA = ["extra_associado", "cliente_especial", "desassociado"]

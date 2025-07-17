@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Serviço{% endblock title%}
+
+{% block extra_css %}
+
+    <link rel="stylesheet" href="{% static 'css/detail_servico.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/toolbar.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="detail-page">
+    <h1>Detalhes do Serviço</h1>
+    
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+
+    
+    <div class="detail-section three-cols">
+        <section>
+            <div class="section-title">
+                <h2>Identificação</h2>
+                
+            </div>
+            <p>
+                <strong>Associado:</strong>
+                {% if servico.associado and servico.associado.user %}
+                    {{ servico.associado.user.get_full_name }}
+                {% else %}
+                    ---
+                {% endif %}
+            </p>        
+            <p>
+                <strong>Natureza do Serviço:</strong>
+                <span>{{ servico.get_natureza_servico_display }}</span>
+            </p>
+            <p>
+                <strong>Tipo de Serviço:</strong>
+                <span>{{ servico.get_tipo_servico_display }}</span>
+            </p>
+            <p>
+                <strong>Status Serviço:</strong>
+                <span>{{ servico.status_servico }}</span>
+            </p>        
+        </section>
+
+        <section>
+            <div class="section-title">
+                <h2>Valores & Período</h2>
+            </div>
+            <p>
+                <strong>Valor:</strong>
+                <span>R$ {{ servico.valor|default:'0.00' }}</span>
+            </p>
+            <p>
+                <strong>Data de Início:</strong>
+                <span>{{ servico.data_inicio }}</span>
+            </p>
+            <p>
+                <strong>Última Alteração:</strong>
+                {{ servico.ultima_alteracao|date:'d/m/Y H:i' }}
+            </p>        
+            <p>
+                <strong>Status Pagamento:</strong>
+                <span>???</span>
+            </p>
+        </section>
+        
+        <!-- Coluna 2 -->
+        <section>
+            <div class="section-title">
+                <h2>Vínculos</h2>
+            </div>
+            <p>
+                <strong>Associação:</strong>
+                <span>{{ servico.associacao }}</span>
+            </p>
+            <p>
+                <strong>Repartição:</strong>
+                <span>{{ servico.reparticao }}</span>
+            </p>
+            <p>
+                <strong>Criado por:</strong><br>
+                {% if servico.criado_por %}
+                    {{ servico.criado_por.username }}
+                {% else %}
+                    ---
+                {% endif %}
+            </p>
+        </section>
+
+    </div>
+    <div class="two-cols">
+
+        <div class="form-group">
+        {% if servico.entrada_servico %}
+            <div class="entrada-section">
+                <h2>Entrada Financeira</h2>
+                <div class="detail-section three-cols">
+                    <p>
+                        <strong>Forma de Pagamento:</strong><br>
+                        {{ servico.entrada_servico.get_forma_pagamento_display }}
+                    </p>
+                    <p>
+                        <strong>Parcelamento:</strong><br>
+                        {{ servico.entrada_servico.get_parcelamento_display }}
+                    </p>
+                    <p>
+                        <strong>Valor Total:</strong><br>
+                        R$ {{ servico.entrada_servico.valor|floatformat:2 }}
+                    </p>
+                    <p>
+                        <strong>Status Pagamento:</strong><br>
+                        {% if servico.entrada_servico.status_pagamento == "pago" %}
+                            <span class="badge badge-success">Pago</span>
+                        {% elif servico.entrada_servico.status_pagamento == "parcial" %}
+                            <span class="badge badge-warning">Parcial</span>
+                        {% else %}
+                            <span class="badge badge-danger">Pendente</span>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <strong>Valor Pago:</strong><br>
+                        R$ {{ servico.entrada_servico.valor_pagamento|default:"0.00" }}
+                    </p>
+                    <p>
+                        <strong>Data Entrada:</strong><br>
+                        {{ servico.entrada_servico.data_entrada|date:"d/m/Y H:i" }}
+                    </p>
+                </div>
+            </div>
+        {% else %}
+            <div class="entrada-section">
+                <h2>Entrada Financeira</h2>
+                <p><em>Nenhuma entrada vinculada a este serviço.</em></p>
+            </div>
+        {% endif %}
+        </div> 
+        <div class="form-group">
+            <form id="notas-form" method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <h2>Anotações</h2>
+                    <textarea
+                        name="content"
+                        id="content-textarea"
+                        rows="10"
+                        style="width:100%; min-height:160px; resize:vertical; padding:10px; font-size:14px; font-family: inherit; background:white;"
+                        oninput="autoGrow(this)"
+                    >{{ servico.content|safe }}</textarea>
+                    <button type="submit" id="btn-salvar-anotacao" class="btn btn-primary" style="margin-top:8px;">Salvar Alterações</button>
+                    <span id="notas-msg" style="margin-left:15px;color:green;display:none;"></span>                
+                </div>
+          
+            </form>
+        </div>                    
+    </div>
+</div>
+
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="{% static 'js/copy_senhas.js' %}"></script>
+    <script src="{% static 'js/content_associados.js' %}"></script>
+    <script src="{% static 'js/config_content_associados.js' %}"></script>
+    <script src="{% static 'js/content_associados.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

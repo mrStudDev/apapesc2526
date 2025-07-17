@@ -210,7 +210,7 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
             ).exists()
         context['defeso_aplicado'] = defeso_aplicado
         context['beneficio_defeso_ultimo'] = beneficio_defeso_ultimo
-
+        context['servicos'] = ServicoModel.objects.filter(associado=self.object)
         context['uploads_docs'] = uploads
         context['ultimas_anuidades'] = ultimas_anuidades
         context['status_ok'] = status_ok

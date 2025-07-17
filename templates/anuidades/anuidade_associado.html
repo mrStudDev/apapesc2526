@@ -35,7 +35,7 @@
 
     <div class="associado-header">
         <div class="associado-info">
-            <a href="{% url 'app_associados:single_associado' associado.pk %}" class="link-associado">📌 Single Associado</a>
+            <a href="{% url 'app_associados:single_associado' associado.pk %}" class="link-associado">{{associado.user.get_full_name}}</a>
             <div class="dados-associado">
                 <span><strong>Associação:</strong> {{ associado.associacao.nome_fantasia }}</span>
                 <span><strong>Repartição:</strong> {{ associado.reparticao.nome_reparticao }}</span>

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Criar Serviço{% endblock title%}
+
+{% block extra_css %}
+
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container-small">
+    <h1>Criar Serviço</h1>
+    
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <p>Status: {{ associado.get_status_display }}</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                <label>Associado</label>
+                <input type="text" class="form-control" value="{{ associado.user.get_full_name }}" readonly>
+
+            </div>
+        <div class="form-group">
+            <label>Criado por</label>
+            <input type="text" class="form-control" value="{{ request.user.username }}" readonly>
+
+        </div>
+                
+        </div>
+        <!--  -->
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                <label>Associação</label>
+                <input type="text" class="form-control" value="{{ form.initial.associacao }}" readonly>
+                {{ form.associacao.as_hidden }}
+            </div>
+            <div class="form-group">
+                <label>Repartição</label>
+                <input type="text" class="form-control" value="{{ form.initial.reparticao }}" readonly>
+                {{ form.reparticao.as_hidden }}
+            </div>
+
+        </div>
+
+        <!--  -->
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                {{ form.natureza_servico.label_tag }}
+                {{ form.natureza_servico }}
+            </div>
+            <div class="form-group">
+                {{ form.tipo_servico.label_tag }}
+                {{ form.tipo_servico }}
+            </div>
+        </div>
+        <!--  -->
+        <div class="form-group">
+            <select name="status_servico" class="js-status-servico" ...>
+            {{ form.status_servico.label_tag }}
+            </select>
+        </div>        
+        <!--  -->
+        <div class="form-group">
+            {{ form.content.label_tag }}
+            {{ form.content }}
+        </div>
+
+        <!-- Hidden ou disabled, mas sempre garantir no back -->
+        {{ form.associado.as_hidden }}
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+    {% endif %}
+    </div>
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+    <script src="{% static 'js/filtro_natureza_tipo_servico.js' %}"></script>
+    <script src="{% static 'js/filtro_status_tipo_servico.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

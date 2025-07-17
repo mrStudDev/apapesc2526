@@ -32,7 +32,8 @@ from django.db import transaction
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.utils.text import slugify
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from django.contrib.contenttypes.models import ContentType

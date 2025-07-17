@@ -567,12 +567,32 @@
 
     <!--Serviços-->
     <div class="tab-content" id="tab-servicos">
+
+        <a href="{% url 'app_servicos:create_servico' associado.pk %}?type=associado&id={{ associado.id }}" class="upload-link">
+            🛠️  Novo Serviço
+        </a> 
+             
+       
         <div class="detail-section full-width">
-        <h2>Serviços</h2>
-        <p>Emissão Documento: 12</p>
-        <p>Marinha: 5</p>
-        <p>Licença: 40 horas</p>
+            <h2>Serviços</h2>
+            {% if servicos %}
+                <ul class="lista-servicos">
+                    {% for servico in servicos %}
+                        <li>
+                            <a href="{% url 'app_servicos:single_servico' servico.pk %}">
+                                {{ servico.get_natureza_servico_display }} /
+                                {{ servico.get_tipo_servico_display }}<br>
+                                <small>Status: {{ servico.status_servico|title }} | Valor: R$ {{ servico.valor|floatformat:2 }}</small>
+                                <small style="color: #999;">- criado em {{ servico.data_inicio|date:'d/m/Y H:i' }}</small>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Nenhum serviço vinculado</p>
+            {% endif %}
         </div>
+
     </div>
     <!--Declarações-->
     <div class="tab-content" id="tab-declaracoes">

@@ -52,9 +52,10 @@
                 <a href="#">Produção ▾</a>
                 <div class="dropdown-menu">
                     <a href="{% url 'app_inss:lancamentos_inss' %}">Lançamentos INSS</a>
-                    <a href="{% url 'app_defeso:lancamento_defeso' %}">Lançamentos DEFESO</a>
-                    <a href="{% url 'app_defeso:painel_status_defeso' %}">Painel Kanban DEFESO</a>
                     <a href="{% url 'app_reap:lancamentos_reap' %}">Lançamentos REAP</a>
+                    <a href="#">----------------</a>
+                    <a href="{% url 'app_defeso:lancamento_defeso' %}">Lançamentos DEFESO</a>
+                    <a href="{% url 'app_defeso:painel_status_defeso' %}">Painel Kanban DEFESO</a>                    
                 </div>
             </div>                                                            
             <div class="dropdown">
