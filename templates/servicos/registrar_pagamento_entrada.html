@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registrar Pagamento{% endblock title%}
+
+{% block extra_css %}
+
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container-small">
+    <h1>Registrar Pagamento</h1>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    {% if entrada %}
+        <p>
+            Serviço vinculado à: {{ entrada.servico.associado.user.get_full_name }}<strong> - {{ entrada.servico }}</strong>
+            (Serviço ID: <strong>{{ entrada.servico.id }} </strong>) - 
+        </p>
+        <p>
+            Entrada: <strong>{{ entrada }}</strong> (Entrada ID: <strong>{{ entrada.id }}</strong>)<br>
+            Natureza do serviço: <strong>{{ servico.natureza_servico }}</strong><br>
+            Tipo do serviço: <strong>{{ servico.tipo_servico }}</strong>
+        </p>
+
+    {% else %}
+        <p>
+            <em>Não há entrada registrada.</em>
+        </p>
+    {% endif %}
+
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-grid grid-2-cols">
+            <div class="form-group" style="background-color:#fce0a3;">
+                <label>| Serviço</label>
+                <input type="text" class="form-control" value="{{ entrada.servico }}" readonly>
+            </div>
+            <div class="form-group" style="background-color:#fce0a3;">
+                <label>| Registrado por</label>
+                <input type="text" class="form-control" value="{{ request.user.username }}" readonly>
+            </div>               
+            <div class="form-group">
+                {{ form.valor_pago.label_tag }}
+                {{ form.valor_pago }}
+                {% if form.valor_pago.errors %}
+                    <div class="field-error">{{ form.valor_pago.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.comprovante_up.label_tag }}
+                {{ form.comprovante_up }}
+                {% if form.comprovante_up.errors %}
+                    <div class="field-error">{{ form.comprovante_up.errors }}</div>
+                {% endif %}
+            </div>            
+            <div class="form-group">
+                {{ form.data_pagamento.label_tag }}
+                {{ form.data_pagamento }}
+                {% if form.data_pagamento.errors %}
+                    <div class="field-error">{{ form.data_pagamento.errors }}</div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:10px;">Salvar Pagamento</button>
+    </form>
+    <br>
+    <a href="{% url 'app_servicos:single_servico' servico.pk %}" class="btn btn-secondary" style="margin-left: 8px;">
+        &#8592; Voltar
+    </a>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+    {% endif %}
+
+
+    <h2>Pagamentos Registrados</h2>
+    <table class="table-list">
+        <thead>
+            <tr>
+                <th>Valor Pago</th>
+                <th>Data do Pagamento</th>
+                <th>Registrado por</th>
+                <th>Comprovante</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pagamento in pagamentos %}
+                <tr>
+                    <td>R$ {{ pagamento.valor_pago|floatformat:2 }}</td>
+                    <td>{{ pagamento.data_pagamento|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if pagamento.registrado_por %}
+                            {{ pagamento.registrado_por.username }}
+                        {% else %}
+                            <span style="color:#6b7280">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if pagamento.comprovante_up %}
+                            <a href="{{ pagamento.comprovante_up.url }}" target="_blank">Comprovante</a>
+                        {% else %}
+                            <span style="color:#9ca3af;">Sem comprovante</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align:center; color:#9ca3af;">
+                        Nenhum pagamento registrado.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+</div>
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+    <script src="{% static 'js/filtro_natureza_tipo_servico.js' %}"></script>
+    <script src="{% static 'js/filtro_status_tipo_servico.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

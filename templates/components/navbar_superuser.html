@@ -31,7 +31,7 @@
                     <a href="{% url 'app_associacao:create_municipio' %}">Novo Município</a>                    
                     <a href="{% url 'app_associacao:create_profissao' %}">Nova Profissão</a>                    
                     <a href="{% url 'app_associacao:create_cargo' %}">Novo Cargo (Int)</a>
-                    <a href="#">----------------</a>
+                    <hr>
                     <a href="{% url 'app_associacao:list_associacoes' %}">Lista Associações</a>
                     <a href="{% url 'app_associacao:list_reparticoes' %}">Lista Repartições</a>
                     <a href="{% url 'app_associacao:list_integrantes' %}">Lista Integrantes</a>
@@ -52,8 +52,9 @@
                 <a href="#">Produção ▾</a>
                 <div class="dropdown-menu">
                     <a href="{% url 'app_inss:lancamentos_inss' %}">Lançamentos INSS</a>
+                    <hr>
                     <a href="{% url 'app_reap:lancamentos_reap' %}">Lançamentos REAP</a>
-                    <a href="#">----------------</a>
+                    <hr>
                     <a href="{% url 'app_defeso:lancamento_defeso' %}">Lançamentos DEFESO</a>
                     <a href="{% url 'app_defeso:painel_status_defeso' %}">Painel Kanban DEFESO</a>                    
                 </div>

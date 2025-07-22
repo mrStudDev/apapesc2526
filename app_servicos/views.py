@@ -66,6 +66,43 @@ class ServicoCreateView(CreateView):
         return reverse('app_servicos:single_servico', kwargs={'pk': self.object.pk})
         
 
+class ServicoUpdateView(UpdateView):
+    model = ServicoModel
+    form_class = ServicoForm
+    template_name = 'servicos/edit_servico.html'
+
+
+    def dispatch(self, request, *args, **kwargs):
+        self.servico = get_object_or_404(ServicoModel, pk=kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['associado'].queryset = AssociadoModel.objects.filter(pk=self.servico.associado.pk)
+        form.fields['associado'].initial = self.servico.associado
+        form.fields['associado'].widget.attrs['readonly'] = True
+        form.fields['associacao'].widget.attrs['readonly'] = True
+        form.fields['reparticao'].widget.attrs['readonly'] = True
+        return form
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return redirect(reverse('app_servicos:single_servico', kwargs={'pk': self.servico.pk}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['servico'] = self.servico
+        context['associado'] = self.servico.associado 
+        context['associacao'] = self.servico.associacao
+        context['reparticao'] = self.servico.reparticao
+        return context
+    
+    def get_success_url(self):
+        return reverse('app_servicos:single_servico', kwargs={'pk': self.object.pk})
+
+
+
+
 class ServicoSingleView(DetailView):
     model = ServicoModel
     template_name = 'servicos/single_servico.html'
@@ -110,6 +147,8 @@ class ServicoSingleView(DetailView):
         return context
         
 
+
+# ENTRADAS
 class EntradaCreateView(CreateView):
     model = EntradaFinanceiraModel
     form_class = EntradaFinanceiraForm
@@ -146,7 +185,7 @@ class EntradaCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['entrada'] = self.servico  # Para mostrar no template
+        #context['entrada'] = self.servico  # Para mostrar no template
         context['servico'] = self.servico  # Se quiser usar também
         return context
 
@@ -154,3 +193,66 @@ class EntradaCreateView(CreateView):
         return reverse('app_servicos:single_servico', kwargs={'pk': self.servico.pk})
 
 
+class EditarEntradaView(UpdateView):
+    model = EntradaFinanceiraModel
+    form_class = EntradaFinanceiraForm
+    template_name = 'servicos/edit_entrada.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.entrada = get_object_or_404(EntradaFinanceiraModel, pk=kwargs['pk'])
+        self.servico = self.entrada.servico
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['servico'].queryset = ServicoModel.objects.filter(pk=self.servico.pk)
+        form.fields['servico'].initial = self.servico
+        return form
+
+    def form_valid(self, form):
+        form.instance.servico = self.servico
+        response = super().form_valid(form)
+        # Só depois do save!
+        self.object.calcular_pagamento()
+        return redirect(reverse('app_servicos:single_servico', kwargs={'pk': self.servico.pk}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['entrada'] = self.entrada  # Para mostrar no template
+        context['servico'] = self.servico  # Se quiser usar também
+        return context
+
+    def get_success_url(self):
+        return reverse('app_servicos:single_servico', kwargs={'pk': self.servico.pk})
+    
+
+class RegistrarPagamentoEntradaView(CreateView):
+    model = PagamentoEntrada
+    form_class = PagamentoEntradaForm
+    template_name = 'servicos/registrar_pagamento_entrada.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.servico = get_object_or_404(ServicoModel, pk=kwargs['servico_id'])
+        self.entrada = getattr(self.servico, 'entrada_servico', None)
+        if not self.entrada:
+            from django.http import Http404
+            raise Http404("Entrada financeira não encontrada para este serviço.")
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.servico = self.servico
+        form.instance.registrado_por = self.request.user
+        response = super().form_valid(form)
+        # Recalcula o status da entrada
+        self.entrada.calcular_pagamento()
+        return redirect(reverse('app_servicos:single_servico', kwargs={'pk': self.servico.pk}))
+    
+    def get_success_url(self):
+            return reverse('app_servicos:single_servico', kwargs={'pk': self.servico.pk})    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['servico'] = self.servico
+        context['entrada'] = self.entrada
+        context['pagamentos'] = self.servico.pagamentos.all()
+        return context

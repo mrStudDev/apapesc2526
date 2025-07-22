@@ -220,7 +220,8 @@
     color: #fba293; 
 }
 .material-icons.icon-delete {
-    color: #f99696; /* Vermelho para "Excluir" */
+    color: #f99696; 
+
 }
 
 .material-icons.icon-view:hover,

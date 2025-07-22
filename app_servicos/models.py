@@ -175,6 +175,11 @@ class PagamentoEntrada(models.Model):
         blank=True,
         verbose_name="Registrado por"
     )
+    comprovante_up = models.FileField(
+        upload_to='comprovantes_pagamento/',
+        null=True, blank=True,
+        verbose_name="Comprovante do Pagamento"
+    )    
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

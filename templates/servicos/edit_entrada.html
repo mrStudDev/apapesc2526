@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Entrada{% endblock title%}
+
+{% block extra_css %}
+
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+<div class="form-container-small">
+    <h1>Editar Entrada</h1>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                <label>Serviço</label>
+                <input type="text" class="form-control" value="{{ servico }}" readonly>
+                {{ form.servico.as_hidden }}
+            </div>
+            <div class="form-group">
+                <label>Criado por</label>
+                <input type="text" class="form-control" value="{{ request.user.username }}" readonly>
+            </div>
+        </div>
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                {{ form.forma_pagamento.label_tag }}
+                {{ form.forma_pagamento }}
+                {% if form.forma_pagamento.errors %}
+                    <div class="field-error">{{ form.forma_pagamento.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.parcelamento.label_tag }}
+                {{ form.parcelamento }}
+                {% if form.parcelamento.errors %}
+                    <div class="field-error">{{ form.parcelamento.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.valor.label_tag }}
+                {{ form.valor }}
+                {% if form.valor.errors %}
+                    <div class="field-error">{{ form.valor.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.data_entrada.label_tag }}
+                {{ form.data_entrada }}
+                {% if form.data_entrada.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_entrada.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+    {% endif %}
+</div>
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+    <script src="{% static 'js/filtro_natureza_tipo_servico.js' %}"></script>
+    <script src="{% static 'js/filtro_status_tipo_servico.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

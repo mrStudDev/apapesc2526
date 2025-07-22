@@ -24,9 +24,7 @@ class ServicoForm(forms.ModelForm):
         self.fields['status_servico'].widget.attrs.update({'class': 'js-status-servico'})
 
                     
-        
-
-        
+                
 class EntradaFinanceiraForm(forms.ModelForm):
     class Meta:
         model = EntradaFinanceiraModel
@@ -50,16 +48,16 @@ class EntradaFinanceiraForm(forms.ModelForm):
         self.fields['parcelamento'].required = True
         self.fields['valor'].required = True
 
+# Registrar - Pagamento Form
 class PagamentoEntradaForm(forms.ModelForm):
     class Meta:
         model = PagamentoEntrada
         fields = [
-            'servico',
             'valor_pago',
             'data_pagamento',
-            'registrado_por',
+            'comprovante_up',
         ]
         widgets = {
             'data_pagamento': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
         }
-        
+   
