@@ -6,3 +6,5 @@ from app_servicos.forms import ServicoForm, PagamentoEntradaForm, EntradaFinance
 from app_associados.models import AssociadoModel
 
 from core.choices import STATUS_COBRANCA
+
+from app_uploads.models import UploadsDocs

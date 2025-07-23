@@ -316,7 +316,8 @@ TIPO_SERVICO = [
     # Emissão
     ('emissao_tie', 'Emissão de TIE'),
     ('emissao_rgp', 'Emissão de RGP'),
-    ('emissao_licanca_pesca', 'Emissão Licença Pesca'),   
+    ('emissao_licanca_pesca', 'Emissão Licença Pesca'),
+    ('emissao_pop', 'Emissão Carteira POP'),   
 
     # Consultorias
     ('consultoria_geral', 'Consultoria Geral'),

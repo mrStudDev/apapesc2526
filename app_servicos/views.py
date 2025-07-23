@@ -44,6 +44,7 @@ class ServicoCreateView(CreateView):
                 "emissao_tie": "pendente",
                 "emissao_rgp": "pendente",
                 "emissao_licanca_pesca": "pendente",
+                'emissao_pop': "pendente",
                 "consultoria_geral": "agendada",
             }
             form.instance.status_servico = default_status.get(form.instance.tipo_servico, '')
@@ -135,6 +136,7 @@ class ServicoSingleView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        associado = self.object.associado
         entrada = None
         entrada_form = None
         try:
@@ -142,8 +144,45 @@ class ServicoSingleView(DetailView):
             entrada_form = EntradaFinanceiraForm(instance=entrada)
         except EntradaFinanceiraModel.DoesNotExist:
             pass
+        
         context['entrada'] = entrada
         context['entrada_form'] = entrada_form
+        
+        tipos_doc_essencial = [
+            '001_Auto_Declaração_Pesca', 
+            '002_Autorização_ACESSO_GOV_ASS_Associado',  
+            '003_Autorização_IMAGEM_ASS_Associado',   
+            '004_CAEPF',  
+            '005_CEI',  
+            '006_CNH_Cart_Motorista',  
+            '007_Comp_Resid_LUZ_AGUA_FATURAS',  
+            '008_Comp_SEGURO_DEFESO',  
+            '009_CPF_Pessoa_Física',  
+            '0010_CTPS_Cart_Trabalho', 
+            '0011_Declaração_Residência_MAPA',  
+            '0012_Ficha_Req_Filiação_ASS_PRESID_JUR', 
+            '0013_Ficha_Req_Filiação_ASS_Associado',  
+            '0014_Foto_3x4', 
+            '0015_Licença_Embarcação',  
+            '0016_NIT_Extrato',  
+            '0017_Procuração_AD_JUDICIA',  
+            '0018_Procuracao_ADMINISTRATIVA',  
+            '0019_Protocolo_ENTRADA_RGP',  
+            '0020_RG_Identidade_CIN',
+            '0021_RGP_Cart_Pescador',
+            '0021_TIE_Titulo_Embarcação',
+            '0022_Titulo_Eleitor',
+        ]
+
+        documentos_up = UploadsDocs.objects.filter(
+            proprietario_object_id=associado.pk,
+            proprietario_content_type=ContentType.objects.get_for_model(type(associado)),
+            tipo__nome__in=tipos_doc_essencial
+        ).select_related('tipo')
+        context['documentos_essenciais_up'] = documentos_up        
+        context['uploads_docs'] = context['documentos_essenciais_up']  # Se já passou acima!
+
+        context['associado'] = self.object.associado 
         return context
         
 

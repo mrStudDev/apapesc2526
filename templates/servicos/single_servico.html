@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load custom_filters %}
 {% block title %}Serviço{% endblock title%}
 
 {% block extra_css %}
@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/detail_servico.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+     <link rel="stylesheet" href="{% static 'css/tabs.css' %}">
     <link rel="stylesheet" href="{% static 'css/toolbar.css' %}">
 {% endblock %}
 
@@ -21,7 +23,9 @@
             <p>
                 <strong>Associado:</strong>
                 {% if servico.associado and servico.associado.user %}
-                    {{ servico.associado.user.get_full_name }}
+                    <a href="{% url 'app_associados:single_associado' associado.pk %}" title="Editar">
+                        {{ servico.associado.user.get_full_name }}
+                    </a>                        
                 {% else %}
                     ---
                 {% endif %}
@@ -52,154 +56,265 @@
             {% endwith %}
         {% endfor %}
     </div>
+    <!--Tabs-->
+    <div class="tabs">
+        <button class="tab-link active" data-tab="servico_single">Serviço Singular</button>
+        <button class="tab-link" data-tab="instrucoes">Instruções</button>
+        <button class="tab-link" data-tab="docs_copys">Docs Copys</button>
+        <button class="tab-link" data-tab="docs_down">Docs Down</button>    
+    </div>
 
-
-    
-    <div class="detail-section three-cols">
-        <section>
-            <div class="section-title">
-                <h2>Serviço</h2>
-                
-            </div>
-     
-            <p>
-                <strong>Natureza do Serviço:</strong>
-                <span>{{ servico.get_natureza_servico_display }}</span>
-            </p>
-            <p>
-                <strong>Tipo de Serviço:</strong>
-                <span>{{ servico.get_tipo_servico_display }}</span>
-            </p>
-            <p>
-                <strong>Status Serviço:</strong>
-                <span>{{ servico.status_servico }}</span>
-            </p>        
-        </section>
-
-        <section>
-            <div class="section-title">
-                <h2>Valores & Período</h2>
-            </div>
-            <p>
-                <strong>Valor:</strong>
-                <span>R$ {{servico.entrada_servico.valor|floatformat:2}}</span>
-            </p>
-            <p>
-                <strong>Data de Início:</strong>
-                <span>{{ servico.data_inicio }}</span>
-            </p>
-            <p>
-                <strong>Última Alteração:</strong>
-                {{ servico.ultima_alteracao|date:'d/m/Y H:i' }}
-            </p>        
-        </section>
+    <div class="tab-content active" id="tab-servico_single">
+        <div class="detail-section three-cols">
+            <section>
+                <div class="section-title">
+                    <h2>Serviço</h2>
+                    
+                </div>
         
-        <!-- Coluna 2 -->
-        <section>
-            <div class="section-title">
-                <h2>Vínculos</h2>
-            </div>
-            <p>
-                <strong>Associação:</strong>
-                <span>{{ servico.associacao }}</span>
-            </p>
-            <p>
-                <strong>Repartição:</strong>
-                <span>{{ servico.reparticao }}</span>
-            </p>
-            <p>
-                <strong>Criado por:</strong>
-                {% if servico.criado_por %}
-                    {{ servico.criado_por.username }}
-                {% else %}
-                    ---
-                {% endif %}
-            </p>
-        </section>
+                <p>
+                    <strong>Natureza do Serviço:</strong>
+                    <span>{{ servico.get_natureza_servico_display }}</span>
+                </p>
+                <p>
+                    <strong>Tipo de Serviço:</strong>
+                    <span>{{ servico.get_tipo_servico_display }}</span>
+                </p>
+                <p>
+                    <strong>Status Serviço:</strong>
+                    <span>{{ servico.status_servico }}</span>
+                </p>        
+            </section>
 
-    </div>
-    <div class="two-cols">
-        <div class="form-group">
-        {% if servico.entrada_servico %}
-            <div class="entrada-section">
-                <h2>Entrada Financeira</h2>
-                <div class="detail-section three-cols">
-                    <p>
-                        <strong>Forma de Pagamento:</strong><br>
-                        {{ servico.entrada_servico.get_forma_pagamento_display }}
-                    </p>
-                    <p>
-                        <strong>Parcelamento:</strong><br>
-                        {{ servico.entrada_servico.get_parcelamento_display }}
-                    </p>
-                    <p>
-                        <strong>Valor Total:</strong><br>
-                        R$ {{ servico.entrada_servico.valor|floatformat:2 }}
-                    </p>
-                    <p>
-                        <strong>Status Pagamento:</strong><br>
-                        {% if servico.entrada_servico.status_pagamento == "pago" %}
-                            <span class="badge badge-success">Pago</span>
-                        {% elif servico.entrada_servico.status_pagamento == "parcial" %}
-                            <span class="badge badge-warning">Parcial</span>
-                        {% else %}
-                            <span class="badge badge-danger">Pendente</span>
-                        {% endif %}
-                    </p>
-                    <p>
-                        <strong>Valor Pago:</strong><br>
-                        R$ {{ servico.entrada_servico.valor_pagamento|default:"0.00" }}
-                    </p>
-                    <p>
-                        <strong>Data Entrada:</strong><br>
-                        {{ servico.entrada_servico.data_entrada|date:"d/m/Y H:i" }}
-                    </p>
-                    <a href="{% url 'app_servicos:edit_entrada' servico.entrada_servico.id %}" class="btn btn-secondary">Editar Entrada</a>
-                    {% if servico.entrada_servico %}
-                        <a href="{% url 'app_servicos:registrar_pagamento_entrada' servico.pk %}" class="btn btn-success">
-                            Registrar Pagamento
-                        </a>
+            <section>
+                <div class="section-title">
+                    <h2>Valores & Período</h2>
+                </div>
+                <p>
+                    <strong>Valor:</strong>
+                    <span>R$ {{servico.entrada_servico.valor|floatformat:2}}</span>
+                </p>
+                <p>
+                    <strong>Data de Início:</strong>
+                    <span>{{ servico.data_inicio }}</span>
+                </p>
+                <p>
+                    <strong>Última Alteração:</strong>
+                    {{ servico.ultima_alteracao|date:'d/m/Y H:i' }}
+                </p>        
+            </section>
+            
+            <!-- Coluna 2 -->
+            <section>
+                <div class="section-title">
+                    <h2>Vínculos</h2>
+                </div>
+                <p>
+                    <strong>Associação:</strong>
+                    <span>{{ servico.associacao }}</span>
+                </p>
+                <p>
+                    <strong>Repartição:</strong>
+                    <span>{{ servico.reparticao }}</span>
+                </p>
+                <p>
+                    <strong>Criado por:</strong>
+                    {% if servico.criado_por %}
+                        {{ servico.criado_por.username }}
                     {% else %}
-                        <span class="text-muted">Nenhuma entrada financeira criada ainda.</span>
+                        ---
                     {% endif %}
+                </p>
+            </section>
+        </div>
 
-                </div>
-            </div>
-        {% else %}
-            <div class="entrada-section">
-                <h2>Entrada Financeira</h2>
-                <p><em>Nenhuma entrada vinculada a este serviço.</em></p>
-            </div>
-        {% endif %}
-        </div> 
-        <div class="form-group">
-            <form id="notas-form" method="post">
-                {% csrf_token %}
+        <div class="two-cols">
+            <div class="form-group">
+                {% if servico.entrada_servico %}
+                    <div class="entrada-section">
+                        <h2>Entrada Financeira</h2>
+                        <div class="detail-section three-cols">
+                            <p>
+                                <strong>Forma de Pagamento:</strong><br>
+                                {{ servico.entrada_servico.get_forma_pagamento_display }}
+                            </p>
+                            <p>
+                                <strong>Parcelamento:</strong><br>
+                                {{ servico.entrada_servico.get_parcelamento_display }}
+                            </p>
+                            <p>
+                                <strong>Valor Total:</strong><br>
+                                R$ {{ servico.entrada_servico.valor|floatformat:2 }}
+                            </p>
+                            <p>
+                                <strong>Status Pagamento:</strong><br>
+                                {% if servico.entrada_servico.status_pagamento == "pago" %}
+                                    <span class="badge badge-success">Pago</span>
+                                {% elif servico.entrada_servico.status_pagamento == "parcial" %}
+                                    <span class="badge badge-warning">Parcial</span>
+                                {% else %}
+                                    <span class="badge badge-danger">Pendente</span>
+                                {% endif %}
+                            </p>
+                            <p>
+                                <strong>Valor Pago:</strong><br>
+                                R$ {{ servico.entrada_servico.valor_pagamento|default:"0.00" }}
+                            </p>
+                            <p>
+                                <strong>Data Entrada:</strong><br>
+                                {{ servico.entrada_servico.data_entrada|date:"d/m/Y H:i" }}
+                            </p>
+                            <a href="{% url 'app_servicos:edit_entrada' servico.entrada_servico.id %}" class="btn btn-secondary">Editar Entrada</a>
+                            {% if servico.entrada_servico %}
+                                <a href="{% url 'app_servicos:registrar_pagamento_entrada' servico.pk %}" class="btn btn-success">
+                                    Registrar Pagamento
+                                </a>
+                            {% else %}
+                                <span class="text-muted">Nenhuma entrada financeira criada ainda.</span>
+                            {% endif %}
 
-                <div class="form-group">
-                    <h2>Anotações</h2>
-                    <textarea
-                        name="content"
-                        id="content-textarea"
-                        rows="10"
-                        style="width:100%; min-height:160px; resize:vertical; padding:10px; font-size:14px; font-family: inherit; background:white;"
-                        oninput="autoGrow(this)"
-                    >{{ servico.content|safe }}</textarea>
-                    <button type="submit" id="btn-salvar-anotacao" class="btn btn-primary" style="margin-top:8px;">Salvar Alterações</button>
-                    <span id="notas-msg" style="margin-left:15px;color:green;display:none;"></span>                
-                </div>
-          
-            </form>
-        </div>                    
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="entrada-section">
+                        <h2>Entrada Financeira</h2>
+                        <p><em>Nenhuma entrada vinculada a este serviço.</em></p>
+                    </div>
+                {% endif %}
+            </div> 
+            <div class="form-group">
+                <form id="notas-form" method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <h2>Anotações</h2>
+                        <textarea
+                            name="content"
+                            id="content-textarea"
+                            rows="10"
+                            style="width:100%; min-height:160px; resize:vertical; padding:10px; font-size:14px; font-family: inherit; background:white;"
+                            oninput="autoGrow(this)"
+                        >{{ servico.content|safe }}</textarea>
+                        <button type="submit" id="btn-salvar-anotacao" class="btn btn-primary" style="margin-top:8px;">Salvar Alterações</button>
+                        <span id="notas-msg" style="margin-left:15px;color:green;display:none;"></span>                
+                    </div>            
+                </form>
+            </div>                    
+        </div>
     </div>
+    <div class="tab-content" id="tab-instrucoes">
+        {% if servico.tipo_servico == "assessoria_administrativa" %}
+            {% include "components/servicos/assessoria_administrativa.html" %}
+        {% elif servico.tipo_servico == "assessoria_processo_paa" %}
+            {% include "components/servicos/assessoria_processo_paa.html" %}
+        {% elif servico.tipo_servico == "assessoria_processo_pronaf" %}
+            {% include "components/servicos/assessoria_processo_pronaf.html" %}
+        {% elif servico.tipo_servico == "emissao_tie" %}
+            {% include "components/servicos/emissao_tie.html" %}
+        {% elif servico.tipo_servico == "emissao_rgp" %}
+            {% include "components/servicos/emissao_rgp.html" %}
+        {% elif servico.tipo_servico == "emissao_licanca_pesca" %}
+            {% include "components/servicos/emissao_licanca_pesca.html" %}
+        {% elif servico.tipo_servico == "emissao_pop" %}
+            {% include "components/servicos/emissao_pop.html" %}
+        {% elif servico.tipo_servico == "consultoria_geral" %}
+            {% include "components/servicos/consultoria_geral.html" %}
+        {% else %}
+            <p>Conteúdo padrão para serviços diversos.</p>
+        {% endif %}
+    </div>
+   
+    <div class="tab-content" id="tab-docs_copys">
+        {% include "components//associados/copys.html" %}
+        {% include "components/associados/dados_pessoais.html" %}
+    </div>
+
+    <div class="tab-content" id="tab-docs_down">
+
+        <div class="detail-section full-width">
+            {% if uploads_docs %}
+                <div class="lista-container">
+                    <table class="table-list-small">
+                        <thead>
+                        <tr>
+                            <th>Tipo de Documento</th>
+                            <th>Extensão</th>
+                            <th>Data de Envio</th>
+                            <th>Enviado Por</th>
+                            <th>Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for doc in uploads_docs %}
+                            <tr>
+                            <td>{{ doc.tipo.nome|default:doc.tipo_custom }}</td>
+                            <!--Extensão-->
+                            <td>{{ doc.arquivo.name|slice:"-4:"|upper }}</td>
+                            <td>{{ doc.data_envio|date:"d/m/Y H:i" }}</td>
+                            <td>{{ doc.enviado_por.get_full_name|default:doc.enviado_por.username }}</td>
+
+                            <td>
+                                <a href="{{ doc.arquivo.url }}" download title="Download">
+                                    <span class="material-icons icon-download">download</span>
+                                </a>
+
+                                {% with doc.ext|lower as ext %}
+
+
+                                    {% if ext|is_in:"jpg jpeg png" %}
+                                        <a href="{% url 'converter_para_pdf' doc.pk %}" title="Converter imagem em PDF">
+                                            <span class="material-icons icon-convert">picture_as_pdf</span>
+                                        </a>
+                                    {% endif %}
+
+                                    {% if ext != "pdf" %}
+                                        <a href="{% url 'app_uploads:converter_para_pdf' doc.pk %}" title="Converter para PDF">
+                                            <span class="material-icons icon-convert">picture_as_pdf</span>
+                                        </a>
+                                    {% endif %}
+                                {% endwith %}
+
+                                <a href="{{ doc.arquivo.url }}" target="_blank" title="Visualizar">
+                                    <span class="material-icons icon-view">visibility</span>
+                                </a>
+                                {% if doc.proprietario_object.drive_folder_id %}
+                                    <form method="post" action="{% url 'app_associados:enviar_para_drive' doc.pk %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" title="Enviar para o Google Drive" style="background:none; border:none; padding:0; margin:0;">
+                                            <span class="material-icons" style="color:rgb(128, 125, 250);">upload_file</span>
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                                <a href="#" class="btn-icon" title="Excluir Documento"
+                                    onclick="openDeleteModal('{{ doc.pk }}')">
+                                    <span class="material-icons icon-delete">delete</span>
+                                </a>
+
+                            </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+            <p>Nenhum documento enviado ainda.</p>
+            {% endif %}
+        </div>         
+    </div>  
+    
+    
 </div>
 
 {% block extra_js %}
     <!-- Seu JS com as máscaras -->
+     <script src="{% static 'js/tabs.js' %}"></script>
     <script src="{% static 'js/copy_senhas.js' %}"></script>
     <script src="{% static 'js/content_associados.js' %}"></script>
     <script src="{% static 'js/config_content_associados.js' %}"></script>
     <script src="{% static 'js/content_associados.js' %}"></script>
+    <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
+
 {% endblock %}
 
 {% endblock %}
