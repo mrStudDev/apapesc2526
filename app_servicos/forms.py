@@ -1,6 +1,9 @@
 from django import forms
 from .models import ServicoModel, EntradaFinanceiraModel, PagamentoEntrada
 from django.forms import DateInput
+from django.core.exceptions import ValidationError
+from decimal import Decimal
+from django.db.models import Sum
 
 
 class ServicoForm(forms.ModelForm):
@@ -60,4 +63,35 @@ class PagamentoEntradaForm(forms.ModelForm):
         widgets = {
             'data_pagamento': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
         }
-   
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.servico = None
+        if self.instance and self.instance.pk:
+            self.servico = self.instance.servico
+        elif 'servico' in self.initial:
+            self.servico = self.initial['servico']
+
+    def clean_valor_pago(self):
+        valor_pago = self.cleaned_data.get('valor_pago') or Decimal('0.00')
+        servico = self.servico
+        if not servico:
+            return valor_pago
+
+        entrada = getattr(servico, 'entrada_servico', None)
+        if not entrada:
+            return valor_pago
+
+        # Soma todos os pagamentos já realizados, exceto este (caso edição)
+        pagamentos = servico.pagamentos.all()
+        if self.instance.pk:
+            pagamentos = pagamentos.exclude(pk=self.instance.pk)
+        total_ja_pago = pagamentos.aggregate(total=Sum('valor_pago'))['total'] or Decimal('0.00')
+
+        # Quanto falta pagar
+        valor_restante = entrada.valor - total_ja_pago
+
+        if valor_pago > valor_restante:
+            raise ValidationError(f'O valor máximo permitido é R$ {valor_restante:.2f}.')
+
+        return valor_pago

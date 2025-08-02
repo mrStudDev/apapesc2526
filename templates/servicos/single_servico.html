@@ -157,8 +157,8 @@
                                 {% endif %}
                             </p>
                             <p>
-                                <strong>Valor Pago:</strong><br>
-                                R$ {{ servico.entrada_servico.valor_pagamento|default:"0.00" }}
+                                <strong>Pago / Pendente:</strong><br>
+                                R$ {{ servico.entrada_servico.valor_pagamento|default:"0.00" }} / <span style="color:red;"> {{ valor_pendente|default:"0.00" }}<span> 
                             </p>
                             <p>
                                 <strong>Data Entrada:</strong><br>

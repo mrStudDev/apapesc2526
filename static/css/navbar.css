@@ -1,5 +1,5 @@
 .navbar {
-    background-color: #ffffff;
+    background-color: #130f2b;
     border-bottom: 1px solid #e2e8f0;
     padding: 10px 20px;
     font-family: 'Inter', sans-serif;
@@ -23,9 +23,9 @@
 
 .navbar-toggle {
     display: none;
-    background: none;
+    background: white;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1rem;
     cursor: pointer;
 }
 
@@ -36,14 +36,14 @@
 }
 
 .navbar-links a {
-    color: #374151;
+    color: #f1f5f9;
     text-decoration: none;
     padding: 6px 8px;
 }
 
 .navbar-links a:hover {
     text-decoration: underline;
-    color: #1e40af;
+    color: #47aa0d;
 }
 
 /* Dropdown */

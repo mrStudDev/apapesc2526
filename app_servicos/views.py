@@ -148,6 +148,13 @@ class ServicoSingleView(DetailView):
         context['entrada'] = entrada
         context['entrada_form'] = entrada_form
         
+        # Corrija aqui:
+        if entrada:
+            valor_pendente = entrada.valor - (entrada.valor_pagamento or 0)
+        else:
+            valor_pendente = 0
+        context['valor_pendente'] = valor_pendente
+        
         tipos_doc_essencial = [
             '001_Auto_Declaração_Pesca', 
             '002_Autorização_ACESSO_GOV_ASS_Associado',  
@@ -185,7 +192,6 @@ class ServicoSingleView(DetailView):
         context['associado'] = self.object.associado 
         return context
         
-
 
 # ENTRADAS
 class EntradaCreateView(CreateView):
@@ -277,7 +283,11 @@ class RegistrarPagamentoEntradaView(CreateView):
             from django.http import Http404
             raise Http404("Entrada financeira não encontrada para este serviço.")
         return super().dispatch(request, *args, **kwargs)
-
+    
+    def get_initial(self):
+        # Assim o form sabe qual serviço está validando
+        return {'servico': self.servico}
+    
     def form_valid(self, form):
         form.instance.servico = self.servico
         form.instance.registrado_por = self.request.user

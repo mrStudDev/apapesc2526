@@ -166,7 +166,7 @@ class EntradaFinanceiraModel(models.Model):
 
 class PagamentoEntrada(models.Model):
     servico = models.ForeignKey(ServicoModel, on_delete=models.CASCADE, related_name="pagamentos")
-    valor_pago = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    valor_pago = models.DecimalField(max_digits=10, decimal_places=2)
     data_pagamento = models.DateTimeField(default=now)
     registrado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,
